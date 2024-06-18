@@ -1,8 +1,14 @@
-from gui.main_window import *
+import tkinter as tk
+from gui.gui_root import GUIRoot
 
 def main():
-    win = MainWindow()
-    win.start()
+    root = tk.Tk()
+    root.title("App Usage GUI")
+
+    win = GUIRoot(root)
+    win.pack(side="top", fill="both", expand=True)
+
+    root.mainloop()
 
 if __name__ == "__main__":
     main()
