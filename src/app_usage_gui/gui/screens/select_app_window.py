@@ -1,6 +1,8 @@
 import tkinter as tk
 from tkinter import messagebox
 
+from gui.logic.app_tracker import AppTracker
+
 class SelectAppWindow(tk.Frame):
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent, controller)
@@ -24,9 +26,12 @@ class SelectAppWindow(tk.Frame):
         # configure the listbox to use the scrollbar
         self.app_listbox.config(yscrollcommand=scrollbar.set)
 
-        #TODO: populate the listbox with real application names
+        #TODO: add an update button that refreshes the list
         # populate the listbox with the application names
         apps = ["Test 1", "Test 2", "Test 3", "Test 4", "Test 5"]
+
+        tracker = AppTracker()
+        apps = AppTracker.get_app_names(tracker)
         for app in apps:
             self.app_listbox.insert(tk.END, app)
         
@@ -39,6 +44,7 @@ class SelectAppWindow(tk.Frame):
         if selected_index:
             selected_app = self.app_listbox.get(selected_index)
             #TODO: add logic here to handle the selected application
+
 
         else:
             messagebox.showerror("Error","No application selected")
