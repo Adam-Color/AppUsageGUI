@@ -15,14 +15,21 @@ class TimeTracker:
     def __init__(self):
         print("TimeTracker initialized")
         self.track = False
-        self.time = None
+        self.start_time = None
+        self.elapsed_time = 0
 
-    
     @threaded
     def clock(self):
+        self.track = True
+        self.start_time = time.time()
         while self.track:
-            time.sleep(0.1)
-            self.time = time.time()
-    
+            self.elapsed_time = time.time() - self.start_time
+            time.sleep(1)
+
+    def stop(self):
+        self.track = False
+
     def get_time(self):
-        return self.time
+        if not self.track:
+            return None
+        return self.elapsed_time

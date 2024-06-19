@@ -1,7 +1,6 @@
 import tkinter as tk
 from tkinter import messagebox
 
-from gui.logic.app_tracker import AppTracker
 
 class SelectAppWindow(tk.Frame):
     def __init__(self, parent, controller):
@@ -35,7 +34,7 @@ class SelectAppWindow(tk.Frame):
         # populate the listbox with the application names
         apps = ["Test 1", "Test 2", "Test 3", "Test 4", "Test 5"]
 
-        self.tracker = AppTracker()
+        self.tracker = self.controller.tracker
         thread, _ = self.tracker.update_app_names()
         thread.join()
         apps = self.tracker.get_app_names()
@@ -50,10 +49,10 @@ class SelectAppWindow(tk.Frame):
         selected_index = self.app_listbox.curselection()
         if selected_index:
             selected_app = self.app_listbox.get(selected_index)
-            
+
             # handle the selected application
             self.controller.show_frame("TrackerWindow")
-            AppTracker.set_selected_app(selected_app)
+            self.tracker.set_selected_app(selected_app)
         else:
             messagebox.showerror("Error","No application selected")
 

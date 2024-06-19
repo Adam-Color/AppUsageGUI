@@ -3,11 +3,17 @@ from .screens.main_window import MainWindow
 from .screens.select_app_window import SelectAppWindow
 from .screens.sessions_window import SessionsWindow
 from .screens.tracker_window import TrackerWindow
+from .logic.app_tracker import AppTracker
+from .logic.time_tracker import TimeTracker
 
 class GUIRoot(tk.Frame):
     def __init__(self, parent):
         tk.Frame.__init__(self, parent)
         self.parent = parent
+        
+        # Initialize the AppTracker
+        self.tracker = AppTracker()
+        self.time_tracker = TimeTracker()
 
         self.container = tk.Frame(self)
         self.container.pack(side="top", fill="both", expand=True)
