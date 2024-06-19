@@ -10,6 +10,11 @@ class SelectAppWindow(tk.Frame):
 
         label = tk.Label(self, text="Ensure the desired application is running.\n\nSelect which application you would like to track:")
         label.pack(side="top", fill="x", pady=5)
+        
+        # button to refresh the list
+        refresh_button = tk.Button(self, text="Refresh List", command=self.refresh_apps)
+        refresh_button.pack(pady=10)
+
 
         # create the frame for the listbox and scrollbar
         list_frame = tk.Frame(self)
@@ -30,9 +35,10 @@ class SelectAppWindow(tk.Frame):
         # populate the listbox with the application names
         apps = ["Test 1", "Test 2", "Test 3", "Test 4", "Test 5"]
 
-        tracker = AppTracker()
-        apps = tracker.get_app_names()
-        for app in apps:
+        self.tracker = AppTracker()
+        thread, apps = self.tracker.get_app_names()
+        thread.join()
+        for app in apps[0]:
             self.app_listbox.insert(tk.END, app)
         
         # button to make the selection
@@ -44,7 +50,19 @@ class SelectAppWindow(tk.Frame):
         if selected_index:
             selected_app = self.app_listbox.get(selected_index)
             #TODO: add logic here to handle the selected application
-
-
+            #
+            #
         else:
             messagebox.showerror("Error","No application selected")
+
+    def refresh_apps(self):
+        self.app_listbox.delete(0, tk.END)
+        thread, result = self.tracker.get_app_names()
+        thread.join()  # Wait for the thread to complete
+        app_names = result[0] if result else []
+        
+        if not app_names:
+            messagebox.showerror("Error", "No applications found.")
+        else:
+            for app in app_names:
+                self.app_listbox.insert(tk.END, app)
