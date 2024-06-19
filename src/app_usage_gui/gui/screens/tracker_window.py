@@ -13,6 +13,10 @@ class TrackerWindow(tk.Frame):
         self.app = ""
         self.track_time_disp = "Looking for app..."
 
+        # display the page label
+        self.page_label = tk.Label(self, text="Tracking the selected app:")
+        self.page_label.pack(pady=5)
+
         self.time_label = tk.Label(self, text=self.track_time_disp)
         self.time_label.pack(pady=10)
 
@@ -27,8 +31,8 @@ class TrackerWindow(tk.Frame):
     def update_time_label(self):
         while True:
             self.app = self.controller.tracker.get_selected_app()
-            print(f"Selected app: {self.app}")  #! Debugging statement
-            if self.app:
+            if self.app in self.controller.tracker.get_app_names():
+                print(f"Selected app: {self.app}")  #! Debugging statement
                 self.controller.time_tracker.clock()
                 while True:
                     secs = self.controller.time_tracker.get_time()
@@ -38,7 +42,8 @@ class TrackerWindow(tk.Frame):
                     else:
                         track_time_disp = "No time data available"
                     self.update_queue.put(track_time_disp)
-                    time.sleep(1)  # Use time.sleep instead of threading.Event().wait
+                    self.controller.tracker.update_app_names()
+                    time.sleep(1)
             else:
                 self.update_queue.put("Looking for application...")
                 time.sleep(1)
@@ -47,7 +52,7 @@ class TrackerWindow(tk.Frame):
         try:
             while True:
                 track_time_disp = self.update_queue.get_nowait()
-                self.time_label.config(text=track_time_disp)
+                self.time_label.config(text=f"{track_time_disp} recorded.")
         except queue.Empty:
             pass
         self.after(100, self.periodic_update)
