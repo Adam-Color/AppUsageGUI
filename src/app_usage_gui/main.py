@@ -1,5 +1,6 @@
 import tkinter as tk
 from gui.gui_root import GUIRoot
+import threading
 
 def main():
     root = tk.Tk()

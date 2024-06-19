@@ -31,7 +31,7 @@ class SelectAppWindow(tk.Frame):
         apps = ["Test 1", "Test 2", "Test 3", "Test 4", "Test 5"]
 
         tracker = AppTracker()
-        apps = AppTracker.get_app_names(tracker)
+        apps = tracker.get_app_names()
         for app in apps:
             self.app_listbox.insert(tk.END, app)
         
