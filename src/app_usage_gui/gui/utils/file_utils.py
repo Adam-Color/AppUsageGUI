@@ -1,2 +1,2 @@
 def sessions_exist():
-    return True
+    return False

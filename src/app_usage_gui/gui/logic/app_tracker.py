@@ -14,11 +14,20 @@ def threaded(fn):
 class AppTracker:
     def __init__(self):
         print("AppTracker initialized.")
+        self.app_names = []
     
     @threaded
-    def get_app_names(self):
+    def update_app_names(self):
         apps = []
+        seen_names = set()
         for process in psutil.process_iter(['name']):
-            # TODO: Exclude subprocess by looking for duplicate names
-            apps.append(process.info['name'])
-        return sorted(apps)
+            app_name = process.info['name'].split(" ")[0]  # Use the base name of the process
+            if app_name not in seen_names:
+                apps.append(app_name)
+                seen_names.add(app_name)
+            # else:
+                # print(f"rejected: {process.info['name']}")
+        self.app_names = sorted(apps)
+    
+    def get_app_names(self):
+        return self.app_names

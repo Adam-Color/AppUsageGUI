@@ -36,9 +36,10 @@ class SelectAppWindow(tk.Frame):
         apps = ["Test 1", "Test 2", "Test 3", "Test 4", "Test 5"]
 
         self.tracker = AppTracker()
-        thread, apps = self.tracker.get_app_names()
+        thread, _ = self.tracker.update_app_names()
         thread.join()
-        for app in apps[0]:
+        apps = self.tracker.get_app_names()
+        for app in apps:
             self.app_listbox.insert(tk.END, app)
         
         # button to make the selection
@@ -57,9 +58,10 @@ class SelectAppWindow(tk.Frame):
 
     def refresh_apps(self):
         self.app_listbox.delete(0, tk.END)
-        thread, result = self.tracker.get_app_names()
+        thread, _ = self.tracker.update_app_names()
         thread.join()  # Wait for the thread to complete
-        app_names = result[0] if result else []
+        result = self.tracker.get_app_names()
+        app_names = result if result else []
         
         if not app_names:
             messagebox.showerror("Error", "No applications found.")
