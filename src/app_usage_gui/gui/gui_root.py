@@ -2,6 +2,7 @@ import tkinter as tk
 from .screens.main_window import MainWindow
 from .screens.select_app_window import SelectAppWindow
 from .screens.sessions_window import SessionsWindow
+from .screens.tracker_window import TrackerWindow
 
 class GUIRoot(tk.Frame):
     def __init__(self, parent):
@@ -18,7 +19,7 @@ class GUIRoot(tk.Frame):
         self.init_screens()
 
     def init_screens(self):
-        for F in (MainWindow, SessionsWindow, SelectAppWindow):
+        for F in (MainWindow, SessionsWindow, SelectAppWindow, TrackerWindow):
             page_name = F.__name__
             frame = F(parent=self.container, controller=self)
             self.frames[page_name] = frame
