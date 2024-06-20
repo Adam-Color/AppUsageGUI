@@ -33,3 +33,6 @@ class TimeTracker:
         if not self.track:
             return None
         return self.elapsed_time
+    
+    def is_running(self):
+        return self.track

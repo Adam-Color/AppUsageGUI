@@ -17,6 +17,7 @@ class AppTracker:
         self.app_names = []
         self.selected_app = None
     
+    
     @threaded
     def update_app_names(self):
         apps = []
@@ -31,6 +32,7 @@ class AppTracker:
                 # print(f"rejected: {process.info['name']}")
         self.app_names = sorted(apps)
     
+
     def get_app_names(self):
         return self.app_names
 
