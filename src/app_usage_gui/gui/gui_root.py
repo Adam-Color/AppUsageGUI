@@ -3,6 +3,7 @@ from .screens.main_window import MainWindow
 from .screens.select_app_window import SelectAppWindow
 from .screens.sessions_window import SessionsWindow
 from .screens.tracker_window import TrackerWindow
+from .screens.save_window import SaveWindow
 from .logic.app_tracker import AppTracker
 from .logic.time_tracker import TimeTracker
 
@@ -10,6 +11,7 @@ class GUIRoot(tk.Frame):
     def __init__(self, parent):
         tk.Frame.__init__(self, parent)
         self.parent = parent
+        self.data_directory = "Data/"
         
         # Initialize the AppTracker
         self.tracker = AppTracker()
@@ -25,7 +27,7 @@ class GUIRoot(tk.Frame):
         self.init_screens()
 
     def init_screens(self):
-        for F in (MainWindow, SessionsWindow, SelectAppWindow, TrackerWindow):
+        for F in (MainWindow, SessionsWindow, SelectAppWindow, TrackerWindow, SaveWindow):
             page_name = F.__name__
             frame = F(parent=self.container, controller=self)
             self.frames[page_name] = frame
@@ -37,3 +39,6 @@ class GUIRoot(tk.Frame):
     def show_frame(self, page_name):
         frame = self.frames[page_name]
         frame.tkraise()
+
+    def get_data_directory(self):
+        return self.data_directory

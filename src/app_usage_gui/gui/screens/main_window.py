@@ -8,7 +8,7 @@ class MainWindow(tk.Frame):
 
         label_text = "To begin app tracking, start a new session:"
 
-        if sessions_exist():
+        if sessions_exist(self.controller.get_data_directory()):
             label_text = "What would you like to do?"
 
         label = tk.Label(self, text=label_text)
