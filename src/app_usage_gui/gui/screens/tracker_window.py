@@ -39,9 +39,6 @@ class TrackerWindow(tk.Frame):
             if self.controller.time_tracker.is_running() and self.app not in self.controller.tracker.get_app_names():
                 print(f"Stopping tracking for app: {self.app}")  # Debugging statement
                 self.controller.time_tracker.stop()
-                self.update_queue.put(("time", "No time data available"))
-                self.update_queue.put(("app", "No application found"))
-                self.app = None
                 break
 
             if self.controller.time_tracker.is_running():
@@ -55,6 +52,7 @@ class TrackerWindow(tk.Frame):
                 self.update_queue.put(("time", "Looking for application..."))
 
             time.sleep(1)
+        self.controller.show_frame("SaveWindow")
 
     def periodic_update(self):
         self.controller.tracker.update_app_names()
