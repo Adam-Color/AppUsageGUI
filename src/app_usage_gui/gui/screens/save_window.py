@@ -11,7 +11,16 @@ class SaveWindow(tk.Frame):
         self.page_label.pack(pady=5)
 
         # display the yes/no buttons
-        button_yes = tk.Button(self, text="Yes", command=lambda: print("yes"))
+        button_yes = tk.Button(self, text="Yes", command=self.save)
         button_yes.pack(pady=2)
-        button_no = tk.Button(self, text="No", command=lambda: print("no"))
+        button_no = tk.Button(self, text="No", command=self.dont_save)
         button_no.pack(pady=5)
+
+    def save(self):
+        print("saved")
+    
+    def dont_save(self):
+        # confirm
+        ans = tk.messagebox.askyesno("Delete Confirmation", "Are you sure you don't want to save?")
+        if ans:
+            print("data is to be deleted")
