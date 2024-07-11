@@ -17,10 +17,10 @@ class SaveWindow(tk.Frame):
         button_no.pack(pady=5)
 
     def save(self):
-        print("saved")
+        print("data is to be saved")
     
     def dont_save(self):
-        # confirm
+        # confirm data deletion
         ans = tk.messagebox.askyesno("Delete Confirmation", "Are you sure you don't want to save?")
         if ans:
             print("data is to be deleted")

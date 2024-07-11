@@ -30,8 +30,8 @@ class SelectAppWindow(tk.Frame):
         # configure the listbox to use the scrollbar
         self.app_listbox.config(yscrollcommand=scrollbar.set)
 
-        #TODO: add an update button that refreshes the list
-        # populate the listbox with the application names
+        #TODO: add a search function
+        # populate the listbox with test application names
         apps = ["Test 1", "Test 2", "Test 3", "Test 4", "Test 5"]
 
         self.tracker = self.controller.tracker

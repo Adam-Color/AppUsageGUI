@@ -19,6 +19,6 @@ class MainWindow(tk.Frame):
         button1.pack()
 
         if label_text == "What would you like to do?":
-            button2 = tk.Button(self, text="Continue from a previous session",
+            button2 = tk.Button(self, text="Continue a previous session",
                                 command=lambda: controller.show_frame("SessionsWindow")) 
             button2.pack()
