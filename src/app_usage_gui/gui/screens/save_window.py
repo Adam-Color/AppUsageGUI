@@ -11,13 +11,10 @@ class SaveWindow(tk.Frame):
         self.page_label.pack(pady=5)
 
         # display the yes/no buttons
-        button_yes = tk.Button(self, text="Yes", command=self.save)
+        button_yes = tk.Button(self, text="Yes", command=lambda: controller.show_frame("CreateSessionWindow"))
         button_yes.pack(pady=2)
         button_no = tk.Button(self, text="No", command=self.dont_save)
         button_no.pack(pady=5)
-
-    def save(self):
-        print("data is to be saved")
     
     def dont_save(self):
         # confirm data deletion

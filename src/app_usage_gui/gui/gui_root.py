@@ -4,6 +4,7 @@ from .screens.select_app_window import SelectAppWindow
 from .screens.sessions_window import SessionsWindow
 from .screens.tracker_window import TrackerWindow
 from .screens.save_window import SaveWindow
+from .screens.create_session_window import CreateSessionWindow
 from .logic.app_tracker import AppTracker
 from .logic.time_tracker import TimeTracker
 
@@ -27,7 +28,7 @@ class GUIRoot(tk.Frame):
         self.init_screens()
 
     def init_screens(self):
-        for F in (MainWindow, SessionsWindow, SelectAppWindow, TrackerWindow, SaveWindow):
+        for F in (MainWindow, SessionsWindow, SelectAppWindow, TrackerWindow, SaveWindow, CreateSessionWindow):
             page_name = F.__name__
             frame = F(parent=self.container, controller=self)
             self.frames[page_name] = frame

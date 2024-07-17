@@ -1,17 +1,20 @@
 import os
+import time
+
 from gui.utils.file_utils import compute_hash, read_file, write_file
 
 class FileHandler:
     def __init__(self, directory):
         print("FileHandler initialized")
-        self.fileName = "test.dat"
-        self.hashFileName = "test.hash"
+        time1 = str(time.localtime().tm_year) + '-' + str(time.localtime().tm_mon) + '-' + str(time.localtime().tm_mday) + '-' + str(time.localtime().tm_hour) + '-' + str(time.localtime().tm_min)
+        self.fileName = f"{time1}.dat"
+        self.hashFileName = f"{time1}.hash"
         self.directory = directory
         self.data = None
 
         self.load_data()
 
-    def save_data(self, data, filename):
+    def save_data(self, data):
         self.data = data
         file_path = os.path.join(self.directory, self.fileName)
         hash_path = os.path.join(self.directory, self.hashFileName)
@@ -48,4 +51,5 @@ class FileHandler:
         return self.data
 
     def set_file_name(self, file_name):
-        self.fileName = file_name
+        if file_name is not None:
+            self.fileName = file_name

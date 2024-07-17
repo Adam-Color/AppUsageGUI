@@ -12,6 +12,7 @@ class TrackerWindow(tk.Frame):
         self.controller = controller
         self.app = ""
         self.track_time_disp = "Looking for app..."
+        self.rec_time = 0
 
         # Display the page label
         self.page_label = tk.Label(self, text="Tracking the selected app:")
@@ -29,6 +30,7 @@ class TrackerWindow(tk.Frame):
         self.periodic_update()
 
     def update_time_label(self):
+        secs = 0
         while True:
             self.app = self.controller.tracker.get_selected_app()
             if self.app and not self.controller.time_tracker.is_running():
@@ -39,6 +41,7 @@ class TrackerWindow(tk.Frame):
             if self.controller.time_tracker.is_running() and self.app not in self.controller.tracker.get_app_names():
                 print(f"Stopping tracking for app: {self.app}")  # Debugging statement
                 self.controller.time_tracker.stop()
+                self.rec_time = secs
                 break
 
             if self.controller.time_tracker.is_running():
@@ -66,3 +69,6 @@ class TrackerWindow(tk.Frame):
         except queue.Empty:
             pass
         self.after(100, self.periodic_update)
+
+    def get_rec_time(self):
+        return self.rec_time
