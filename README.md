@@ -22,7 +22,7 @@ This program tracks the runtime of a specified application, logging the duration
 
 1. Clone this repository:
     ```sh
-    git clone https://github.com/Techi-Joe/app_usage
+    git clone https://github.com/Techi-Joe/AppUsageGUI
     ```
 
 2. Ensure you have Python 3.12 installed on your system.
@@ -53,5 +53,4 @@ This program tracks the runtime of a specified application, logging the duration
 
 ## Notes
 
-- Ensure the application to be tracked is running before you start the script.
-- The program saves runtime data in `data/[app name]_data.dat`.
+- The program saves sessions in `data/[app name]_data.dat`.
