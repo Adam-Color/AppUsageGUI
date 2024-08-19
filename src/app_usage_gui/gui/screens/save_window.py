@@ -20,4 +20,4 @@ class SaveWindow(tk.Frame):
         # confirm data deletion
         ans = tk.messagebox.askyesno("Delete Confirmation", "Are you sure you don't want to save?")
         if ans:
-            print("data is to be deleted")
+            print("TODO: data is to be deleted")

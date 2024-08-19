@@ -29,8 +29,8 @@ class TimeTracker:
     def stop(self):
         self.track = False
 
-    def get_time(self):
-        if not self.track:
+    def get_time(self, saved=False):
+        if not self.track and saved is False:
             return None
         return self.elapsed_time
     

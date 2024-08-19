@@ -7,16 +7,19 @@ from .screens.save_window import SaveWindow
 from .screens.create_session_window import CreateSessionWindow
 from .logic.app_tracker import AppTracker
 from .logic.time_tracker import TimeTracker
+from .logic.file_handler import FileHandler
 
 class GUIRoot(tk.Frame):
     def __init__(self, parent):
         tk.Frame.__init__(self, parent)
         self.parent = parent
-        self.data_directory = "Data/"
+        self.data_directory = "Sessions/"
         
         # Initialize the AppTracker
         self.tracker = AppTracker()
         self.time_tracker = TimeTracker()
+
+        self.session_files = FileHandler()
 
         self.container = tk.Frame(self)
         self.container.pack(side="top", fill="both", expand=True)
