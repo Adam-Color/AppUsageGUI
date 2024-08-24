@@ -13,7 +13,6 @@ def threaded(fn):
 
 class AppTracker:
     def __init__(self):
-        print("AppTracker initialized.")
         self.app_names = []
         self.selected_app = None
     

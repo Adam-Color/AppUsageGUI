@@ -1,11 +1,10 @@
 import os
 import time
 
-from gui.utils.file_utils import compute_hash, read_file, write_file
+from core.utils.file_utils import compute_hash, read_file, write_file
 
 class FileHandler:
     def __init__(self):
-        print("FileHandler initialized")
         time1 = str(time.localtime().tm_year) + '-' + str(time.localtime().tm_mon) + '-' + str(time.localtime().tm_mday) + '-' + str(time.localtime().tm_hour) + '-' + str(time.localtime().tm_min)
         self.fileName = f"{time1}.dat"
         self.hashFileName = f"{time1}.hash"

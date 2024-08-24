@@ -1,5 +1,5 @@
 import tkinter as tk
-from gui.utils.file_utils import sessions_exist
+from core.utils.file_utils import sessions_exist
 
 class MainWindow(tk.Frame):
     def __init__(self, parent, controller):

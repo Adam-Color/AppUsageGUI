@@ -13,7 +13,6 @@ def threaded(fn):
 
 class TimeTracker:
     def __init__(self):
-        print("TimeTracker initialized")
         self.track = False
         self.start_time = None
         self.elapsed_time = 0
@@ -25,6 +24,7 @@ class TimeTracker:
         while self.track:
             self.elapsed_time = time.time() - self.start_time
             time.sleep(1)
+            print("Elapsed time: %.2f seconds" % self.elapsed_time)
 
     def stop(self):
         self.track = False

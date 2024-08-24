@@ -3,11 +3,10 @@ import threading
 import queue
 import time
 
-from gui.utils.time_utils import format_time
+from core.utils.time_utils import format_time
 
 class TrackerWindow(tk.Frame):
     def __init__(self, parent, controller):
-        print("TrackerWindow initialized")
         tk.Frame.__init__(self, parent)
         self.controller = controller
         self.app = ""

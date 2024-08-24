@@ -2,7 +2,6 @@ import tkinter as tk
 
 class SaveWindow(tk.Frame):
     def __init__(self, parent, controller):
-        print("SaveWindow initialized")
         tk.Frame.__init__(self, parent)
         self.controller = controller
         
