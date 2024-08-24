@@ -19,12 +19,13 @@ class TimeTracker:
 
     @threaded
     def clock(self):
-        self.track = True
         self.start_time = time.time()
         while self.track:
             self.elapsed_time = time.time() - self.start_time
             time.sleep(1)
-            print("Elapsed time: %.2f seconds" % self.elapsed_time)
+
+    def start(self):
+        self.track = True
 
     def stop(self):
         self.track = False

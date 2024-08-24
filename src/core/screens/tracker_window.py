@@ -33,12 +33,12 @@ class TrackerWindow(tk.Frame):
         while True:
             self.app = self.controller.tracker.get_selected_app()
             if self.app and not self.controller.time_tracker.is_running():
-                print(f"Starting tracking for app: {self.app}")  # Debugging statement
+                self.controller.time_tracker.start()
                 self.controller.time_tracker.clock()
                 self.update_queue.put(("app", self.app))
 
+            # Stop tracking when app closes
             if self.controller.time_tracker.is_running() and self.app not in self.controller.tracker.get_app_names():
-                print(f"Stopping tracking for app: {self.app}")  # Debugging statement
                 self.controller.time_tracker.stop()
                 self.rec_time = secs
                 break
