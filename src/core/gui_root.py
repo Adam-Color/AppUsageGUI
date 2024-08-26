@@ -1,10 +1,12 @@
 import tkinter as tk
+
 from .screens.main_window import MainWindow
 from .screens.select_app_window import SelectAppWindow
 from .screens.sessions_window import SessionsWindow
 from .screens.tracker_window import TrackerWindow
 from .screens.save_window import SaveWindow
 from .screens.create_session_window import CreateSessionWindow
+
 from .logic.app_tracker import AppTracker
 from .logic.time_tracker import TimeTracker
 from .logic.file_handler import FileHandler

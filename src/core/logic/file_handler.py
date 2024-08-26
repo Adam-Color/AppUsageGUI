@@ -13,12 +13,10 @@ class FileHandler:
             os.mkdir(self.directory)
         self.data = None
 
-        self.load_data()
-
     def save_data(self, data):
         self.data = data
-        file_path = os.path.join(self.directory, self.fileName)
-        hash_path = os.path.join(self.directory, self.hashFileName)
+        file_path = os.path.join(self.directory, self.fileName + '.dat')
+        hash_path = os.path.join(self.directory, self.fileName + '.hash')
 
         # Save data to file
         write_file(file_path, data)
@@ -27,9 +25,9 @@ class FileHandler:
         data_hash = compute_hash(data)
         write_file(hash_path, data_hash.encode('utf-8'))
 
-    def load_data(self):
-        file_path = os.path.join(self.directory, self.fileName)
-        hash_path = os.path.join(self.directory, self.hashFileName)
+    def load_data(self, filename=None):
+        file_path = os.path.join(self.directory, filename)
+        hash_path = os.path.join(self.directory, filename)
 
         if os.path.exists(file_path) and os.path.exists(hash_path):
             # Read data and hash

@@ -1,4 +1,5 @@
 import tkinter as tk
+
 from core.gui_root import GUIRoot
 
 def main():
