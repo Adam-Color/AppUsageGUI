@@ -1,4 +1,5 @@
 import tkinter as tk
+import pickle
 
 class CreateSessionWindow(tk.Frame):
     def __init__(self, parent, controller):
@@ -26,8 +27,10 @@ class CreateSessionWindow(tk.Frame):
         print("Session time: ", session_time) #!
         session_app_name = self.controller.tracker.get_selected_app()
         print("Session_app_name: ", session_app_name) #!
-        data = f"{session_app_name}-{session_time}"
-        print(data) #!
-        # convert to binary
-        data = data.encode('ascii')
-        self.controller.session_files.save_data(data)
+
+        data = {'app_name': session_app_name, 'time_spent': session_time}
+        print(data)
+
+        serialized_data = pickle.dumps(data)
+
+        self.controller.session_files.save_data(serialized_data)
