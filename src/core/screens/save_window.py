@@ -20,3 +20,4 @@ class SaveWindow(tk.Frame):
         ans = tk.messagebox.askyesno("Delete Confirmation", "Are you sure you don't want to save?")
         if ans:
             print("!!! TODO: data is to be deleted - code needs to be written !!!")
+            self.controller.show_frame("MainWindow")

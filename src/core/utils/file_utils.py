@@ -36,18 +36,18 @@ def name_from_exe(exename):
     # On Unix-like systems, return the name as is, unless it is .app
     return exename
 
+# Compute the SHA256 hash of the given data
 def compute_hash(data):
-    """Compute the SHA256 hash of the given data."""
     sha256 = hashlib.sha256()
     sha256.update(data)
     return sha256.hexdigest()
 
+# Read and deserialize data from a .dat file
 def read_file(file_path):
-    """Read and deserialize data from a .dat file."""
     with open(file_path, 'rb') as f:
         return pickle.load(f)
 
+# Serialize and write data to a .dat file
 def write_file(file_path, data):
-    """Serialize and write data to a .dat file."""
     with open(file_path, 'wb') as f:
         pickle.dump(data, f)
