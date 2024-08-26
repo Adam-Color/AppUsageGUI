@@ -12,6 +12,7 @@ class FileHandler:
         if not os.path.exists(self.directory):
             os.mkdir(self.directory)
         self.data = None
+        self.continuingSession = False
 
     def save_data(self, data):
         self.data = data
@@ -25,9 +26,9 @@ class FileHandler:
         data_hash = compute_hash(data)
         write_file(hash_path, data_hash.encode('utf-8'))
 
-    def load_data(self, filename=None):
-        file_path = os.path.join(self.directory, filename)
-        hash_path = os.path.join(self.directory, filename)
+    def load_data(self, filename):
+        file_path = os.path.join(self.directory, filename + '.dat')
+        hash_path = os.path.join(self.directory, filename + '.hash')
 
         if os.path.exists(file_path) and os.path.exists(hash_path):
             # Read data and hash
@@ -39,12 +40,12 @@ class FileHandler:
 
             if computed_hash == stored_hash:
                 self.data = data
-                print("Data loaded and verified successfully.")
+                print(f"{filename}: Data loaded and verified successfully.")
             else:
-                print("Data verification failed. Hash mismatch.")
+                print(f"{filename}: Data verification failed. Hash mismatch.")
                 self.data = None
         else:
-            print("No data or hash file found.")
+            print(f"{filename}: No data or hash file found.")
 
     def get_data(self):
         return self.data
@@ -52,3 +53,9 @@ class FileHandler:
     def set_file_name(self, file_name):
         if file_name is not None:
             self.fileName = file_name
+
+    def set_continuing_session(self, continuation=bool):
+        self.continuingSession = continuation
+
+    def get_continuing_session(self):
+        return self.continuingSession
