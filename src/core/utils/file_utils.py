@@ -1,23 +1,31 @@
 import os
 import glob
 import hashlib
+import pickle
 
-# Define the path to the "Sessions/" directory four levels up from the current file
+# Define the path to the "Sessions/" directory
 def get_sessions_directory():
-    # Get the directory containing the script (e.g., "src/utils")
-    script_dir = os.path.dirname(os.path.abspath(__file__))
-    # Move up four levels to the project root's parent directory
-    four_levels_up = os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(script_dir))))
-    # Define the "Sessions/" directory four levels up
-    sessions_dir = os.path.join(four_levels_up, 'Sessions')
+    if os.name == 'nt':  # Windows
+        appdata_dir = os.getenv('APPDATA')
+        sessions_dir = os.path.join(appdata_dir, 'AppUsageGUI/Sessions')
+    else:  # macOS and Linux
+        home_dir = os.path.expanduser('~')
+        sessions_dir = os.path.join(home_dir, '.local/share/AppUsageGUI/Sessions')
+
     return sessions_dir
 
 def sessions_exist():
+    file_extension = ".dat"
     sessions_dir = get_sessions_directory()
+    print("sessions_dir: %s" % sessions_dir) #!
     # Ensure the directory exists
     if not os.path.exists(sessions_dir):
         os.makedirs(sessions_dir)
-    return bool(glob.glob(os.path.join(sessions_dir, '*.dat')))
+        return False
+    for file in os.listdir(sessions_dir):
+        if file.endswith(file_extension):
+            return True
+    return False
 
 # Parses exe filename to give just the name
 def name_from_exe(exename):
@@ -35,11 +43,11 @@ def compute_hash(data):
     return sha256.hexdigest()
 
 def read_file(file_path):
-    """Read binary data from a file."""
+    """Read and deserialize data from a .dat file."""
     with open(file_path, 'rb') as f:
-        return f.read()
+        return pickle.load(f)
 
 def write_file(file_path, data):
-    """Write binary data to a file."""
+    """Serialize and write data to a .dat file."""
     with open(file_path, 'wb') as f:
-        f.write(data)
+        pickle.dump(data, f)

@@ -14,11 +14,11 @@ class MainWindow(tk.Frame):
         label = tk.Label(self, text=label_text)
         label.pack(side="top", fill="x", pady=10)
 
-        button1 = tk.Button(self, text="Start a new session",
+        button1 = tk.Button(self, text="Start new session",
                             command=lambda: controller.show_frame("SelectAppWindow"))
         button1.pack()
 
         if label_text == "What would you like to do?":
-            button2 = tk.Button(self, text="Continue a previous session",
+            button2 = tk.Button(self, text="Continue previous session",
                                 command=lambda: controller.show_frame("SessionsWindow")) 
             button2.pack()

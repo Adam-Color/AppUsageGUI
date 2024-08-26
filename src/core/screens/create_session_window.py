@@ -21,14 +21,13 @@ class CreateSessionWindow(tk.Frame):
         self.session_save(session_name)
 
     def session_save(self, session_name):
-        #! FIXME: data is always b'None-None'
         self.controller.session_files.set_file_name(session_name)
         session_time = self.controller.time_tracker.get_time(saved=True)
         print("Session time: ", session_time) #!
         session_app_name = self.controller.tracker.get_selected_app()
         print("Session_app_name: ", session_app_name) #!
         data = f"{session_app_name}-{session_time}"
-        print(data)
+        print(data) #!
         # convert to binary
         data = data.encode('ascii')
         self.controller.session_files.save_data(data)
