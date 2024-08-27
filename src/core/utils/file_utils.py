@@ -34,6 +34,7 @@ def get_sessions():
     for file in os.listdir(sessions_dir):
         if file.endswith(file_extension):
             sessions_list.append(file)
+    return sessions_list
 
 
 # Parses exe filename to give just the name

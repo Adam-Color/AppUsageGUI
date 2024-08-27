@@ -1,5 +1,6 @@
 import os
 import time
+import pickle
 
 from core.utils.file_utils import compute_hash, read_file, write_file, get_sessions_directory
 
@@ -39,7 +40,7 @@ class FileHandler:
             computed_hash = compute_hash(data)
 
             if computed_hash == stored_hash:
-                self.data = data
+                self.data = pickle.loads(data)
                 print(f"{filename}: Data loaded and verified successfully.")
             else:
                 print(f"{filename}: Data verification failed. Hash mismatch.")
