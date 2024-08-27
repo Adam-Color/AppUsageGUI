@@ -9,18 +9,15 @@ This program tracks the runtime of a specified application, logging the duration
 - Supports continuation from previous sessions.
 - Provides formatted runtime breakdown (hours, minutes, seconds).
 
-## Requirements
-
-- Python 3.12.3
-
-## Installation (latest features, may be unstable)
+## Installation
 
 1. Clone this repository:
     ```sh
     git clone https://github.com/Adam-Code/AppUsageGUI
     ```
 
-2. Ensure you have Python 3.12.3 installed on your system.
+2. Ensure you have Python 3.12.4 installed on your system.
+
 3. Install the required libraries:
     ```sh
     pip install -r requirements.txt
@@ -28,7 +25,7 @@ This program tracks the runtime of a specified application, logging the duration
 
 ## Usage
 
-1. Run the application via the terminal:
+1. Run the application via the terminal, with the terminal open in the AppUsageGUI directory:
     ```sh
     python src/main.py
     ```
