@@ -27,6 +27,15 @@ def sessions_exist():
             return True
     return False
 
+def get_sessions():
+    sessions_list = []
+    file_extension = ".dat"
+    sessions_dir = get_sessions_directory()
+    for file in os.listdir(sessions_dir):
+        if file.endswith(file_extension):
+            sessions_list.append(file)
+
+
 # Parses exe filename to give just the name
 def name_from_exe(exename):
     if os.name == 'nt' or exename.endswith('.app'):
