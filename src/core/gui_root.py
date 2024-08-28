@@ -7,21 +7,16 @@ from .screens.tracker_window import TrackerWindow
 from .screens.save_window import SaveWindow
 from .screens.create_session_window import CreateSessionWindow
 
-from .logic.app_tracker import AppTracker
-from .logic.time_tracker import TimeTracker
-from .logic.file_handler import FileHandler
 
 class GUIRoot(tk.Frame):
     def __init__(self, parent):
         tk.Frame.__init__(self, parent)
         self.parent = parent
-        self.data_directory = "Sessions/"
         
-        # Initialize the AppTracker
-        self.tracker = AppTracker()
-        self.time_tracker = TimeTracker()
-
-        self.session_files = FileHandler()
+        #! FIXME: I had the GUI loop constantly creating new class instances. FIX THIS!!!
+        self.tracker = parent.tracker
+        self.time_tracker = parent.time_tracker
+        self.session_files = parent.session_files
 
         self.container = tk.Frame(self)
         self.container.pack(side="top", fill="both", expand=True)
@@ -45,6 +40,3 @@ class GUIRoot(tk.Frame):
     def show_frame(self, page_name):
         frame = self.frames[page_name]
         frame.tkraise()
-
-    def get_data_directory(self):
-        return self.data_directory

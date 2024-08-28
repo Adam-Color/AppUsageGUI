@@ -1,36 +1,40 @@
-import psutil
 import threading
+import psutil
+
 
 def threaded(fn):
     def wrapper(*args, **kwargs):
-        result = []
-        def run_and_capture():
-            result.append(fn(*args, **kwargs))
-        thread = threading.Thread(target=run_and_capture)
+        thread = threading.Thread(target=fn, args=args, kwargs=kwargs)
         thread.start()
-        return thread, result
+        return thread
     return wrapper
+
 
 class AppTracker:
     def __init__(self):
         self.app_names = []
         self.selected_app = None
-    
-    
+        self.lock = threading.Lock()
+        self.stop_flag = True
+        print("init app tracker")
+
     @threaded
     def update_app_names(self):
+        print("update app tracker")
         apps = []
         seen_names = set()
         for process in psutil.process_iter(['name']):
+            if self.stop_flag:
+                break
             app_name = process.info['name'].split(" ")[0]
-            app_name = app_name.split(".")[0]  # Use the base name of the process
+            app_name = app_name.split(".")[0]
+            # print(app_name) #!
             if app_name not in seen_names:
                 apps.append(app_name)
                 seen_names.add(app_name)
-            # else:
-                # print(f"rejected: {process.info['name']}")
-        self.app_names = sorted(apps)
-    
+        with self.lock:
+            self.app_names = sorted(apps)
+        
 
     def get_app_names(self):
         return self.app_names
@@ -40,3 +44,9 @@ class AppTracker:
     
     def set_selected_app(self, app):
         self.selected_app = app
+
+    def stop(self):
+        self.stop_flag = True
+
+    def start(self):
+        self.stop_flag = False

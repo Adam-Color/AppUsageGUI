@@ -3,8 +3,6 @@ import tkinter as tk
 from core.utils.file_utils import get_sessions
 from core.utils.time_utils import format_time
 
-# TODO: self.session_listbox.insert(tk.END, session)
-
 class SessionsWindow(tk.Frame):
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent)
@@ -39,15 +37,16 @@ class SessionsWindow(tk.Frame):
             # Load data for the current session
             controller.session_files.load_data(session_name)
             session_data = controller.session_files.get_data()
+            if session_data is not None:
 
-            app_name = session_data['app_name']
-            time_spent = session_data['time_spent']
+                app_name = session_data['app_name']
+                time_spent = session_data['time_spent']
 
-            # Format the time spent
-            formatted_time = format_time(round(time_spent))
+                # Format the time spent
+                formatted_time = format_time(round(time_spent))
 
-            # Insert into the Listbox
-            self.session_listbox.insert(tk.END, f"{session_name}: {app_name}, {formatted_time} on record")
+                # Insert into the Listbox
+                self.session_listbox.insert(tk.END, f"{session_name}: {app_name}, {formatted_time} on record")
 
         # button to make the selection
         select_button = tk.Button(self, text="Select", command=self.select_session)

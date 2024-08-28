@@ -1,6 +1,7 @@
 import os
 import time
 import pickle
+import _pickle
 
 from core.utils.file_utils import compute_hash, read_file, write_file, get_sessions_directory
 
@@ -32,21 +33,24 @@ class FileHandler:
         hash_path = os.path.join(self.directory, filename + '.hash')
 
         if os.path.exists(file_path) and os.path.exists(hash_path):
-            # Read data and hash
-            data = read_file(file_path)
-            stored_hash = read_file(hash_path).decode('utf-8')
+            try:
+                # Read data and hash
+                data = read_file(file_path)
+                stored_hash = read_file(hash_path).decode('utf-8')
 
-            # Compute hash of the loaded data
-            computed_hash = compute_hash(data)
+                # Compute hash of the loaded data
+                computed_hash = compute_hash(data)
 
-            if computed_hash == stored_hash:
-                self.data = pickle.loads(data)
-                print(f"{filename}: Data loaded and verified successfully.")
-            else:
-                print(f"{filename}: Data verification failed. Hash mismatch.")
-                self.data = None
+                if computed_hash == stored_hash:
+                    self.data = pickle.loads(data)
+                else:
+                    print(f"{filename}: Data verification failed. Hash mismatch.")
+                    self.data = None
+            except _pickle.UnpicklingError as e:
+                print(str(e) + "\n!!! ADD ERROR POPUP !!!")
         else:
-            print(f"{filename}: No data or hash file found.")
+            print(f"{filename}: No data or no hash file found.")
+            self.data = None
 
     def get_data(self):
         return self.data

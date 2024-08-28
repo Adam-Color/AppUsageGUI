@@ -40,6 +40,7 @@ class TrackerWindow(tk.Frame):
             # Stop tracking when app closes
             if self.controller.time_tracker.is_running() and self.app not in self.controller.tracker.get_app_names():
                 self.controller.time_tracker.stop()
+                self.controller.tracker.stop()
                 self.rec_time = secs
                 break
 
@@ -57,6 +58,7 @@ class TrackerWindow(tk.Frame):
         self.controller.show_frame("SaveWindow")
 
     def periodic_update(self):
+        self.controller.tracker.start()
         self.controller.tracker.update_app_names()
         try:
             while True:
