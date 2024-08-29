@@ -2,9 +2,10 @@ import tkinter as tk
 from core.utils.file_utils import sessions_exist
 
 class MainWindow(tk.Frame):
-    def __init__(self, parent, controller):
+    def __init__(self, parent, controller, logic_controller):
         tk.Frame.__init__(self, parent)
         self.controller = controller
+        self.logic_controller = logic_controller
 
         label_text = "To begin app tracking, start a new session:"
 

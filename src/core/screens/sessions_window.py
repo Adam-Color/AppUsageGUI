@@ -4,9 +4,10 @@ from core.utils.file_utils import get_sessions
 from core.utils.time_utils import format_time
 
 class SessionsWindow(tk.Frame):
-    def __init__(self, parent, controller):
+    def __init__(self, parent, controller, logic_controller):
         tk.Frame.__init__(self, parent)
         self.controller = controller
+        self.logic_controller = logic_controller
 
         # grab session filenames
         sessions = get_sessions()
@@ -35,8 +36,8 @@ class SessionsWindow(tk.Frame):
             session_name = session.split(".")[0]
 
             # Load data for the current session
-            controller.session_files.load_data(session_name)
-            session_data = controller.session_files.get_data()
+            self.logic_controller.session_files.load_data(session_name)
+            session_data = self.logic_controller.session_files.get_data()
             if session_data is not None:
 
                 app_name = session_data['app_name']
@@ -54,4 +55,4 @@ class SessionsWindow(tk.Frame):
 
     def select_session(self):
         # tell the controller we are continuing from a session
-        self.controller.session_files.set_continuing_session(True)
+        self.logic_controller.session_files.set_continuing_session(True)

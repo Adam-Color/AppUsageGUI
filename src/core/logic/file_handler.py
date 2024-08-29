@@ -6,7 +6,9 @@ import _pickle
 from core.utils.file_utils import compute_hash, read_file, write_file, get_sessions_directory
 
 class FileHandler:
-    def __init__(self):
+    def __init__(self, parent, logic_controller):
+        self.parent = parent
+        self.controller = logic_controller
         time1 = str(time.localtime().tm_year) + '-' + str(time.localtime().tm_mon) + '-' + str(time.localtime().tm_mday) + '-' + str(time.localtime().tm_hour) + '-' + str(time.localtime().tm_min)
         self.fileName = f"{time1}.dat"
         self.hashFileName = f"{time1}.hash"

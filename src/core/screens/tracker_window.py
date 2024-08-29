@@ -6,9 +6,10 @@ import time
 from core.utils.time_utils import format_time
 
 class TrackerWindow(tk.Frame):
-    def __init__(self, parent, controller):
+    def __init__(self, parent, controller, logic_controller):
         tk.Frame.__init__(self, parent)
         self.controller = controller
+        self.logic_controller = logic_controller
         self.app = ""
         self.track_time_disp = "Looking for app..."
         self.rec_time = 0
@@ -31,21 +32,25 @@ class TrackerWindow(tk.Frame):
     def update_time_label(self):
         secs = 0
         while True:
-            self.app = self.controller.tracker.get_selected_app()
-            if self.app and not self.controller.time_tracker.is_running():
-                self.controller.time_tracker.start()
-                self.controller.time_tracker.clock()
+            self.app = self.logic_controller.tracker.get_selected_app()
+
+            # Update the app list periodically to ensure it's up to date
+            self.logic_controller.tracker.update_app_names()
+            app_names = self.logic_controller.tracker.get_app_names()
+
+            if self.app and not self.logic_controller.time_tracker.is_running():
+                self.logic_controller.time_tracker.start()
+                self.logic_controller.time_tracker.clock()
                 self.update_queue.put(("app", self.app))
 
-            # Stop tracking when app closes
-            if self.controller.time_tracker.is_running() and self.app not in self.controller.tracker.get_app_names():
-                self.controller.time_tracker.stop()
-                self.controller.tracker.stop()
+            # Stop tracking when the app closes
+            if self.logic_controller.time_tracker.is_running() and self.app not in app_names:
+                self.logic_controller.time_tracker.stop()
                 self.rec_time = secs
                 break
 
-            if self.controller.time_tracker.is_running():
-                secs = self.controller.time_tracker.get_time()
+            if self.logic_controller.time_tracker.is_running():
+                secs = self.logic_controller.time_tracker.get_time()
                 if secs is not None:
                     track_time_disp = f"{format_time(round(secs))} recorded."
                 else:
@@ -58,8 +63,6 @@ class TrackerWindow(tk.Frame):
         self.controller.show_frame("SaveWindow")
 
     def periodic_update(self):
-        self.controller.tracker.start()
-        self.controller.tracker.update_app_names()
         try:
             while True:
                 item = self.update_queue.get_nowait()

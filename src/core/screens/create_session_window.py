@@ -2,9 +2,10 @@ import tkinter as tk
 import pickle
 
 class CreateSessionWindow(tk.Frame):
-    def __init__(self, parent, controller):
+    def __init__(self, parent, controller, logic_controller):
         tk.Frame.__init__(self, parent)
         self.controller = controller
+        self.logic_controller = logic_controller
 
         name_label = tk.Label(self, text="Name this session:")
         name_label.pack(side="top", fill="x", pady=5)
@@ -22,10 +23,10 @@ class CreateSessionWindow(tk.Frame):
         self.session_save(session_name)
 
     def session_save(self, session_name):
-        self.controller.session_files.set_file_name(session_name)
-        session_time = self.controller.time_tracker.get_time(saved=True)
+        self.logic_controller.session_files.set_file_name(session_name)
+        session_time = self.logic_controller.time_tracker.get_time(saved=True)
         print("Session time: ", session_time) #!
-        session_app_name = self.controller.tracker.get_selected_app()
+        session_app_name = self.logic_controller.tracker.get_selected_app()
         print("Session_app_name: ", session_app_name) #!
 
         data = {'app_name': session_app_name, 'time_spent': session_time}
@@ -33,4 +34,4 @@ class CreateSessionWindow(tk.Frame):
 
         serialized_data = pickle.dumps(data)
 
-        self.controller.session_files.save_data(serialized_data)
+        self.logic_controller.session_files.save_data(serialized_data)

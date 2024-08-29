@@ -12,7 +12,10 @@ def threaded(fn):
     return wrapper
 
 class TimeTracker:
-    def __init__(self):
+    def __init__(self, parent, logic_controller):
+        self.parent = parent
+        self.controller = logic_controller
+
         self.track = False
         self.start_time = None
         self.elapsed_time = 0

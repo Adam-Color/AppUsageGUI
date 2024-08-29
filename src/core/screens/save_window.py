@@ -1,9 +1,10 @@
 import tkinter as tk
 
 class SaveWindow(tk.Frame):
-    def __init__(self, parent, controller):
+    def __init__(self, parent, controller, logic_controller):
         tk.Frame.__init__(self, parent)
         self.controller = controller
+        self.logic_controller = logic_controller
         
         # display the page label
         self.page_label = tk.Label(self, text="Would you like to save the recorded data?")
