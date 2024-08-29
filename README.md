@@ -13,7 +13,7 @@ This program tracks the runtime of a specified application, logging the duration
 
 1. Clone this repository:
     ```sh
-    git clone https://github.com/Adam-Code/AppUsageGUI
+    git clone https://github.com/Adam-Code/AppUsageGUI.git
     ```
 
 2. Ensure you have Python 3.12.4 installed on your system.
