@@ -1,9 +1,12 @@
 import tkinter as tk
+from ttkthemes import ThemedStyle
 
 from core.gui_root import GUIRoot
+from core.utils.file_utils import sessions_exist
 
 
 def main():
+    sessions_exist()
     root = tk.Tk()
     root.title("App Usage GUI")
 

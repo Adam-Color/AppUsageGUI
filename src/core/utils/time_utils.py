@@ -2,4 +2,4 @@
 def format_time(secs):
     hours, remainder = divmod(secs, 3600)
     minutes, seconds = divmod(remainder, 60)
-    return f"{hours} hours {minutes} minutes and {seconds} seconds"
+    return f"{hours}h {minutes}m {seconds}s"

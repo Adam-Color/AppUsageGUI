@@ -7,7 +7,7 @@ import pickle
 def get_sessions_directory():
     if os.name == 'nt':  # Windows
         appdata_dir = os.getenv('APPDATA')
-        sessions_dir = os.path.join(appdata_dir, 'AppUsageGUI/Sessions')
+        sessions_dir = os.path.join(appdata_dir, 'AppUsageGUI', 'Sessions')
     else:  # macOS and Linux
         home_dir = os.path.expanduser('~')
         sessions_dir = os.path.join(home_dir, '.local/share/AppUsageGUI/Sessions')
@@ -20,7 +20,7 @@ def sessions_exist():
     print("sessions_dir: %s" % sessions_dir) #!
     # Ensure the directory exists
     if not os.path.exists(sessions_dir):
-        os.makedirs(sessions_dir)
+        os.makedirs(sessions_dir, exist_ok=True)
         return False
     for file in os.listdir(sessions_dir):
         if file.endswith(file_extension):
