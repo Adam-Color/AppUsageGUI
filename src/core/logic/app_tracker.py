@@ -1,5 +1,6 @@
 import psutil
 import threading
+import time
 
 class AppTracker:
     def __init__(self, parent, logic_controller):
@@ -20,14 +21,15 @@ class AppTracker:
         for process in psutil.process_iter(['name']):
             app_name = process.info['name'].split(" ")[0]
             app_name = app_name.split(".")[0]  # Use the base name of the process
-            # print(app_name)
+            # print(app_name) #!
             if app_name not in seen_names:
                 apps.append(app_name)
                 seen_names.add(app_name)
+        time.sleep(0.01)
         return sorted(apps)
 
+    # Updates the app_names list once
     def update_app_names(self):
-        """Updates the app_names list once."""
         if not self.stop_event.is_set():
             self.app_names = self._fetch_app_names()
 
@@ -41,7 +43,6 @@ class AppTracker:
         self.selected_app = app
 
     def stop(self):
-        """Call this method to stop the tracking thread."""
         if self.update_thread is not None:
             self.stop_event.set()
             self.update_thread.join()

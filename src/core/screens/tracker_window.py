@@ -59,7 +59,7 @@ class TrackerWindow(tk.Frame):
             else:
                 self.update_queue.put(("time", "Looking for application..."))
 
-            time.sleep(1)
+            time.sleep(0.5)
         self.controller.show_frame("SaveWindow")
 
     def periodic_update(self):
