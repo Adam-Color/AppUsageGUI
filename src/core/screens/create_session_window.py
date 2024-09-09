@@ -21,6 +21,7 @@ class CreateSessionWindow(tk.Frame):
     def on_confirm(self):
         session_name = self.session_name_input.get()
         self.session_save(session_name)
+        self.controller.show_frame("MainWindow")
 
     def session_save(self, session_name):
         self.logic_controller.session_files.set_file_name(session_name)

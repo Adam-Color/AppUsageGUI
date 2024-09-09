@@ -54,7 +54,7 @@ class FileHandler:
                 print(filename + ": " + str(e))
                 self.data = None
         else:
-            self.corrupt_sessions.append((filename, "No data or no hash file found"))
+            self.corrupt_sessions.append((filename, "No hash file found"))
             self.data = None
 
     def get_data(self):
