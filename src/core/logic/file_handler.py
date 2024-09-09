@@ -17,6 +17,7 @@ class FileHandler:
             os.mkdir(self.directory)
         self.data = None
         self.continuingSession = False
+        self.corrupt_sessions = []
 
     def save_data(self, data):
         self.data = data
@@ -46,12 +47,14 @@ class FileHandler:
                 if computed_hash == stored_hash:
                     self.data = pickle.loads(data)
                 else:
-                    print(f"{filename}: Data verification failed. Hash mismatch.")
+                    self.corrupt_sessions.append((filename, "Hash mismatch"))
                     self.data = None
             except _pickle.UnpicklingError as e:
-                print(str(e) + "\n!!! ADD ERROR POPUP !!!")
+                self.corrupt_sessions.append((filename, "Data is corrupt"))
+                print(filename + ": " + str(e))
+                self.data = None
         else:
-            print(f"{filename}: No data or no hash file found.")
+            self.corrupt_sessions.append((filename, "No data or no hash file found"))
             self.data = None
 
     def get_data(self):
@@ -66,3 +69,6 @@ class FileHandler:
 
     def get_continuing_session(self):
         return self.continuingSession
+    
+    def get_corrupt_sessions(self):
+        return self.corrupt_sessions

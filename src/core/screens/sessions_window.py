@@ -49,6 +49,18 @@ class SessionsWindow(tk.Frame):
                 # Insert into the Listbox
                 self.session_listbox.insert(tk.END, f"{session_name}: {app_name}, {formatted_time} on record")
 
+        corrupt_sessions = self.logic_controller.session_files.get_corrupt_sessions()
+
+        if len(corrupt_sessions) > 0:
+
+            error_string = "The following session(s) failed to load:\n\n"
+
+            for session in corrupt_sessions:
+                name, error = session
+                error_string += "\n" + name + ": " + error
+
+            tk.messagebox.showerror("Session Error", error_string + "\n")
+
         # button to make the selection
         select_button = tk.Button(self, text="Select", command=self.select_session)
         select_button.pack(pady=10)
