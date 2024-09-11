@@ -21,11 +21,11 @@ class AppTracker:
         for process in psutil.process_iter(['name']):
             app_name = process.info['name'].split(" ")[0]
             app_name = app_name.split(".")[0]  # Use the base name of the process
-            # print(app_name) #!
+            #print(app_name) #! use for optimization
             if app_name not in seen_names:
                 apps.append(app_name)
                 seen_names.add(app_name)
-        time.sleep(0.01)
+        time.sleep(0.1)
         return sorted(apps)
 
     # Updates the app_names list once
@@ -46,3 +46,7 @@ class AppTracker:
         if self.update_thread is not None:
             self.stop_event.set()
             self.update_thread.join()
+
+    def start(self):
+        self.stop_event = threading.Event()
+        self._start_tracking()

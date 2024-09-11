@@ -1,6 +1,7 @@
 import tkinter as tk
 
 from core.utils.file_utils import get_sessions
+from core.utils.file_utils import get_sessions_directory
 from core.utils.time_utils import format_time
 
 class SessionsWindow(tk.Frame):
@@ -59,7 +60,7 @@ class SessionsWindow(tk.Frame):
                 name, error = session
                 error_string += "\n" + name + ": " + error
 
-            tk.messagebox.showerror("Session Error", error_string + "\n")
+            tk.messagebox.showerror("Session Error", error_string + f"\n\nTo fix or delete session files, go to the {get_sessions_directory()} directory\n")
 
         # button to make the selection
         select_button = tk.Button(self, text="Select", command=self.select_session)
@@ -68,3 +69,9 @@ class SessionsWindow(tk.Frame):
     def select_session(self):
         # tell the controller we are continuing from a session
         self.logic_controller.session_files.set_continuing_session(True)
+
+        # start tracking threads
+        self.logic_controller.tracker.start()
+        self.logic_controller.time_tracker.start()
+
+

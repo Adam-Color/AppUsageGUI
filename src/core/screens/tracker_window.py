@@ -74,4 +74,4 @@ class TrackerWindow(tk.Frame):
                     self.page_label.config(text=f"Tracking: {item[1]}")
         except queue.Empty:
             pass
-        self.after(100, self.periodic_update)
+        self.after(1000, self.periodic_update)
