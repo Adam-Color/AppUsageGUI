@@ -40,3 +40,6 @@ class TimeTracker:
     
     def is_running(self):
         return self.track
+    
+    def reset(self):
+        self.elapsed_time = 0
