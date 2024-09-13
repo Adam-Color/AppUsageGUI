@@ -65,13 +65,22 @@ class SessionsWindow(tk.Frame):
         # button to make the selection
         select_button = tk.Button(self, text="Select", command=self.select_session)
         select_button.pack(pady=10)
+    
+    def get_session_text(self):
+        selected_index = self.session_listbox.curselection()
+        if selected_index:
+            return self.session_listbox.get(selected_index)
 
     def select_session(self):
         # tell the controller we are continuing from a session
         self.logic_controller.session_files.set_continuing_session(True)
 
         # start tracking threads
+        self.logic_controller.tracker.reset()
+        self.logic_controller.tracker.set_selected_app(self.get_session_text().split(": ")[1])
         self.logic_controller.tracker.start()
+        self.logic_controller.time_tracker.reset()
         self.logic_controller.time_tracker.start()
+        self.logic_controller.time_tracker.clock()
 
-
+        self.controller.show_frame('TrackerWindow')
