@@ -14,10 +14,15 @@ class TrackerWindow(tk.Frame):
         self.track_time_disp = "Looking for app..."
         self.rec_time = 0
 
+        # Display the note label
+        self.note_label = tk.Label(self, text="Tracking stops automatically when tracked app is fully closed")
+        self.note_label.pack(pady=5)
+
         # Display the page label
         self.page_label = tk.Label(self, text="Tracking the selected app:")
         self.page_label.pack(pady=5)
 
+        # Display the time label
         self.time_label = tk.Label(self, text=self.track_time_disp)
         self.time_label.pack(pady=10)
 

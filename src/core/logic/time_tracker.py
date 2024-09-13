@@ -43,3 +43,5 @@ class TimeTracker:
     
     def reset(self):
         self.elapsed_time = 0
+        self.track = False
+        self.start_time = None

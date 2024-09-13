@@ -12,7 +12,7 @@ class CreateSessionWindow(tk.Frame):
 
         # User inputs session name
         self.session_name_input = tk.Entry(self, text="")
-        self.session_name_input.pack(side="top", fill="x", pady=5)
+        self.session_name_input.pack(side="top", fill="x", pady=5, padx=20)
 
         # Confirm session name entry
         confirm_button = tk.Button(self, text="Confirm", command=self.on_confirm)
@@ -21,6 +21,8 @@ class CreateSessionWindow(tk.Frame):
     def on_confirm(self):
         session_name = self.session_name_input.get()
         self.session_save(session_name)
+        self.logic_controller.time_tracker.reset()
+        self.logic_controller.tracker.reset()
         self.controller.show_frame("MainWindow")
 
     def session_save(self, session_name):

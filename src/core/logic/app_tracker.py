@@ -50,3 +50,7 @@ class AppTracker:
     def start(self):
         self.stop_event = threading.Event()
         self._start_tracking()
+
+    def reset(self):
+        self.selected_app = None
+        self.update_thread = None

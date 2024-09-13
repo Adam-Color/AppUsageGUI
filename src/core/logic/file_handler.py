@@ -16,7 +16,7 @@ class FileHandler:
         if not os.path.exists(self.directory):
             os.mkdir(self.directory)
         self.data = None
-        self.continuingSession = False
+        self.continuing_session = False
         self.corrupt_sessions = []
 
     def save_data(self, data):
@@ -65,10 +65,10 @@ class FileHandler:
             self.fileName = file_name
 
     def set_continuing_session(self, continuation=bool):
-        self.continuingSession = continuation
+        self.continuing_session = continuation
 
     def get_continuing_session(self):
-        return self.continuingSession
+        return self.continuing_session
     
     def get_corrupt_sessions(self):
         return self.corrupt_sessions
