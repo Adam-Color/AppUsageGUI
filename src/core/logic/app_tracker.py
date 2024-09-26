@@ -1,6 +1,7 @@
 import psutil
 import threading
 import time
+import os
 
 class AppTracker:
     def __init__(self, parent, logic_controller):
@@ -26,6 +27,8 @@ class AppTracker:
                 apps.append(app_name)
                 seen_names.add(app_name)
         time.sleep(0.1)
+        if os.name == 'nt':
+            return sorted(apps, key=str.casefold)
         return sorted(apps)
 
     # Updates the app_names list once
