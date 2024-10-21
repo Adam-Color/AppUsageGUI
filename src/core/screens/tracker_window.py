@@ -49,6 +49,7 @@ class TrackerWindow(tk.Frame):
                 self.update_queue.put(("app", self.app))
 
             # Stop tracking when the app closes
+            #TODO: Make exception for continueing tracking.
             if self.logic_controller.time_tracker.is_running() and self.app not in app_names:
                 self.logic_controller.time_tracker.stop()
                 self.rec_time = 0
