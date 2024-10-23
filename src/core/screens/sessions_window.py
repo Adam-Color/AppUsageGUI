@@ -72,15 +72,24 @@ class SessionsWindow(tk.Frame):
             return self.session_listbox.get(selected_index)
 
     def select_session(self):
+        selected_app_name = self.get_session_text().split(": ")[1].split(", ")[0]
+        selected_session_name = self.get_session_text().split(": ")[0]
+
         # tell the controller we are continuing from a session
         self.logic_controller.session_files.set_continuing_session(True)
 
-        # start tracking threads
+        # start/reset tracking threads
         self.logic_controller.tracker.reset()
-        self.logic_controller.tracker.set_selected_app(self.get_session_text().split(": ")[1].split(", ")[0])
+        self.logic_controller.tracker.set_selected_app(selected_app_name)
         self.logic_controller.tracker.start()
         self.logic_controller.time_tracker.reset()
         self.logic_controller.time_tracker.start()
         self.logic_controller.time_tracker.clock()
 
+        # load selected session data into the file handler,
+        # so it's ready to be pulled
+        self.logic_controller.session_files.load_data(selected_session_name)
+
+        # show the TrackerWindow
         self.controller.show_frame('TrackerWindow')
+

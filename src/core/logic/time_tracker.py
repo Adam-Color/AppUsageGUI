@@ -14,6 +14,8 @@ def threaded(fn):
 class TimeTracker:
     def __init__(self, parent, logic_controller):
         self.parent = parent
+        
+        # note: logic controller is defined as the only controller
         self.controller = logic_controller
 
         self.track = False
@@ -36,6 +38,8 @@ class TimeTracker:
     def get_time(self, saved=False):
         if not self.track and saved is False:
             return None
+        if self.controller.session_files.get_continuing_session():
+            self.elapsed_time += self.controller.session_files.get_data()['time_spent']
         return self.elapsed_time
     
     def is_running(self):

@@ -59,4 +59,5 @@ def read_file(file_path):
 # Serialize and write data to a .dat file
 def write_file(file_path, data):
     with open(file_path, 'wb') as f:
+        f.truncate(0)
         pickle.dump(data, f)

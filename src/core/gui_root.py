@@ -8,6 +8,7 @@ from .screens.sessions_window import SessionsWindow
 from .screens.tracker_window import TrackerWindow
 from .screens.save_window import SaveWindow
 from .screens.create_session_window import CreateSessionWindow
+from .screens.session_total_window import SessionTotalWindow
 
 class GUIRoot(tk.Frame):
     def __init__(self, parent):
@@ -28,7 +29,7 @@ class GUIRoot(tk.Frame):
 
     def init_screens(self):
         # Pass the logic_controller when initializing screens
-        for F in (MainWindow, SessionsWindow, SelectAppWindow, TrackerWindow, SaveWindow, CreateSessionWindow):
+        for F in (MainWindow, SessionsWindow, SelectAppWindow, TrackerWindow, SaveWindow, CreateSessionWindow, SessionTotalWindow):
             page_name = F.__name__
             frame = F(parent=self.container, controller=self, logic_controller=self.logic_controller)
             self.frames[page_name] = frame

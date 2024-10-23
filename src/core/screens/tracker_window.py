@@ -19,7 +19,7 @@ class TrackerWindow(tk.Frame):
         self.note_label.pack(pady=5)
 
         # Display the page label
-        self.page_label = tk.Label(self, text="Tracking the selected app:")
+        self.page_label = tk.Label(self, text="Tracking the selected app: " + self.app)
         self.page_label.pack(pady=5)
 
         # Display the time label
@@ -49,13 +49,12 @@ class TrackerWindow(tk.Frame):
                 self.update_queue.put(("app", self.app))
 
             # Stop tracking when the app closes
-            #TODO: Make exception for continuing tracking.
+            # includes exception for continuing tracking from a previous session.
             if self.logic_controller.time_tracker.is_running() and self.app not in app_names and self.logic_controller.session_files.get_continuing_tracker() is False:
                 self.logic_controller.time_tracker.stop()
                 self.rec_time = 0
                 self.app = ""
                 self.track_time_display = "Looking for app..."
-                print(self.logic_controller.session_files.get_continuing_session())
                 break
 
             if self.logic_controller.time_tracker.is_running():
@@ -63,7 +62,7 @@ class TrackerWindow(tk.Frame):
                 if secs is not None:
                     track_time_disp = f"{format_time(round(secs))} recorded."
 
-                    #XXX needed to allow app to be detected before break - hacky fix
+                    # needed to allow app to be detected before break - hacky fix
                     self.logic_controller.session_files.set_continuing_tracker(False)
                 else:
                     track_time_disp = "No time data available"
@@ -72,10 +71,8 @@ class TrackerWindow(tk.Frame):
                 self.update_queue.put(("time", "Looking for application..."))
 
             time.sleep(0.5)
-        if not self.logic_controller.session_files.get_continuing_session():
-            self.controller.show_frame("SaveWindow")
-        else:
-            self.controller.show_frame("SessionTotalWindow")
+        self.controller.show_frame("SaveWindow")
+
 
     def periodic_update(self):
         try:
