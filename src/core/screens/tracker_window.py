@@ -19,7 +19,7 @@ class TrackerWindow(tk.Frame):
         self.note_label.pack(pady=5)
 
         # Display the page label
-        self.page_label = tk.Label(self, text="Tracking the selected app: " + self.app)
+        self.page_label = tk.Label(self, text="Tracking the selected app:")
         self.page_label.pack(pady=5)
 
         # Display the time label
@@ -54,7 +54,7 @@ class TrackerWindow(tk.Frame):
                 self.logic_controller.time_tracker.stop()
                 self.rec_time = 0
                 self.app = ""
-                self.track_time_display = "Looking for app..."
+                self.track_time_disp = "Looking for app..."
                 break
 
             if self.logic_controller.time_tracker.is_running():

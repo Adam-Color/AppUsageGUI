@@ -20,7 +20,8 @@ class TimeTracker:
 
         self.track = False
         self.start_time = None
-        self.elapsed_time = 0
+        self.elapsed_time = 0.0
+        self.total_time = 0.0
 
     @threaded
     def clock(self):
@@ -38,14 +39,17 @@ class TimeTracker:
     def get_time(self, saved=False):
         if not self.track and saved is False:
             return None
-        if self.controller.session_files.get_continuing_session():
-            self.elapsed_time += self.controller.session_files.get_data()['time_spent']
         return self.elapsed_time
+    
+    def get_total_time(self):
+        self.total_time += self.elapsed_time
+        return self.total_time
     
     def is_running(self):
         return self.track
     
-    def reset(self):
-        self.elapsed_time = 0
+    def reset(self, add_time=0.0):
+        self.elapsed_time = 0.0
+        self.total_time = add_time
         self.track = False
         self.start_time = None

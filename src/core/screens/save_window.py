@@ -1,4 +1,5 @@
 import tkinter as tk
+import pickle
 
 class SaveWindow(tk.Frame):
     def __init__(self, parent, controller, logic_controller):
@@ -18,6 +19,19 @@ class SaveWindow(tk.Frame):
 
     def save(self):
         if self.logic_controller.session_files.get_continuing_session():
+            session_time = self.logic_controller.time_tracker.get_total_time()
+            print("Session time: ", session_time) #!
+            session_app_name = self.logic_controller.tracker.get_selected_app()
+            print("Session_app_name: ", session_app_name) #!
+
+            data = {'app_name': session_app_name, 'time_spent': session_time}
+            print(data)
+
+            serialized_data = pickle.dumps(data)
+
+            self.logic_controller.session_files.save_data(serialized_data)
+
+            # show to session total window
             self.controller.show_frame("SessionTotalWindow")
         else:
             self.controller.show_frame("CreateSessionWindow")
@@ -26,6 +40,6 @@ class SaveWindow(tk.Frame):
         # confirm data deletion
         ans = tk.messagebox.askyesno("Delete Confirmation", "Are you sure you don't want to save?")
         if ans:
-            print("!!! TODO: data is to be deleted - code needs to be written !!!")
+            print("!!! TODO: data is to be deleted - code needs to be written in save_window.py !!!")
             self.logic_controller.time_tracker.reset()
             self.controller.show_frame("MainWindow")

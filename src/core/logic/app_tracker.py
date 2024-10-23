@@ -1,7 +1,7 @@
-import psutil
 import threading
 import time
 import os
+import psutil
 
 class AppTracker:
     def __init__(self, parent, logic_controller):

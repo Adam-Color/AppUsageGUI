@@ -1,5 +1,4 @@
 import tkinter as tk
-import pickle
 
 #TODO: implement time readout
 
@@ -22,17 +21,3 @@ class SessionTotalWindow(tk.Frame):
     def update_total_time(self, time):
         self.time_readout = time
         self.total_time_label.config(text=self.time_readout)
-
-    def session_update(self, session_name):
-        self.logic_controller.session_files.set_file_name(session_name)
-        session_time = self.logic_controller.time_tracker.get_time(saved=True)
-        print("Session time: ", session_time) #!
-        session_app_name = self.logic_controller.tracker.get_selected_app()
-        print("Session_app_name: ", session_app_name) #!
-
-        data = {'app_name': session_app_name, 'time_spent': session_time}
-        print(data)
-
-        serialized_data = pickle.dumps(data)
-
-        self.logic_controller.session_files.save_data(serialized_data)
