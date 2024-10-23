@@ -49,18 +49,22 @@ class TrackerWindow(tk.Frame):
                 self.update_queue.put(("app", self.app))
 
             # Stop tracking when the app closes
-            #TODO: Make exception for continueing tracking.
-            if self.logic_controller.time_tracker.is_running() and self.app not in app_names:
+            #TODO: Make exception for continuing tracking.
+            if self.logic_controller.time_tracker.is_running() and self.app not in app_names and self.logic_controller.session_files.get_continuing_tracker() is False:
                 self.logic_controller.time_tracker.stop()
                 self.rec_time = 0
                 self.app = ""
                 self.track_time_display = "Looking for app..."
+                print(self.logic_controller.session_files.get_continuing_session())
                 break
 
             if self.logic_controller.time_tracker.is_running():
                 secs = self.logic_controller.time_tracker.get_time()
                 if secs is not None:
                     track_time_disp = f"{format_time(round(secs))} recorded."
+
+                    #XXX needed to allow app to be detected before break - hacky fix
+                    self.logic_controller.session_files.set_continuing_tracker(False)
                 else:
                     track_time_disp = "No time data available"
                 self.update_queue.put(("time", track_time_disp))
@@ -68,7 +72,10 @@ class TrackerWindow(tk.Frame):
                 self.update_queue.put(("time", "Looking for application..."))
 
             time.sleep(0.5)
-        self.controller.show_frame("SaveWindow")
+        if not self.logic_controller.session_files.get_continuing_session():
+            self.controller.show_frame("SaveWindow")
+        else:
+            self.controller.show_frame("SessionTotalWindow")
 
     def periodic_update(self):
         try:

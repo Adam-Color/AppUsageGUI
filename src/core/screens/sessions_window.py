@@ -77,7 +77,7 @@ class SessionsWindow(tk.Frame):
 
         # start tracking threads
         self.logic_controller.tracker.reset()
-        self.logic_controller.tracker.set_selected_app(self.get_session_text().split(": ")[1])
+        self.logic_controller.tracker.set_selected_app(self.get_session_text().split(": ")[1].split(", ")[0])
         self.logic_controller.tracker.start()
         self.logic_controller.time_tracker.reset()
         self.logic_controller.time_tracker.start()

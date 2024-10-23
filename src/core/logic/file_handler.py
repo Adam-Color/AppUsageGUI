@@ -17,6 +17,7 @@ class FileHandler:
             os.mkdir(self.directory)
         self.data = None
         self.continuing_session = False
+        self.continuing_tracker = False
         self.corrupt_sessions = []
 
     def save_data(self, data):
@@ -66,6 +67,14 @@ class FileHandler:
 
     def set_continuing_session(self, continuation=bool):
         self.continuing_session = continuation
+        if continuation:
+            self.set_continuing_tracker(True)
+    
+    def set_continuing_tracker(self, value=bool):
+        self.continuing_tracker = value
+    
+    def get_continuing_tracker(self):
+        return self.continuing_tracker
 
     def get_continuing_session(self):
         return self.continuing_session
