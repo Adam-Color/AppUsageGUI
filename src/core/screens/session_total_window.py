@@ -3,6 +3,8 @@ import queue
 import time
 import threading
 
+from core.utils.time_utils import format_time
+
 class SessionTotalWindow(tk.Frame):
     def __init__(self, parent, controller, logic_controller):
         tk.Frame.__init__(self, parent)
@@ -31,7 +33,7 @@ class SessionTotalWindow(tk.Frame):
         try:
             # Fetch the total time from the queue if available
             item = self.update_queue.get_nowait()
-            self.time_readout = f"{item}"  # Update the time readout string
+            self.time_readout = f"{format_time(round(item))}"  # Update the time readout string
             self.total_time_label.config(text=self.time_readout)  # Update the label
         except queue.Empty:
             pass
