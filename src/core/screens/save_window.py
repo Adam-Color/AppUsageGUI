@@ -20,9 +20,9 @@ class SaveWindow(tk.Frame):
     def save(self):
         if self.logic_controller.session_files.get_continuing_session():
             session_time = self.logic_controller.time_tracker.get_total_time()
-            print("Session time: ", session_time) #!
+            #print("Session time: ", session_time) #! debug print
             session_app_name = self.logic_controller.tracker.get_selected_app()
-            print("Session_app_name: ", session_app_name) #!
+            #print("Session_app_name: ", session_app_name) #! debug print
 
             data = {'app_name': session_app_name, 'time_spent': session_time}
             print(data)
@@ -37,9 +37,9 @@ class SaveWindow(tk.Frame):
             self.controller.show_frame("CreateSessionWindow")
     
     def dont_save(self):
-        # confirm data deletion
+        """confirm data deletion"""
         ans = tk.messagebox.askyesno("Delete Confirmation", "Are you sure you don't want to save?")
         if ans:
-            print("!!! TODO: data is to be deleted - code needs to be written in save_window.py !!!")
             self.logic_controller.time_tracker.reset()
+            self.logic_controller.tracker.reset()
             self.controller.show_frame("MainWindow")

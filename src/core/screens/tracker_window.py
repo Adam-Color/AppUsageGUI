@@ -73,6 +73,7 @@ class TrackerWindow(tk.Frame):
 
 
     def periodic_update(self):
+        """Update the GUI clock"""
         try:
             while True:
                 item = self.update_queue.get_nowait()

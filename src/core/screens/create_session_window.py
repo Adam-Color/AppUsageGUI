@@ -19,6 +19,7 @@ class CreateSessionWindow(tk.Frame):
         confirm_button.pack(side="top", fill="x", pady=5)
 
     def on_confirm(self):
+        """Resets trackers upon confirmation"""
         session_name = self.session_name_input.get()
         self.session_save(session_name)
         self.logic_controller.time_tracker.reset()
