@@ -1,5 +1,6 @@
 import tkinter as tk
 from tkinter import messagebox
+import time
 
 class SelectAppWindow(tk.Frame):
     def __init__(self, parent, controller, logic_controller):
@@ -59,7 +60,7 @@ class SelectAppWindow(tk.Frame):
     def refresh_apps(self):
         """Fetch all app names and display them in the listbox."""
         self.app_listbox.delete(0, tk.END)
-        self.tracker.update_app_names()
+        time.sleep(1)
         self.all_apps = self.tracker.get_app_names()
 
         if not self.all_apps:

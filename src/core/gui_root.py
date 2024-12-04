@@ -27,6 +27,9 @@ class GUIRoot(tk.Frame):
         self.frames = {}
         self.init_screens()
 
+        # Bind the close event to ensure cleanup
+        self.parent.protocol("WM_DELETE_WINDOW", self.on_close)
+
     def init_screens(self):
         # Pass the logic_controller when initializing screens
         for F in (MainWindow, SessionsWindow, SelectAppWindow, TrackerWindow, SaveWindow, CreateSessionWindow, SessionTotalWindow):
@@ -41,3 +44,16 @@ class GUIRoot(tk.Frame):
     def show_frame(self, page_name):
         frame = self.frames[page_name]
         frame.tkraise()
+
+    def on_close(self):
+        """Handle cleanup and close the application."""
+        # Stop the AppTracker thread
+        if self.logic_controller.tracker:
+            self.logic_controller.tracker.stop()
+
+        # stop the TimeTracker thread
+        if self.logic_controller.time_tracker:
+            self.logic_controller.time_tracker.stop()
+
+        # Destroy the root window
+        self.parent.destroy()

@@ -28,6 +28,7 @@ class TimeTracker:
         self.start_time = time.time()
         while self.track:
             self.elapsed_time = time.time() - self.start_time
+            # sleep needs to be kept low here for accuracy
             time.sleep(0.1)
 
     def start(self):

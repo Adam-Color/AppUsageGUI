@@ -39,8 +39,6 @@ class TrackerWindow(tk.Frame):
         while True:
             self.app = self.logic_controller.tracker.get_selected_app()
 
-            # Update the app list periodically to ensure it's up to date
-            self.logic_controller.tracker.update_app_names()
             app_names = self.logic_controller.tracker.get_app_names()
 
             if self.app and not self.logic_controller.time_tracker.is_running():
@@ -62,7 +60,7 @@ class TrackerWindow(tk.Frame):
                 if secs is not None:
                     track_time_disp = f"{format_time(round(secs))} recorded."
 
-                    # needed to allow app to be detected before break - hacky fix
+                    #HACK: needed to allow app to be detected before break
                     self.logic_controller.session_files.set_continuing_tracker(False)
                 else:
                     track_time_disp = "No time data available"
