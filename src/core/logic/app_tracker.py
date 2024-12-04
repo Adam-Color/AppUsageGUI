@@ -27,7 +27,7 @@ class AppTracker:
                 if app_name not in seen_names:
                     apps.append(app_name)
                     seen_names.add(app_name)
-                    print(app_name) #! use to help optimize
+                    #print(app_name) #! use to help optimize
             except (psutil.NoSuchProcess, psutil.AccessDenied, psutil.ZombieProcess):
                 # Skip processes that terminate mid-iteration or are inaccessible
                 pass
