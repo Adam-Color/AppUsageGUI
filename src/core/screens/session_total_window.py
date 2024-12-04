@@ -43,11 +43,15 @@ class SessionTotalWindow(tk.Frame):
 
     def total_time_thread(self):
         while True:
-            # Get the total session time from the logic controller
-            total_time = self.logic_controller.time_tracker.get_total_time()
+            try:
+                if self.logic_controller.time_tracker.get_time() > 0 and self.logic_controller.time_tracker.is_running():
+                    # Get the total session time from the logic controller
+                    total_time = self.logic_controller.time_tracker.get_total_time()
 
-            # Put the total time into the queue to update the UI
-            self.update_queue.put(total_time)
+                    # Put the total time into the queue to update the UI
+                    self.update_queue.put(total_time)
+            except TypeError:
+                pass
 
-            # Sleep for 1 second before the next update
+            # Sleep for 3 seconds before the next update
             time.sleep(1)

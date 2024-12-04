@@ -28,7 +28,7 @@ class TimeTracker:
         self.start_time = time.time()
         while self.track:
             self.elapsed_time = time.time() - self.start_time
-            time.sleep(1)
+            time.sleep(0.1)
 
     def start(self):
         self.track = True
