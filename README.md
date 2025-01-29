@@ -1,7 +1,7 @@
 # App Usage GUI
 ### Application Runtime Tracker
 
-This program tracks the runtime of a specified application, logging the duration the application is running over multiple instances, with unique sessions for each app.
+This program tracks the runtime of a specified application, logging the duration the application is running over multiple instances, with unique sessions created by the user.
 
 ## Features
 
@@ -11,7 +11,7 @@ This program tracks the runtime of a specified application, logging the duration
 
 ## Installation
 
-1. Clone this repository:
+1. Clone this repository into your terminal:
     ```sh
     git clone https://github.com/Adam-Code/AppUsageGUI.git
     ```
@@ -34,6 +34,16 @@ This program tracks the runtime of a specified application, logging the duration
 
 3. If previous sessions are detected, you will be prompted to continue from a previous session or start a new one
 
-5. The script will display the tracked runtime in real-time. To stop tracking, close the tracked application.
+5. AppUsageGUI will display the tracked runtime in real-time. To stop tracking, close the tracked application.
 
 6. After fully quitting the tracked application, you will be prompted to save the data
+
+## Contributing
+
+Contributions are welcome and needed! Here is a TODO list:
+
+1. Someone to build the application into cross-platform executables (exe, dmg, etc.)
+
+2. Adding user-customizable stop conditions (i.e: the user's mouse hasn't moved for a full minute, time tracking pauses)
+
+3. Add ways to analize app usage data in the app
