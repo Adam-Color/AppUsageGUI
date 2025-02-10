@@ -95,4 +95,3 @@ class SessionsWindow(tk.Frame):
 
         # show the TrackerWindow
         self.controller.show_frame('TrackerWindow')
-

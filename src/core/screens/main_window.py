@@ -23,3 +23,6 @@ class MainWindow(tk.Frame):
             button2 = tk.Button(self, text="Continue previous session",
                                 command=lambda: controller.show_frame("SessionsWindow")) 
             button2.pack()
+        
+        button3 = tk.Button(self, text="Configure custom rules", command=lambda:print(1))
+        button3.pack()
