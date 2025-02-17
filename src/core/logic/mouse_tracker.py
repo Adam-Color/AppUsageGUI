@@ -8,3 +8,6 @@ class MouseTracker:
         self.last_mouse_position = None
 
         self.update_thread = threading.Thread(target=self._update_mouse_position)
+    
+    def _update_mouse_position(self):
+        return 0
