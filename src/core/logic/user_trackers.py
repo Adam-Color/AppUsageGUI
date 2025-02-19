@@ -1,0 +1,46 @@
+"""
+User customizable trackers for pausing if the timer
+"""
+
+import threading
+import pyautogui
+
+class MouseTracker:
+    """Tracks mouse movement over a user configurable time frame."""
+    def __init__(self, parent, logic_controller):
+        self.parent = parent
+        self.idle_time_limit = 30
+        x = 0
+        y = 0
+        self.logic_controller = logic_controller
+        self.mouse_position = x, y
+        self.last_mouse_position = x , y
+        self.stop_event = threading.Event()  # Used to stop the thread gracefully
+
+        self.update_thread = threading.Thread(target=self._update_mouse_position)
+
+    def _update_mouse_position(self):
+        while not self.stop_event.is_set():
+            self.last_mouse_position = self.mouse_position
+            #! debug print
+            print("Mouse pos: ", self.last_mouse_position)
+            # Wait for the specified time or until the stop event is set
+            if self.stop_event.wait(timeout=self.idle_time_limit):
+                break
+            x, y = pyautogui.position()
+            self.mouse_position = x, y
+            #! debug print
+            print("last mouse pos: ", self.mouse_position)
+
+    def start_tracking(self):
+        if self.update_thread is None:
+            self.update_thread.start()
+
+    def stop(self):
+        if self.update_thread is not None:
+            self.stop_event.set()
+            self.update_thread.join()
+
+    def set_idle_time_limit(self, idle_time_limit):
+        """Set the idle time limit for comparing mouse positions"""
+        self.idle_time_limit = idle_time_limit
