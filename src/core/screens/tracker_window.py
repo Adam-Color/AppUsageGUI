@@ -37,9 +37,9 @@ class TrackerWindow(tk.Frame):
     def update_time_label(self):
         secs = 0
         while True:
-            self.app = self.logic_controller.tracker.get_selected_app()
+            self.app = self.logic_controller.app_tracker.get_selected_app()
 
-            app_names = self.logic_controller.tracker.get_app_names()
+            app_names = self.logic_controller.app_tracker.get_app_names()
 
             if self.app and not self.logic_controller.time_tracker.is_running():
                 self.logic_controller.time_tracker.start()

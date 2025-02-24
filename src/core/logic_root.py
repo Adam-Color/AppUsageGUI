@@ -9,5 +9,5 @@ class LogicRoot():
 
         self.session_files = FileHandler(self.parent, self)
         self.time_tracker = TimeTracker(self.parent, self)
-        self.tracker = AppTracker(self.parent, self)
+        self.app_tracker = AppTracker(self.parent, self)
         self.mouse_tracker = MouseTracker(self.parent, self)

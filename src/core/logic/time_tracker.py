@@ -47,6 +47,7 @@ class TimeTracker:
             self.paused_time = time.time()
 
     def resume(self):
+        """Resumes the tracker, subtracts the time during the pause."""
         if self.is_paused:
             self.is_paused = False
             self.resumed_time = time.time()

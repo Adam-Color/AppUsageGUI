@@ -40,7 +40,7 @@ class SelectAppWindow(tk.Frame):
         self.app_listbox.config(yscrollcommand=scrollbar.set)
 
         # Track the apps and filtered apps
-        self.tracker = self.logic_controller.tracker
+        self.app_tracker = self.logic_controller.app_tracker
         self.all_apps = []  # Store all apps to filter through
         self.refresh_apps()  # Populate list initially
         
@@ -53,7 +53,7 @@ class SelectAppWindow(tk.Frame):
         if selected_index:
             selected_app = self.app_listbox.get(selected_index)
             self.controller.show_frame("TrackerWindow")
-            self.tracker.set_selected_app(selected_app)
+            self.app_tracker.set_selected_app(selected_app)
         else:
             messagebox.showerror("Error", "No application selected")
 
@@ -61,7 +61,7 @@ class SelectAppWindow(tk.Frame):
         """Fetch all app names and display them in the listbox."""
         self.app_listbox.delete(0, tk.END)
         time.sleep(1)
-        self.all_apps = self.tracker.get_app_names()
+        self.all_apps = self.app_tracker.get_app_names()
 
         if not self.all_apps:
             messagebox.showerror("Error", "No applications found.")

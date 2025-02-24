@@ -23,14 +23,14 @@ class CreateSessionWindow(tk.Frame):
         session_name = self.session_name_input.get()
         self.session_save(session_name)
         self.logic_controller.time_tracker.reset()
-        self.logic_controller.tracker.reset()
+        self.logic_controller.app_tracker.reset()
         self.controller.show_frame("MainWindow")
 
     def session_save(self, session_name):
         self.logic_controller.session_files.set_file_name(session_name)
         session_time = self.logic_controller.time_tracker.get_time(saved=True)
         print("Session time: ", session_time) #!
-        session_app_name = self.logic_controller.tracker.get_selected_app()
+        session_app_name = self.logic_controller.app_tracker.get_selected_app()
         print("Session_app_name: ", session_app_name) #!
 
         data = {'app_name': session_app_name, 'time_spent': session_time}
