@@ -38,12 +38,15 @@ class TestMouseTracker(unittest.TestCase):
         mock_thread_instance = MagicMock()
         mock_thread.return_value = mock_thread_instance
 
+        # Set the idle time limit
+        self.mouse_tracker.set_idle_time_limit(5)
+
         # Start tracking
         self.mouse_tracker.start_tracking()
 
-        # Manually call the _update_mouse_position method to simulate the thread running
         for _ in range(3):
-            self.mouse_tracker._update_mouse_position()
+            print(self.mouse_tracker.get_last_mouse_position())
+            print(self.mouse_tracker.get_mouse_position())
 
         # Check if wait was called with the expected duration
         expected_wait_duration = 30  # The default idle_time_limit

@@ -4,6 +4,7 @@ User customizable trackers for pausing if the timer
 
 import threading
 import pyautogui
+import time
 
 class MouseTracker:
     """Tracks mouse movement over a user configurable time frame."""
@@ -24,9 +25,7 @@ class MouseTracker:
             self.last_mouse_position = self.mouse_position
             #! debug print
             print("Mouse pos: ", self.last_mouse_position)
-            # Wait for the specified time or until the stop event is set
-            if self.stop_event.wait(timeout=self.idle_time_limit):
-                break
+            time.sleep(self.idle_time_limit)
             x, y = pyautogui.position()
             self.mouse_position = x, y
             #! debug print
@@ -47,6 +46,6 @@ class MouseTracker:
 
     def get_last_mouse_position(self):
         return self.last_mouse_position
-    
+
     def get_mouse_position(self):
         return self.mouse_position
