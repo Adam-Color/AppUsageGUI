@@ -66,6 +66,9 @@ class SessionsWindow(tk.Frame):
             return self.session_listbox.get(selected_index)
 
     def select_session(self):
+        if not self.get_session_text():
+            tk.messagebox.showerror("Error", "No session selected")
+            return 0
         selected_app_name = self.get_session_text().split(": ")[1].split(", ")[0]
         selected_session_name = self.get_session_text().split(": ")[0]
 

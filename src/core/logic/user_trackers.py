@@ -1,5 +1,6 @@
 """
-User customizable trackers for pausing if the timer
+User customizable trackers for pausing or exiting 
+the timer during the session.
 """
 
 import threading
