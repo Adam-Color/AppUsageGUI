@@ -44,3 +44,9 @@ class MouseTracker:
     def set_idle_time_limit(self, idle_time_limit):
         """Set the idle time limit for comparing mouse positions"""
         self.idle_time_limit = idle_time_limit
+
+    def get_last_mouse_position(self):
+        return self.last_mouse_position
+    
+    def get_mouse_position(self):
+        return self.mouse_position
