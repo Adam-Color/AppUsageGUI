@@ -15,7 +15,7 @@ class MainWindow(tk.Frame):
         label = tk.Label(self, text=label_text)
         label.pack(side="top", fill="x", pady=10)
 
-        button1 = tk.Button(self, text="Start new session",
+        button1 = tk.Button(self, text="       Start new session       ",
                             command=lambda: controller.show_frame("SelectAppWindow"))
         button1.pack()
 
@@ -24,5 +24,5 @@ class MainWindow(tk.Frame):
                                 command=lambda: controller.show_frame("SessionsWindow"))
             button2.pack()
 
-        button3 = tk.Button(self, text="Configure custom rules", command=lambda:print(1))
+        button3 = tk.Button(self, text="   Configure custom rules  ", command=lambda:print(1))
         button3.pack()
