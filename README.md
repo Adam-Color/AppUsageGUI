@@ -11,7 +11,7 @@ This program tracks the runtime of a specified application, logging the duration
 
 ## Installation
 
-1. Clone this repository into your terminal:
+1. Clone this repository into your preferred directory via the terminal:
     ```sh
     git clone https://github.com/Adam-Code/AppUsageGUI.git
     ```
@@ -40,7 +40,7 @@ This program tracks the runtime of a specified application, logging the duration
 
 ## Contributing
 
-Contributions are welcome and needed! Here is a TODO list:
+Contributions are welcome and needed on the Develop branch! Here is a TODO list:
 
 1. Someone to build the application into cross-platform executables (exe, dmg, etc.)
 
