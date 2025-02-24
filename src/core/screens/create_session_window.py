@@ -24,7 +24,7 @@ class CreateSessionWindow(tk.Frame):
         self.session_save(session_name)
         self.logic_controller.time_tracker.reset()
         self.logic_controller.app_tracker.reset()
-        self.controller.show_frame("MainWindow")
+        self.controller.show_frame("SessionTotalWindow")
 
     def session_save(self, session_name):
         self.logic_controller.session_files.set_file_name(session_name)

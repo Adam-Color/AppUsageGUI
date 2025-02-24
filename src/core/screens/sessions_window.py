@@ -10,9 +10,6 @@ class SessionsWindow(tk.Frame):
         self.controller = controller
         self.logic_controller = logic_controller
 
-        # grab session filenames
-        sessions = get_sessions()
-
         # label for SessionsWindow
         label = tk.Label(self, text="Select a Session to continue from:")
         label.pack(side="top", fill="x", pady=5)
@@ -32,40 +29,37 @@ class SessionsWindow(tk.Frame):
         # configure the listbox to use the scrollbar
         self.session_listbox.config(yscrollcommand=scrollbar.set)
 
-        # load the data into the listbox
-        for session in sessions:
-            session_name = session.split(".")[0]
-
-            # Load data for the current session
-            self.logic_controller.session_files.load_data(session_name)
-            session_data = self.logic_controller.session_files.get_data()
-            if session_data is not None:
-
-                app_name = session_data['app_name']
-                time_spent = session_data['time_spent']
-
-                # Format the time spent
-                formatted_time = format_time(round(time_spent))
-
-                # Insert into the Listbox
-                self.session_listbox.insert(tk.END, f"{session_name}: {app_name}, {formatted_time} on record")
-
-        corrupt_sessions = self.logic_controller.session_files.get_corrupt_sessions()
-
-        if len(corrupt_sessions) > 0:
-
-            error_string = "The following session(s) failed to load:\n\n"
-
-            for session in corrupt_sessions:
-                name, error = session
-                error_string += "\n" + name + ": " + error
-
-            tk.messagebox.showerror("Session Error", error_string + f"\n\nTo fix or delete session files, go to the {get_sessions_directory()} directory\n")
+        self.load_sessions()
 
         # button to make the selection
         select_button = tk.Button(self, text="Select", command=self.select_session)
         select_button.pack(pady=10)
-    
+
+    def load_sessions(self):
+        """Load session data into the listbox and 
+        handle broken sessions"""
+
+        sessions = get_sessions()
+        for session in sessions:
+            session_name = session.split(".")[0]
+            # Load data for the current session
+            self.logic_controller.session_files.load_data(session_name)
+            session_data = self.logic_controller.session_files.get_data()
+            if session_data is not None:
+                app_name = session_data['app_name']
+                time_spent = session_data['time_spent']
+                # Format the time spent
+                formatted_time = format_time(round(time_spent))
+                # Insert into the Listbox
+                self.session_listbox.insert(tk.END, f"{session_name}: {app_name}, {formatted_time} on record")
+        corrupt_sessions = self.logic_controller.session_files.get_corrupt_sessions()
+        if len(corrupt_sessions) > 0:
+            error_string = "The following session(s) failed to load:\n\n"
+            for session in corrupt_sessions:
+                name, error = session
+                error_string += "\n" + name + ": " + error
+            tk.messagebox.showerror("Session Error", error_string + f"\n\nTo fix or delete session files, go to the {get_sessions_directory()} directory\n")
+
     def get_session_text(self):
         selected_index = self.session_listbox.curselection()
         if selected_index:
