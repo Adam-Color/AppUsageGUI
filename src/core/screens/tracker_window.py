@@ -26,6 +26,12 @@ class TrackerWindow(tk.Frame):
         self.time_label = tk.Label(self, text=self.track_time_disp)
         self.time_label.pack(pady=10)
 
+        # TODO: pause and resume buttons for testing
+        pause_button = tk.Button(self, text="Pause", command=self.logic_controller.time_tracker.pause)
+        pause_button.pack(pady=5)
+        resume_button = tk.Button(self, text="Resume", command=self.logic_controller.time_tracker.resume)
+        resume_button.pack(pady=5)
+
         self.update_queue = queue.Queue()
 
         self.update_thread = threading.Thread(target=self.update_time_label)
