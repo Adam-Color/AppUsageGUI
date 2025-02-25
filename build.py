@@ -33,6 +33,7 @@ def build_executable():
         f'--collect-all psutil '
         f'--collect-all pyautogui '
         f'--collect-all tkinter '
+        f'--add-data "src/_version.py{":" if os.name != "nt" else ";"}." '
         f'--debug=imports {ENTRY_POINT}'
 )
 

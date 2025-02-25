@@ -55,8 +55,8 @@ class AppTracker:
         self.selected_app = app
 
     def stop(self):
+        self.stop_event.set()
         if self.update_thread is not None:
-            self.stop_event.set()
             self.update_thread.join()
 
     def start(self):
