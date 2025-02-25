@@ -18,7 +18,7 @@ class SaveWindow(tk.Frame):
         button_no.pack(pady=5)
 
     def save(self):
-        if self.logic_controller.session_files.get_continuing_session():
+        if self.logic_controller.file_handler.get_continuing_session():
             session_time = self.logic_controller.time_tracker.get_total_time()
             #print("Session time: ", session_time) #! debug print
             session_app_name = self.logic_controller.app_tracker.get_selected_app()
@@ -29,7 +29,7 @@ class SaveWindow(tk.Frame):
 
             serialized_data = pickle.dumps(data)
 
-            self.logic_controller.session_files.save_data(serialized_data)
+            self.logic_controller.file_handler.save_session_data(serialized_data)
 
             # show to session total window
             self.controller.show_frame("SessionTotalWindow")

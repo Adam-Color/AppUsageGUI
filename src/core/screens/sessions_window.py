@@ -43,8 +43,8 @@ class SessionsWindow(tk.Frame):
         for session in sessions:
             session_name = session.split(".")[0]
             # Load data for the current session
-            self.logic_controller.session_files.load_data(session_name)
-            session_data = self.logic_controller.session_files.get_data()
+            self.logic_controller.file_handler.load_session_data(session_name)
+            session_data = self.logic_controller.file_handler.get_data()
             if session_data is not None:
                 app_name = session_data['app_name']
                 time_spent = session_data['time_spent']
@@ -52,7 +52,7 @@ class SessionsWindow(tk.Frame):
                 formatted_time = format_time(round(time_spent))
                 # Insert into the Listbox
                 self.session_listbox.insert(tk.END, f"{session_name}: {app_name}, {formatted_time} on record")
-        corrupt_sessions = self.logic_controller.session_files.get_corrupt_sessions()
+        corrupt_sessions = self.logic_controller.file_handler.get_corrupt_sessions()
         if len(corrupt_sessions) > 0:
             error_string = "The following session(s) failed to load:\n\n"
             for session in corrupt_sessions:
@@ -73,20 +73,20 @@ class SessionsWindow(tk.Frame):
         selected_session_name = self.get_session_text().split(": ")[0]
 
         # update the logic session name var
-        self.logic_controller.session_files.set_file_name(selected_session_name)
+        self.logic_controller.file_handler.set_file_name(selected_session_name)
 
         # tell the controller we are continuing from a session
-        self.logic_controller.session_files.set_continuing_session(True)
+        self.logic_controller.file_handler.set_continuing_session(True)
 
         # load selected session data into the file handler,
         # so it's ready to be pulled
-        self.logic_controller.session_files.load_data(selected_session_name)
+        self.logic_controller.file_handler.load_session_data(selected_session_name)
 
         # start/reset tracking threads
         self.logic_controller.app_tracker.reset()
         self.logic_controller.app_tracker.set_selected_app(selected_app_name)
         self.logic_controller.app_tracker.start()
-        self.logic_controller.time_tracker.reset(add_time=self.logic_controller.session_files.get_data()['time_spent'])
+        self.logic_controller.time_tracker.reset(add_time=self.logic_controller.file_handler.get_data()['time_spent'])
         self.logic_controller.time_tracker.start()
         self.logic_controller.time_tracker.clock()
 

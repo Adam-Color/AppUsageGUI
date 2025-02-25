@@ -1,3 +1,5 @@
+
+
 import os
 import time
 import pickle
@@ -20,7 +22,8 @@ class FileHandler:
         self.continuing_tracker = False
         self.corrupt_sessions = []
 
-    def save_data(self, data):
+    def save_session_data(self, data):
+        """Special function to save and hash session data"""
         self.data = data
         file_path = os.path.join(self.directory, self.fileName + '.dat')
         hash_path = os.path.join(self.directory, self.fileName + '.hash')
@@ -32,7 +35,8 @@ class FileHandler:
         data_hash = compute_hash(data)
         write_file(hash_path, data_hash.encode('utf-8'))
 
-    def load_data(self, filename):
+    def load_session_data(self, filename):
+        """Loads session data from file and checks hash"""
         file_path = os.path.join(self.directory, filename + '.dat')
         hash_path = os.path.join(self.directory, filename + '.hash')
 

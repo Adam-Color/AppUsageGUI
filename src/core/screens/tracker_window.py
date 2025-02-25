@@ -26,7 +26,8 @@ class TrackerWindow(tk.Frame):
         self.time_label = tk.Label(self, text=self.track_time_disp)
         self.time_label.pack(pady=10)
 
-        # TODO: pause and resume buttons for testing
+        # TODO: pause and resume buttons need to be beutified
+
         pause_button = tk.Button(self, text="Pause", command=self.logic_controller.time_tracker.pause)
         pause_button.pack(pady=5)
         resume_button = tk.Button(self, text="Resume", command=self.logic_controller.time_tracker.resume)
@@ -54,7 +55,7 @@ class TrackerWindow(tk.Frame):
 
             # Stop tracking when the app closes
             # includes exception for continuing tracking from a previous session.
-            if self.logic_controller.time_tracker.is_running() and self.app not in app_names and self.logic_controller.session_files.get_continuing_tracker() is False:
+            if self.logic_controller.time_tracker.is_running() and self.app not in app_names and self.logic_controller.file_handler.get_continuing_tracker() is False:
                 self.logic_controller.time_tracker.stop()
                 self.rec_time = 0
                 self.app = ""
@@ -67,7 +68,7 @@ class TrackerWindow(tk.Frame):
                     track_time_disp = f"{format_time(round(secs))} recorded."
 
                     #HACK: needed to allow app to be detected before break
-                    self.logic_controller.session_files.set_continuing_tracker(False)
+                    self.logic_controller.file_handler.set_continuing_tracker(False)
                 else:
                     track_time_disp = "No time data available"
                 self.update_queue.put(("time", track_time_disp))
