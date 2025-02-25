@@ -1,5 +1,7 @@
 import tkinter as tk
 
+from src._version import __version__
+
 from core.gui_root import GUIRoot
 from core.utils.file_utils import sessions_exist, user_dir_exists
 
@@ -38,7 +40,7 @@ def main():
     user_dir_exists()
 
     root = tk.Tk()
-    root.title("App Usage GUI")
+    root.title(f"App Usage GUI - v{__version__}")
 
     if is_dark_mode():
         apply_dark_theme(root)
