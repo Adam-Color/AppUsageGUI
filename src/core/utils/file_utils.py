@@ -10,7 +10,6 @@ def get_sessions_directory():
     else:  # macOS and Linux
         home_dir = os.path.expanduser('~')
         sessions_dir = os.path.join(home_dir, '.local/share/AppUsageGUI/Sessions')
-
     return sessions_dir
 
 def get_user_directory():
@@ -21,7 +20,6 @@ def get_user_directory():
     else:  # macOS and Linux
         home_dir = os.path.expanduser('~')
         user_dir = os.path.join(home_dir, '.local/share/AppUsageGUI/User')
-
     return user_dir
 
 def sessions_exist():
@@ -49,6 +47,7 @@ def user_dir_exists():
     return True
 
 def get_sessions():
+    """Returns session objects as a list"""
     sessions_list = []
     file_extension = ".dat"
     sessions_dir = get_sessions_directory()
@@ -58,8 +57,8 @@ def get_sessions():
     return sessions_list
 
 
-# Parses exe filename to give just the name
 def name_from_exe(exename):
+    """Parses exe filename to give just the name"""
     if os.name == 'nt' or exename.endswith('.app'):
         # Split on the last period to avoid issues with multiple periods in the name
         split_exe_name, exe = exename.rsplit('.', 1)
@@ -67,19 +66,19 @@ def name_from_exe(exename):
     # On Unix-like systems, return the name as is, unless it is .app
     return exename
 
-# Compute the SHA256 hash of the given data
 def compute_hash(data):
+    """Compute the SHA256 hash of the input data"""
     sha256 = hashlib.sha256()
     sha256.update(data)
     return sha256.hexdigest()
 
-# Read and deserialize data from a .dat file
 def read_file(file_path):
+    """Read and deserialize data from a .dat file"""
     with open(file_path, 'rb') as f:
         return pickle.load(f)
 
-# Serialize and write data to a .dat file
 def write_file(file_path, data):
+    """Serialize and write data to a .dat file"""
     with open(file_path, 'wb') as f:
         f.truncate(0)
         pickle.dump(data, f)
