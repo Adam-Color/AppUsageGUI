@@ -46,13 +46,13 @@ class TimeTracker:
         self.track = False
 
     def pause(self):
-        if self.track:
+        if self.track and not self.is_paused:
             self.is_paused = True
             self.paused_time = time.time()
 
     def resume(self):
         """Resumes the tracker, subtracts the time paused."""
-        if self.is_paused:
+        if self.track and self.is_paused:
             self.is_paused = False
             self.resumed_time = time.time()
             self.offset_time += self.resumed_time - self.paused_time

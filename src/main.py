@@ -1,6 +1,6 @@
 import tkinter as tk
 
-from src._version import __version__
+from _version import __version__
 
 from core.gui_root import GUIRoot
 from core.utils.file_utils import sessions_exist, user_dir_exists

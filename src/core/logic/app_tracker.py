@@ -36,6 +36,7 @@ class AppTracker:
         return sorted(apps)
 
     def _monitor_processes(self):
+        """keeps track of the number of processes"""
         while not self.stop_event.is_set():
             current_process_count = len(psutil.pids())
             if current_process_count != self.cached_process_count:
