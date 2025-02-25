@@ -53,3 +53,4 @@ class MouseTracker:
     
     def get_idle_time_limit(self):
         return self.idle_time_limit
+    

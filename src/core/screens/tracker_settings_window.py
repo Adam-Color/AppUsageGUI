@@ -1,20 +1,20 @@
 import tkinter as tk
 
+def validate_numeric(value):
+    """Check if value is a numeric and greater than or equal to 0"""
+    if value == "":  # Allow empty string (for backspace)
+        return True
+    try:
+        value = float(value)
+        return value >= 0
+    except ValueError:
+        return False
+
 class TrackerSettingsWindow(tk.Frame):
     def __init__(self, parent, controller, logic_controller):
         tk.Frame.__init__(self, parent)
         self.controller = controller
         self.logic_controller = logic_controller
-
-        def validate_numeric(value):
-            """Check if value is a numeric and greater than or equal to 0"""
-            if value == "":  # Allow empty string (for backspace)
-                return True
-            try:
-                value = float(value)
-                return value >= 0
-            except ValueError:
-                return False
 
         vcmd = (self.register(validate_numeric), '%P')
         label = tk.Label(self, text="Tracker settings:")
