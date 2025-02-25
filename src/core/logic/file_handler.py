@@ -24,15 +24,15 @@ class FileHandler:
 
     def save_session_data(self, data):
         """Special function to save and hash session data"""
-        self.data = data
+        self.data = pickle.dumps(data)
         file_path = os.path.join(self.directory, self.fileName + '.dat')
         hash_path = os.path.join(self.directory, self.fileName + '.hash')
 
         # Save data to file
-        write_file(file_path, data)
+        write_file(file_path, self.data)
 
         # Compute and save hash
-        data_hash = compute_hash(data)
+        data_hash = compute_hash(self.data)
         write_file(hash_path, data_hash.encode('utf-8'))
 
     def load_session_data(self, filename):
@@ -73,15 +73,15 @@ class FileHandler:
         self.continuing_session = continuation
         if continuation:
             self.set_continuing_tracker(True)
-    
+
     def set_continuing_tracker(self, value=bool):
         self.continuing_tracker = value
-    
+
     def get_continuing_tracker(self):
         return self.continuing_tracker
 
     def get_continuing_session(self):
         return self.continuing_session
-    
+
     def get_corrupt_sessions(self):
         return self.corrupt_sessions

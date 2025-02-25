@@ -2,8 +2,8 @@ import os
 import hashlib
 import pickle
 
-# Define the path to the "Sessions/" directory
 def get_sessions_directory():
+    """Define the sessions directory, which stores application usage data"""
     if os.name == 'nt':  # Windows
         appdata_dir = os.getenv('APPDATA')
         sessions_dir = os.path.join(appdata_dir, 'AppUsageGUI', 'Sessions')
@@ -13,7 +13,19 @@ def get_sessions_directory():
 
     return sessions_dir
 
+def get_user_directory():
+    """Define the user directory, which stores presets and settings"""
+    if os.name == 'nt':  # Windows
+        appdata_dir = os.getenv('APPDATA')
+        user_dir = os.path.join(appdata_dir, 'AppUsageGUI', 'User')
+    else:  # macOS and Linux
+        home_dir = os.path.expanduser('~')
+        user_dir = os.path.join(home_dir, '.local/share/AppUsageGUI/User')
+
+    return user_dir
+
 def sessions_exist():
+    """Check if sessions exist, and if not, create the directory"""
     file_extension = ".dat"
     sessions_dir = get_sessions_directory()
     print("sessions_dir: %s" % sessions_dir) #!
@@ -25,6 +37,16 @@ def sessions_exist():
         if file.endswith(file_extension):
             return True
     return False
+
+def user_dir_exists():
+    """Check if user directory exists, and if not, create the directory"""
+    user_dir = get_user_directory()
+    print("user_dir: %s" % user_dir) #!
+    # Ensure the directory exists
+    if not os.path.exists(user_dir):
+        os.makedirs(user_dir, exist_ok=True)
+        return False
+    return True
 
 def get_sessions():
     sessions_list = []

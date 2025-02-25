@@ -1,11 +1,14 @@
 import tkinter as tk
 
 from core.gui_root import GUIRoot
-from core.utils.file_utils import sessions_exist
+from core.utils.file_utils import sessions_exist, user_dir_exists
 
 
 def main():
+    # calls to create the app directories
     sessions_exist()
+    user_dir_exists()
+
     root = tk.Tk()
     root.title("App Usage GUI")
 

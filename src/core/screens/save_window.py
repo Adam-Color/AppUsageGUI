@@ -25,11 +25,8 @@ class SaveWindow(tk.Frame):
             #print("Session_app_name: ", session_app_name) #! debug print
 
             data = {'app_name': session_app_name, 'time_spent': session_time}
-            print(data)
 
-            serialized_data = pickle.dumps(data)
-
-            self.logic_controller.file_handler.save_session_data(serialized_data)
+            self.logic_controller.file_handler.save_session_data(data)
 
             # show to session total window
             self.controller.show_frame("SessionTotalWindow")

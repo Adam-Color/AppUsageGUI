@@ -50,7 +50,6 @@ class MouseTracker:
 
     def get_mouse_position(self):
         return self.mouse_position
-    
+
     def get_idle_time_limit(self):
         return self.idle_time_limit
-    
