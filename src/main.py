@@ -44,11 +44,11 @@ def main():
     root.title(f"App Usage GUI - v{__version__}")
     root.iconbitmap(f"{"src/core/resources/icon.ico" if os.name == 'nt' else "src/core/resources/icon.icns"}")
 
-    if is_dark_mode():
-        apply_dark_theme(root)
-
     win = GUIRoot(root)
     win.pack(side="top", fill="both", expand=True)
+
+    if is_dark_mode():
+        apply_dark_theme(root)
 
     root.mainloop()
 

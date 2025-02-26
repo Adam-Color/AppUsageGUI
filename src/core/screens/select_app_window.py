@@ -1,6 +1,17 @@
 import tkinter as tk
 from tkinter import messagebox
 import time
+import threading
+
+def threaded(fn):
+    def wrapper(*args, **kwargs):
+        result = []
+        def run_and_capture():
+            result.append(fn(*args, **kwargs))
+        thread = threading.Thread(target=run_and_capture)
+        thread.start()
+        return thread, result
+    return wrapper
 
 class SelectAppWindow(tk.Frame):
     def __init__(self, parent, controller, logic_controller):
@@ -57,6 +68,7 @@ class SelectAppWindow(tk.Frame):
         else:
             messagebox.showerror("Error", "No application selected")
 
+    @threaded
     def refresh_apps(self):
         """Fetch all app names and display them in the listbox."""
         self.app_listbox.delete(0, tk.END)
@@ -69,6 +81,7 @@ class SelectAppWindow(tk.Frame):
             for app in self.all_apps:
                 self.app_listbox.insert(tk.END, app)
 
+    @threaded
     def update_search(self, *args):
         """Filter apps in the listbox based on search input."""
         search_text = self.search_var.get().lower()
