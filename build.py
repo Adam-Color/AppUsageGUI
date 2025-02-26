@@ -31,6 +31,7 @@ def build_executable():
         f'--add-data "src/core{":" if os.name != "nt" else ";"}core" '
         f'--collect-submodules core '
         f'--collect-all psutil '
+        f'--collect-all pyautogui '
         f'--collect-all tkinter '
         f'--add-data "src/_version.py{":" if os.name != "nt" else ";"}." '
         f'--debug=imports {ENTRY_POINT}'
