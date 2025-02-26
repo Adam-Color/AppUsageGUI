@@ -24,7 +24,7 @@ class AppTracker:
             try:
                 app_name = process.info['name'].split(" ")[0]
                 app_name = app_name.split(".")[0]  # Use the base name of the process
-                if app_name not in seen_names:
+                if app_name not in seen_names and len(app_name) > 0:
                     apps.append(app_name)
                     seen_names.add(app_name)
                     #print(app_name) #! use to help optimize
