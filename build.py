@@ -31,6 +31,7 @@ def build_executable():
         f'--add-data "src/core{":" if os.name != "nt" else ";"}core" '
         f'--collect-submodules core '
         f'--collect-all psutil '
+        f'--collect-all pyautogui '
         f'--collect-all tkinter '
         f'--collect-all pyautogui '
         f'--icon={"src/core/resources/icon.ico" if os.name == 'nt' else "src/core/resources/icon.icns"} '

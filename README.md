@@ -44,6 +44,6 @@ Contributions are welcome and needed on the Develop branch! Here is a TODO list:
 
 1. Someone to build the application into cross-platform executables (exe, dmg, etc.)
 
-2. Adding user-customizable pause conditions (i.e: the user's input hasn't moved for a full minute, time tracking pauses)
+2. Adding user-customizable pause conditions (i.e: the user's mouse hasn't moved for a full minute, time tracking pauses)
 
 3. Add ways to analyze app usage data in the app
