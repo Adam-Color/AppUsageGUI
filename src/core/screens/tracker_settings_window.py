@@ -20,18 +20,18 @@ class TrackerSettingsWindow(tk.Frame):
         label = tk.Label(self, text="Tracker settings:\n")
         label.pack(side="top", fill="x", padx=5)
 
-        mouse_tracker_time_text = tk.StringVar()
-        mouse_tracker_time_text.set(str(self.logic_controller.mouse_tracker.get_idle_time_limit()))
+        input_tracker_time_text = tk.StringVar()
+        input_tracker_time_text.set(str(self.logic_controller.input_tracker.get_idle_time_limit()))
 
-        mouse_tracker_time_label = tk.Label(self, text="Mouse idle time limit: ")
-        mouse_tracker_time_label.pack(side="left", padx=1)
+        input_tracker_time_label = tk.Label(self, text="Idle time limit: ")
+        input_tracker_time_label.pack(side="left", padx=1)
 
-        mouse_tracker_time_entry = tk.Entry(self,
-                                            name="mouse_tracker",
-                                            textvariable=mouse_tracker_time_text,
+        input_tracker_time_entry = tk.Entry(self,
+                                            name="input_tracker",
+                                            textvariable=input_tracker_time_text,
                                             validate="key",
                                             validatecommand=vcmd, width=3)
-        mouse_tracker_time_entry.pack(side="left", padx=1, expand=False)
+        input_tracker_time_entry.pack(side="left", padx=1, expand=False)
 
-        mouse_tracker_time_label_a = tk.Label(self, text="seconds")
-        mouse_tracker_time_label_a.pack(side="left", padx=1)
+        input_tracker_time_label_a = tk.Label(self, text="seconds")
+        input_tracker_time_label_a.pack(side="left", padx=1)
