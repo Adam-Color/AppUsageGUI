@@ -1,4 +1,5 @@
 import tkinter as tk
+import os
 
 from _version import __version__
 
@@ -41,6 +42,7 @@ def main():
 
     root = tk.Tk()
     root.title(f"App Usage GUI - v{__version__}")
+    root.iconbitmap(f"{"src/core/resources/icon.ico" if os.name == 'nt' else "src/core/resources/icon.icns"}")
 
     if is_dark_mode():
         apply_dark_theme(root)

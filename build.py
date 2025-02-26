@@ -6,7 +6,7 @@ import subprocess
 from src._version import __version__
 
 # Project details
-PROJECT_NAME = f"AppUsageGUI-v{__version__}"
+PROJECT_NAME = f"AppUsageGUI-v{__version__}-{"Windows" if os.name == 'nt' else "macOS"}"
 ENTRY_POINT = "src/main.py"
 BUILD_DIR = "build"
 DIST_DIR = "dist"
@@ -32,6 +32,8 @@ def build_executable():
         f'--collect-submodules core '
         f'--collect-all psutil '
         f'--collect-all tkinter '
+        f'--collect-all pyautogui '
+        f'--icon={"src/core/resources/icon.ico" if os.name == 'nt' else "src/core/resources/icon.icns"} '
         f'--add-data "src/_version.py{":" if os.name != "nt" else ";"}." '
         f'--debug=imports {ENTRY_POINT}'
 )
