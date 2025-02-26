@@ -1,7 +1,7 @@
 from .logic.app_tracker import AppTracker
 from .logic.time_tracker import TimeTracker
 from .logic.file_handler import FileHandler
-from.logic.user_trackers import MouseTracker
+from .logic.user_trackers import MouseTracker
 
 class LogicRoot():
     def __init__(self, parent):
