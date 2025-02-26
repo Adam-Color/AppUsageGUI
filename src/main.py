@@ -1,10 +1,20 @@
 import tkinter as tk
 import os
+import sys
 
 from _version import __version__
 
 from core.gui_root import GUIRoot
 from core.utils.file_utils import sessions_exist, user_dir_exists
+
+def resource_path(relative_path):
+    """ Get absolute path to resource, works for dev and for PyInstaller """
+    try:
+        # PyInstaller creates a temp folder and stores path in _MEIPASS
+        base_path = sys._MEIPASS
+    except Exception:
+        base_path = os.path.abspath(os.path.dirname(__file__))
+    return os.path.join(base_path, relative_path)
 
 def is_dark_mode():
     """Check if Windows is in dark mode."""
@@ -37,12 +47,13 @@ def apply_dark_theme(root):
 
 def main():
     # calls to create the app directories
-    sessions_exist()
-    user_dir_exists()
-
     root = tk.Tk()
+
+    icon_name = "core/resources/icon.ico" if os.name == 'nt' else "core/resources/icon.icns"
+    icon_path = resource_path(icon_name)
+
+    root.iconbitmap(icon_path)
     root.title(f"App Usage GUI - v{__version__}")
-    root.iconbitmap(f"{"src/core/resources/icon.ico" if os.name == 'nt' else "src/core/resources/icon.icns"}")
 
     win = GUIRoot(root)
     win.pack(side="top", fill="both", expand=True)
@@ -50,7 +61,11 @@ def main():
     if is_dark_mode():
         apply_dark_theme(root)
 
+    sessions_exist()
+    user_dir_exists()
+
     root.mainloop()
 
 if __name__ == "__main__":
     main()
+

@@ -11,7 +11,7 @@ class MouseTracker:
     """Tracks mouse movement over a user configurable time frame."""
     def __init__(self, parent, logic_controller):
         self.parent = parent
-        self.idle_time_limit = 30
+        self.idle_time_limit = 300
         x = 0
         y = 0
         self.logic_controller = logic_controller

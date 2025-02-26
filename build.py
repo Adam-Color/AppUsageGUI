@@ -24,20 +24,22 @@ def build_executable():
     """Build the application using PyInstaller."""
     python_executable = os.path.join(VENV_DIR, "Scripts" if os.name == "nt" else "bin", "python")
 
+    icon_file = "src/core/resources/icon.ico" if os.name == 'nt' else "src/core/resources/icon.icns"
     print("Building the application...")
     run_command(
         f'{python_executable} -m PyInstaller --onefile --name {PROJECT_NAME} '
         f'--windowed --clean '
-        f'--add-data "src/core{":" if os.name != "nt" else ";"}core" '
+        f'--add-data "src/core:core" '
+        f'--add-data "{icon_file}:." '
         f'--collect-submodules core '
         f'--collect-all psutil '
         f'--collect-all pyautogui '
         f'--collect-all tkinter '
-        f'--collect-all pyautogui '
-        f'--icon={"src/core/resources/icon.ico" if os.name == 'nt' else "src/core/resources/icon.icns"} '
-        f'--add-data "src/_version.py{":" if os.name != "nt" else ";"}." '
+        f'--icon={icon_file} '
+        f'--add-data "src/_version.py:." '
         f'--debug=imports {ENTRY_POINT}'
-)
+    )
+
 
 
 
