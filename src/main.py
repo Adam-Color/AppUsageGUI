@@ -27,7 +27,6 @@ def is_dark_mode():
         return False  # Default to light mode if error occurs
 
 def apply_dark_theme(root):
-    """Apply a dark theme to Tkinter."""
     dark_bg = "#2E2E2E"  # Dark gray background
     dark_fg = "#FFFFFF"  # White text
 

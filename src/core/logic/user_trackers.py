@@ -11,7 +11,7 @@ class MouseTracker:
     """Tracks mouse movement over a user configurable time frame."""
     def __init__(self, parent, logic_controller):
         self.parent = parent
-        self.idle_time_limit = 300
+        self.idle_time_limit = 10 #300
         x = 0
         y = 0
         self.logic_controller = logic_controller
@@ -24,17 +24,12 @@ class MouseTracker:
     def _update_mouse_position(self):
         while not self.stop_event.is_set():
             self.last_mouse_position = self.mouse_position
-            #! debug print
-            print("Mouse pos: ", self.last_mouse_position)
-            time.sleep(self.idle_time_limit)
             x, y = pyautogui.position()
             self.mouse_position = x, y
-            #! debug print
-            print("last mouse pos: ", self.mouse_position)
+            time.sleep(self.idle_time_limit)
 
-    def start_tracking(self):
-        if self.update_thread is None:
-            self.update_thread.start()
+    def start(self):
+        self.update_thread.start()
 
     def stop(self):
         if self.update_thread is not None:

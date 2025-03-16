@@ -48,10 +48,14 @@ class TrackerWindow(tk.Frame):
 
             app_names = self.logic_controller.app_tracker.get_app_names()
 
+            # start the tracking
             if self.app and not self.logic_controller.time_tracker.is_running():
                 self.logic_controller.time_tracker.start()
                 self.logic_controller.time_tracker.clock()
                 self.update_queue.put(("app", self.app))
+
+                # user trackers
+                self.logic_controller.mouse_tracker.start()
 
             # Stop tracking when the app closes
             # includes exception for continuing tracking from a previous session.
@@ -62,6 +66,7 @@ class TrackerWindow(tk.Frame):
                 self.track_time_disp = "Looking for app..."
                 break
 
+            # Update the time label
             if self.logic_controller.time_tracker.is_running():
                 secs = self.logic_controller.time_tracker.get_time()
                 if secs is not None:
@@ -75,7 +80,7 @@ class TrackerWindow(tk.Frame):
             else:
                 self.update_queue.put(("time", "Looking for application..."))
 
-            time.sleep(0.5)
+            time.sleep(0.1)
         self.controller.show_frame("SaveWindow")
 
 

@@ -24,14 +24,17 @@ class TrackerSettingsWindow(tk.Frame):
         mouse_tracker_time_text.set(str(self.logic_controller.mouse_tracker.get_idle_time_limit()))
 
         mouse_tracker_time_label = tk.Label(self, text="Mouse idle time limit: ")
-        mouse_tracker_time_label.pack(side="left", padx=1)
+        mouse_tracker_time_label.pack(side="top", padx=1)
 
         mouse_tracker_time_entry = tk.Entry(self,
                                             name="mouse_tracker",
                                             textvariable=mouse_tracker_time_text,
                                             validate="key",
                                             validatecommand=vcmd, width=3)
-        mouse_tracker_time_entry.pack(side="left", padx=1, expand=False)
+        mouse_tracker_time_entry.pack(side="top", padx=1, expand=False)
 
         mouse_tracker_time_label_a = tk.Label(self, text="seconds")
-        mouse_tracker_time_label_a.pack(side="left", padx=1)
+        mouse_tracker_time_label_a.pack(side="top", padx=1)
+
+        apply_button = tk.Button(self, text="Apply", command=print(1))
+        apply_button.pack(side="bottom", fill="y", padx=1)
