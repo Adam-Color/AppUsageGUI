@@ -47,6 +47,7 @@ class GUIRoot(tk.Frame):
         frame.tkraise()
 
     def reset_frames(self):
+        """Reset the GUI frames."""
         # Stop the AppTracker thread
         if self.logic_controller.app_tracker:
             self.logic_controller.app_tracker.reset()

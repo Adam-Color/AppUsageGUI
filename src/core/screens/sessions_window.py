@@ -35,6 +35,9 @@ class SessionsWindow(tk.Frame):
         select_button = tk.Button(self, text="Select", command=self.select_session)
         select_button.pack(pady=10)
 
+        back_button = tk.Button(self, text="Main Menu", command=lambda: (self.controller.reset_frames(), self.controller.show_frame("MainWindow")))
+        back_button.pack(pady=5, side='bottom')
+
     def load_sessions(self):
         """Load session data into the listbox and 
         handle broken sessions"""

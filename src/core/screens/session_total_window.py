@@ -23,6 +23,10 @@ class SessionTotalWindow(tk.Frame):
         self.total_time_label = tk.Label(self, text=self.time_readout)
         self.total_time_label.pack(pady=10)
 
+        # back to main window button
+        back_button = tk.Button(self, text="Main Menu", command=lambda: (self.controller.reset_frames(), self.controller.show_frame("MainWindow")))
+        back_button.pack(pady=5, side='bottom')
+
         # Start the total time thread
         threading.Thread(target=self.total_time_thread, daemon=True).start()
 
