@@ -30,19 +30,8 @@ def apply_dark_theme(root):
     dark_bg = "#2E2E2E"  # Dark gray background
     dark_fg = "#FFFFFF"  # White text
 
-    root.tk_setPalette(background=dark_bg, foreground=dark_fg)
+    # root.tk_setPalette(background=dark_bg, foreground=dark_fg)
 
-    style_settings = {
-        "TLabel": {"background": dark_bg, "foreground": dark_fg},
-        "TButton": {"background": dark_bg, "foreground": dark_fg},
-        "TEntry": {"background": "#3A3A3A", "foreground": dark_fg},
-    }
-
-    for widget, settings in style_settings.items():
-        root.option_add(f"*{widget}*Background", settings["background"])
-        root.option_add(f"*{widget}*Foreground", settings["foreground"])
-
-    root.configure(bg=dark_bg)
 
 def main():
     # calls to create the app directories

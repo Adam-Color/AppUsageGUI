@@ -54,7 +54,7 @@ class TrackerWindow(tk.Frame):
                 self.logic_controller.time_tracker.clock()
                 self.update_queue.put(("app", self.app))
 
-                # user trackers
+                # user trackers, enable/disable handed by the user tracker class
                 self.logic_controller.mouse_tracker.start()
 
             # Stop tracking when the app closes

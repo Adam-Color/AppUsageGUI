@@ -57,6 +57,9 @@ class TimeTracker:
             self.resumed_time = time.time()
             self.offset_time += self.resumed_time - self.paused_time
 
+    def get_is_paused(self):
+        return self.is_paused
+
     def get_time(self, saved=False):
         if not self.track and saved is False:
             return None
