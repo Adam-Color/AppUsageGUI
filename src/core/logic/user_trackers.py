@@ -13,14 +13,20 @@ class MouseTracker:
     """Tracks mouse movement over a user configurable time frame."""
     def __init__(self, parent, logic_controller):
         self.parent = parent
-        self.idle_time_limit = read_file(config_file())["mouse_idle_time_limit"]
+        try:
+            self.idle_time_limit = read_file(config_file())["mouse_idle_time_limit"]
+        except FileNotFoundError:
+            self.idle_time_limit = 300  # Default value
         x = 0
         y = 0
         self.logic_controller = logic_controller
         self.mouse_position = x, y
         self.last_mouse_position = x , y
         self.stop_event = threading.Event()  # Used to stop the thread gracefully
-        self.enabled = read_file(config_file())["mouse_tracker_enabled"]
+        try:
+            self.enabled = read_file(config_file())["mouse_tracker_enabled"]
+        except FileNotFoundError:
+            self.enabled = False  # Default value
 
         self.update_thread = threading.Thread(target=self._update_mouse_position)
 

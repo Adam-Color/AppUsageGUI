@@ -30,7 +30,7 @@ def apply_dark_theme(root):
     dark_bg = "#2E2E2E"  # Dark gray background
     dark_fg = "#FFFFFF"  # White text
 
-    # root.tk_setPalette(background=dark_bg, foreground=dark_fg)
+    root.tk_setPalette(background=dark_bg, foreground=dark_fg)
 
 
 def main():
