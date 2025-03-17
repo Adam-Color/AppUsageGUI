@@ -22,6 +22,10 @@ def get_user_directory():
         user_dir = os.path.join(home_dir, '.local/share/AppUsageGUI/User')
     return user_dir
 
+def config_file():
+    """Returns the path to the config file"""
+    return os.path.join(get_user_directory(), 'config.dat')
+
 def sessions_exist():
     """Check if sessions exist, and if not, create the directory"""
     file_extension = ".dat"

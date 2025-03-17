@@ -1,7 +1,10 @@
 import tkinter as tk
+import os
+
+from core.utils.file_utils import read_file, write_file, config_file
 
 def validate_numeric(value):
-    """Check if value is a numeric and greater than or equal to 0"""
+    """Check if value is numeric and greater than or equal to 0"""
     if value == "":  # Allow empty string (for backspace)
         return True
     try:
@@ -19,6 +22,14 @@ class TrackerSettingsWindow(tk.Frame):
         vcmd = (self.register(validate_numeric), '%P')
         label = tk.Label(self, text="Tracker settings:\n")
         label.pack(side="top", fill="x", padx=5)
+
+        self.settings = {
+            "mouse_tracker_enabled": False,
+            "mouse_idle_time_limit": 300
+        }
+
+        if os.path.exists(config_file()):
+            self.settings = read_file(config_file())
 
         self.mouse_tracker_time_text = tk.StringVar()
         self.mouse_tracker_time_text.set(str(self.logic_controller.mouse_tracker.get_idle_time_limit()))
@@ -40,15 +51,32 @@ class TrackerSettingsWindow(tk.Frame):
         mouse_tracker_time_label_a = tk.Label(self, text="seconds")
         mouse_tracker_time_label_a.pack(side="top", padx=1)
 
-        apply_button = tk.Button(self, text="Save Changes", command=print(1))
-        apply_button.pack(side="bottom", fill="y", padx=1, pady=5)
+        discard_button = tk.Button(self, text="Discard Changes", command=self.discard_changes)
+        discard_button.pack(side="bottom", fill="y", padx=1, pady=5)
 
-        apply_button = tk.Button(self, text="Discard Changes", command=print(1))
-        apply_button.pack(side="bottom", fill="y", padx=1, pady=5)
+        save_button = tk.Button(self, text="Save Changes", command=self.save_changes)
+        save_button.pack(side="bottom", fill="y", padx=1, pady=5)
 
     def save_changes(self):
-        self.logic_controller.mouse_tracker.set_idle_time_limit(int(self.mouse_tracker_time_text))
+        # set intvars
+        self.logic_controller.mouse_tracker.set_enabled(self.enable_mouse_tracker.get() == 1)
+        self.settings["mouse_tracker_enabled"] = self.logic_controller.mouse_tracker.is_enabled()
+
+        # set text items
+        self.logic_controller.mouse_tracker.set_idle_time_limit(int(self.mouse_tracker_time_text.get()))
+        self.settings["mouse_idle_time_limit"] = self.logic_controller.mouse_tracker.get_idle_time_limit()
+
+        # save data to config.dat
+        write_file(config_file(), self.settings)
+
+        # show main window
         self.controller.show_frame("MainWindow")
 
     def discard_changes(self):
+        # intvars
+        self.enable_mouse_tracker = tk.IntVar()
+
+        # text boxes
+        self.mouse_tracker_time_text = tk.StringVar()
+
         self.controller.show_frame("MainWindow")

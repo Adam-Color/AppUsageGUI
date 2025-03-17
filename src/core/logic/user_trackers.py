@@ -7,18 +7,20 @@ import threading
 import time
 import pyautogui
 
+from core.utils.file_utils import read_file, config_file
+
 class MouseTracker:
     """Tracks mouse movement over a user configurable time frame."""
     def __init__(self, parent, logic_controller):
         self.parent = parent
-        self.idle_time_limit = 300
+        self.idle_time_limit = read_file(config_file())["mouse_idle_time_limit"]
         x = 0
         y = 0
         self.logic_controller = logic_controller
         self.mouse_position = x, y
         self.last_mouse_position = x , y
         self.stop_event = threading.Event()  # Used to stop the thread gracefully
-        self.enabled = False
+        self.enabled = read_file(config_file())["mouse_tracker_enabled"]
 
         self.update_thread = threading.Thread(target=self._update_mouse_position)
 
@@ -46,11 +48,8 @@ class MouseTracker:
             self.stop_event.set()
             self.update_thread.join()
     
-    def enable(self):
-        self.enabled = True
-
-    def disable(self):
-        self.enabled = False
+    def set_enabled(self, enabled=bool):
+        self.enabled = enabled
 
     def set_idle_time_limit(self, idle_time_limit):
         """Set the idle time limit for comparing mouse positions"""
@@ -58,3 +57,6 @@ class MouseTracker:
 
     def get_idle_time_limit(self):
         return self.idle_time_limit
+    
+    def is_enabled(self):
+        return self.enabled
