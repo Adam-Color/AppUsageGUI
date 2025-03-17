@@ -3,7 +3,7 @@ name: Build Installers
 on:
   push:
     tags:
-      - "v1.0.0"  # change for versioning
+      - "v1.0.0"  # Runs on version tags like v1.0.0
   workflow_dispatch:
 
 jobs:
@@ -35,14 +35,12 @@ jobs:
 
       - name: Build Windows Executable
         if: matrix.os == 'windows-latest'
-        run: |
-          pyinstaller --onefile --windowed --name "App-${{ env.VERSION }}" --add-data "src/core;core" src/main.py
+        run: python build.py
         shell: cmd
 
       - name: Build macOS Executable
         if: matrix.os == 'macos-latest'
-        run: |
-          pyinstaller --onefile --windowed --name "App-${{ env.VERSION }}" --add-data "src/core:core" src/main.py
+        run: python build.py
 
       - name: Setup Inno Setup (Windows)
         if: matrix.os == 'windows-latest'
