@@ -1,6 +1,17 @@
 import tkinter as tk
 from tkinter import messagebox
 import time
+import threading
+
+def threaded(fn):
+    def wrapper(*args, **kwargs):
+        result = []
+        def run_and_capture():
+            result.append(fn(*args, **kwargs))
+        thread = threading.Thread(target=run_and_capture)
+        thread.start()
+        return thread, result
+    return wrapper
 
 class SelectAppWindow(tk.Frame):
     def __init__(self, parent, controller, logic_controller):
@@ -40,28 +51,32 @@ class SelectAppWindow(tk.Frame):
         self.app_listbox.config(yscrollcommand=scrollbar.set)
 
         # Track the apps and filtered apps
-        self.tracker = self.logic_controller.tracker
+        self.app_tracker = self.logic_controller.app_tracker
         self.all_apps = []  # Store all apps to filter through
         self.refresh_apps()  # Populate list initially
         
         # Button to make selection
         select_button = tk.Button(self, text="Select", command=self.select_app)
         select_button.pack(pady=10)
+
+        back_button = tk.Button(self, text="Main Menu", command=lambda: (self.controller.reset_frames(), self.controller.show_frame("MainWindow")))
+        back_button.pack(pady=5, side='bottom')
     
     def select_app(self):
         selected_index = self.app_listbox.curselection()
         if selected_index:
             selected_app = self.app_listbox.get(selected_index)
             self.controller.show_frame("TrackerWindow")
-            self.tracker.set_selected_app(selected_app)
+            self.app_tracker.set_selected_app(selected_app)
         else:
             messagebox.showerror("Error", "No application selected")
 
+    @threaded
     def refresh_apps(self):
         """Fetch all app names and display them in the listbox."""
         self.app_listbox.delete(0, tk.END)
         time.sleep(1)
-        self.all_apps = self.tracker.get_app_names()
+        self.all_apps = self.app_tracker.get_app_names()
 
         if not self.all_apps:
             messagebox.showerror("Error", "No applications found.")
@@ -69,6 +84,7 @@ class SelectAppWindow(tk.Frame):
             for app in self.all_apps:
                 self.app_listbox.insert(tk.END, app)
 
+    @threaded
     def update_search(self, *args):
         """Filter apps in the listbox based on search input."""
         search_text = self.search_var.get().lower()

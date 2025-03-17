@@ -16,7 +16,7 @@ This program tracks the runtime of a specified application, logging the duration
     git clone https://github.com/Adam-Code/AppUsageGUI.git
     ```
 
-2. Ensure you have Python 3.12.4 installed on your system.
+2. Ensure you have Python 3.12.7 installed on your system.
 
 3. Install the required libraries:
     ```sh

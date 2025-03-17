@@ -18,18 +18,15 @@ class SaveWindow(tk.Frame):
         button_no.pack(pady=5)
 
     def save(self):
-        if self.logic_controller.session_files.get_continuing_session():
+        if self.logic_controller.file_handler.get_continuing_session():
             session_time = self.logic_controller.time_tracker.get_total_time()
             #print("Session time: ", session_time) #! debug print
-            session_app_name = self.logic_controller.tracker.get_selected_app()
+            session_app_name = self.logic_controller.app_tracker.get_selected_app()
             #print("Session_app_name: ", session_app_name) #! debug print
 
             data = {'app_name': session_app_name, 'time_spent': session_time}
-            print(data)
 
-            serialized_data = pickle.dumps(data)
-
-            self.logic_controller.session_files.save_data(serialized_data)
+            self.logic_controller.file_handler.save_session_data(data)
 
             # show to session total window
             self.controller.show_frame("SessionTotalWindow")
@@ -41,5 +38,6 @@ class SaveWindow(tk.Frame):
         ans = tk.messagebox.askyesno("Delete Confirmation", "Are you sure you don't want to save?")
         if ans:
             self.logic_controller.time_tracker.reset()
-            self.logic_controller.tracker.reset()
+            self.logic_controller.app_tracker.reset()
+            self.controller.reset_frames()
             self.controller.show_frame("MainWindow")
