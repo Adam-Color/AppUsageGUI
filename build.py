@@ -3,10 +3,8 @@ import sys
 import shutil
 import subprocess
 
-from src._version import __version__
-
 # Project details
-PROJECT_NAME = f"AppUsageGUI-v{__version__}-{"Windows" if os.name == 'nt' else "macOS"}"
+PROJECT_NAME = "AppUsageGUI"
 ENTRY_POINT = "src/main.py"
 BUILD_DIR = "build"
 DIST_DIR = "dist"
