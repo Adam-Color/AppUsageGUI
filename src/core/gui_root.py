@@ -46,6 +46,25 @@ class GUIRoot(tk.Frame):
         frame = self.frames[page_name]
         frame.tkraise()
 
+    def reset_frames(self):
+        # Stop the AppTracker thread
+        if self.logic_controller.app_tracker:
+            self.logic_controller.app_tracker.reset()
+
+        # stop the TimeTracker thread
+        if self.logic_controller.time_tracker:
+            self.logic_controller.time_tracker.reset()
+        
+        # stop the MouseTracker thread
+        if self.logic_controller.mouse_tracker:
+            self.logic_controller.mouse_tracker.stop()
+        
+        # Reset the frames and initialize them again
+        for frame in self.frames.values():
+            frame.destroy()
+        self.frames = {}
+        self.init_screens()
+
     def on_close(self):
         """Handle cleanup and close the application."""
         # Stop the AppTracker thread

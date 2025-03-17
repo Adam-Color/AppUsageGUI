@@ -106,6 +106,7 @@ class TrackerSettingsWindow(tk.Frame):
         write_file(config_file(), self.settings)
 
         # Show main window
+        self.controller.reset_frames()
         self.controller.show_frame("MainWindow")
 
     def discard_changes(self):
@@ -114,4 +115,5 @@ class TrackerSettingsWindow(tk.Frame):
         self.mouse_tracker_enabled_temp = self.settings["mouse_tracker_enabled"]
         self.mouse_toggle_text.set("Disable Mouse Tracker" if self.settings["mouse_tracker_enabled"] else "Enable Mouse Tracker")
 
+        self.controller.reset_frames()
         self.controller.show_frame("MainWindow")

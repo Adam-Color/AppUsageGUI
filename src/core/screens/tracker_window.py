@@ -7,6 +7,7 @@ from core.utils.time_utils import format_time
 
 class TrackerWindow(tk.Frame):
     def __init__(self, parent, controller, logic_controller):
+        print("init") #! debug
         tk.Frame.__init__(self, parent)
         self.controller = controller
         self.logic_controller = logic_controller
@@ -55,6 +56,9 @@ class TrackerWindow(tk.Frame):
                 self.update_queue.put(("app", self.app))
 
                 # user trackers, enable/disable handled by the user tracker class
+                #TODO: needs to be more scalable
+                self.logic_controller.mouse_tracker.start()
+            elif self.logic_controller.file_handler.get_continuing_tracker():
                 self.logic_controller.mouse_tracker.start()
 
             # Stop tracking when the app closes

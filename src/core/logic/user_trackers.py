@@ -49,14 +49,12 @@ class MouseTracker:
             if self.last_mouse_position == self.mouse_position:
                 self.logic_controller.time_tracker.pause()
                 self.pausing = True
-                print("mouse tracker paused the timer") #! debug
             elif self.logic_controller.time_tracker.get_is_paused():
                 self.logic_controller.time_tracker.resume()
                 self.pausing = False
-                print("mouse tracker resumed the timer") #! debug
 
     def start(self):
-        if self.enabled:
+        if self.enabled and not self.update_thread:
             self.update_thread.start()
 
     def stop(self):

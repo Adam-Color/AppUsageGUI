@@ -39,4 +39,5 @@ class SaveWindow(tk.Frame):
         if ans:
             self.logic_controller.time_tracker.reset()
             self.logic_controller.app_tracker.reset()
+            self.controller.reset_frames()
             self.controller.show_frame("MainWindow")
