@@ -57,7 +57,10 @@ class AppTracker:
     def stop(self):
         self.stop_event.set()
         if self.update_thread is not None:
-            self.update_thread.join()
+            try:
+                self.update_thread.join()
+            except RuntimeError:
+                pass
 
     def start(self):
         self.stop_event = threading.Event()

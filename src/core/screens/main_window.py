@@ -24,6 +24,6 @@ class MainWindow(tk.Frame):
                                 command=lambda: controller.show_frame("SessionsWindow"))
             button2.pack(pady=3)
 
-        button3 = tk.Button(self, text="   Configure custom rules  ", command=lambda: controller.
+        button3 = tk.Button(self, text="   Configure custom rules   ", command=lambda: controller.
         show_frame("TrackerSettingsWindow"))
         button3.pack(pady=3)

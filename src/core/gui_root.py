@@ -55,6 +55,10 @@ class GUIRoot(tk.Frame):
         # stop the TimeTracker thread
         if self.logic_controller.time_tracker:
             self.logic_controller.time_tracker.stop()
+        
+        # stop the MouseTracker thread
+        if self.logic_controller.mouse_tracker:
+            self.logic_controller.mouse_tracker.stop()
 
         # Destroy the root window
         self.parent.destroy()

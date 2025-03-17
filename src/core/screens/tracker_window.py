@@ -54,16 +54,20 @@ class TrackerWindow(tk.Frame):
                 self.logic_controller.time_tracker.clock()
                 self.update_queue.put(("app", self.app))
 
-                # user trackers, enable/disable handed by the user tracker class
+                # user trackers, enable/disable handled by the user tracker class
                 self.logic_controller.mouse_tracker.start()
 
             # Stop tracking when the app closes
             # includes exception for continuing tracking from a previous session.
             if self.logic_controller.time_tracker.is_running() and self.app not in app_names and self.logic_controller.file_handler.get_continuing_tracker() is False:
+                # handle situations where the time tracker is paused
+                self.logic_controller.time_tracker.resume()
+
                 self.logic_controller.time_tracker.stop()
+                self.logic_controller.mouse_tracker.stop()
                 self.rec_time = 0
                 self.app = ""
-                self.track_time_disp = "Looking for app..."
+                self.track_time_disp = "Looking for target app..."
                 break
 
             # Update the time label
@@ -71,6 +75,13 @@ class TrackerWindow(tk.Frame):
                 secs = self.logic_controller.time_tracker.get_time()
                 if secs is not None:
                     track_time_disp = f"{format_time(round(secs))} recorded."
+                    
+                    # update the app label if tracking is paused
+                    #TODO: needs a more scalable implementation
+                    if self.logic_controller.mouse_tracker.is_pausing():
+                        self.page_label.config(text="Tracking paused, mouse is idle...")
+                    else:
+                        self.page_label.config(text=f"Tracking the selected app: {self.app}")
 
                     #HACK: needed to allow app to be detected before break
                     self.logic_controller.file_handler.set_continuing_tracker(False)

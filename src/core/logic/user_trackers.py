@@ -28,21 +28,31 @@ class MouseTracker:
         except FileNotFoundError:
             self.enabled = False  # Default value
 
+        self.pausing = False
+
         self.update_thread = threading.Thread(target=self._update_mouse_position)
 
     def _update_mouse_position(self):
         while not self.stop_event.is_set():
             self.last_mouse_position = self.mouse_position
-            print(self.last_mouse_position) #! debug
-            time.sleep(self.idle_time_limit)
+
+            # time limit handling
+            if not self.logic_controller.time_tracker.get_is_paused():
+                time.sleep(self.idle_time_limit)
+            else:
+                time.sleep(1)
+
             x, y = pyautogui.position()
             self.mouse_position = x, y
-            print(self.mouse_position) #! debug
+
+            # pause the timer
             if self.last_mouse_position == self.mouse_position:
                 self.logic_controller.time_tracker.pause()
+                self.pausing = True
                 print("mouse tracker paused the timer") #! debug
             elif self.logic_controller.time_tracker.get_is_paused():
                 self.logic_controller.time_tracker.resume()
+                self.pausing = False
                 print("mouse tracker resumed the timer") #! debug
 
     def start(self):
@@ -50,9 +60,12 @@ class MouseTracker:
             self.update_thread.start()
 
     def stop(self):
+        self.stop_event.set()
         if self.update_thread is not None:
-            self.stop_event.set()
-            self.update_thread.join()
+            try:
+                self.update_thread.join()
+            except RuntimeError:
+                pass
     
     def set_enabled(self, enabled=bool):
         self.enabled = enabled
@@ -63,6 +76,9 @@ class MouseTracker:
 
     def get_idle_time_limit(self):
         return self.idle_time_limit
+    
+    def is_pausing(self):
+        return self.pausing
     
     def is_enabled(self):
         return self.enabled
