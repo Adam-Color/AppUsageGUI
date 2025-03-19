@@ -18,6 +18,9 @@ class CreateSessionWindow(tk.Frame):
         confirm_button = tk.Button(self, text="Confirm", command=self.on_confirm)
         confirm_button.pack(side="top", fill="x", pady=5)
 
+        back_button = tk.Button(self, text="Main Menu", command=lambda: (self.controller.reset_frames(), self.controller.show_frame("MainWindow")))
+        back_button.pack(pady=5, side='bottom')
+
     def on_confirm(self):
         """Resets trackers upon confirmation"""
         session_name = self.session_name_input.get()
