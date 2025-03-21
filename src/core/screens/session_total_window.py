@@ -13,6 +13,8 @@ class SessionTotalWindow(tk.Frame):
 
         self.update_queue = queue.Queue()
 
+        self.stop_event = threading.Event()
+
         self.time_readout = "loading..."
 
         # Display the page label
@@ -43,10 +45,10 @@ class SessionTotalWindow(tk.Frame):
             pass
         
         # Call this method again after 1000 ms (1 second) to keep updating the label
-        self.after(1000, self.update_total_time)
+        self.update_total_time_id = self.after(1000, self.update_total_time)
 
     def total_time_thread(self):
-        while True:
+        while not self.stop_event.is_set():
             try:
                 if self.logic_controller.time_tracker.get_time() > 0 and self.logic_controller.time_tracker.is_running():
                     # Get the total session time from the logic controller
@@ -59,3 +61,14 @@ class SessionTotalWindow(tk.Frame):
 
             # Sleep for 3 seconds before the next update
             time.sleep(1)
+    
+    def stop_threads(self):
+        self.stop_event.set()
+
+        # Cancel scheduled update_total_time calls
+        try:
+            self.after_cancel(self.update_total_time_id)
+        except AttributeError:
+            pass  # If no updates were scheduled yet, ignore error
+        except ValueError:
+            pass  # If already cancelled, ignore error

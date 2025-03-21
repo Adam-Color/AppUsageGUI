@@ -46,25 +46,45 @@ class GUIRoot(tk.Frame):
         frame = self.frames[page_name]
         frame.tkraise()
 
+    #FIXME: thread duplication in update_total_time
     def reset_frames(self):
-        """Reset the GUI frames."""
-        # Stop the AppTracker thread
-        if self.logic_controller.app_tracker:
-            self.logic_controller.app_tracker.reset()
+        print("Resetting frames...")  #! Debugging prints
 
-        # stop the TimeTracker thread
-        if self.logic_controller.time_tracker:
-            self.logic_controller.time_tracker.reset()
-        
-        # stop the MouseTracker thread
-        if self.logic_controller.mouse_tracker:
-            self.logic_controller.mouse_tracker.stop()
-        
-        # Reset the frames and initialize them again
-        for frame in self.frames.values():
-            frame.destroy()
-        self.frames = {}
-        self.init_screens()
+        try:
+            # Stop trackers
+            if self.logic_controller.app_tracker:
+                print("Stopping AppTracker...")
+                self.logic_controller.app_tracker.reset()
+
+            if self.logic_controller.time_tracker:
+                print("Stopping TimeTracker...")
+                self.logic_controller.time_tracker.reset()
+
+            if self.logic_controller.mouse_tracker:
+                print("Stopping MouseTracker...")
+                self.logic_controller.mouse_tracker.stop()
+
+            # Stop GUI threads
+            for frame_name, frame in self.frames.items():
+                if hasattr(frame, "stop_threads"):
+                    print(f"Stopping threads for {frame_name}...")
+                    frame.stop_threads()
+
+            # Destroy frames
+            for frame_name, frame in self.frames.items():
+                print(f"Destroying frame {frame_name}...")
+                frame.destroy()
+
+            self.frames = {}
+
+            # Reinitialize screens
+            print("Reinitializing screens...")
+            self.init_screens()
+
+        except Exception as e:
+            print(f"Crash in reset_frames(): {e}")
+
+
 
     def on_close(self):
         """Handle cleanup and close the application."""
