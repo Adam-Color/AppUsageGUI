@@ -22,7 +22,7 @@ class AppTracker:
         seen_names = set()
         for process in psutil.process_iter(['name']):
             try:
-                app_name = process.info['name'].split(" ")[0]
+                app_name = process.info['name']
                 app_name = app_name.split(".")[0]  # Use the base name of the process
                 if app_name not in seen_names and len(app_name) > 0:
                     apps.append(app_name)

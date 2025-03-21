@@ -2,9 +2,10 @@ import os
 import sys
 import shutil
 import subprocess
+from src._version import __version__
 
 # Project details
-PROJECT_NAME = "AppUsageGUI"
+PROJECT_NAME = f"AppUsageGUI-v{__version__}"
 ENTRY_POINT = "src/main.py"
 BUILD_DIR = "build"
 DIST_DIR = "dist"
@@ -25,7 +26,7 @@ def build_executable():
     icon_file = "src/core/resources/icon.ico" if os.name == 'nt' else "src/core/resources/icon.icns"
     print("Building the application...")
     run_command(
-        f'{python_executable} -m PyInstaller --onefile --name {PROJECT_NAME} '
+        f'{python_executable} -m PyInstaller --onefile --clean --name {PROJECT_NAME} '
         f'--windowed --clean '
         f'--add-data "src/core:core" '
         f'--add-data "{icon_file}:." '

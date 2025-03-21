@@ -1,4 +1,4 @@
-# App Usage GUI
+# AppUsageGUI
 ### Application Runtime Tracker
 
 This program tracks the runtime of a specified application, logging the duration the application is running over multiple instances, with unique sessions created by the user.

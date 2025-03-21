@@ -1,6 +1,7 @@
 """
     Application runtime tracker.
-    Copyright (C) 2025  Adam Blair-Smith
+
+    Copyright (C) 2025 Adam Blair-Smith
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -59,7 +60,7 @@ def main():
     icon_path = resource_path(icon_name)
 
     root.iconbitmap(icon_path)
-    root.title(f"App Usage GUI - v{__version__}")
+    root.title(f"AppUsageGUI - v{__version__}")
 
     win = GUIRoot(root)
     win.pack(side="top", fill="both", expand=True)

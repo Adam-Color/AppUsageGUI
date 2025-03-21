@@ -83,6 +83,7 @@ class SelectAppWindow(tk.Frame):
         else:
             for app in self.all_apps:
                 self.app_listbox.insert(tk.END, app)
+        self.update_search()
 
     @threaded
     def update_search(self, *args):

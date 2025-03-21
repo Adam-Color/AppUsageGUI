@@ -17,6 +17,9 @@ class SaveWindow(tk.Frame):
         button_no = tk.Button(self, text="No", command=self.dont_save)
         button_no.pack(pady=5)
 
+        back_button = tk.Button(self, text="Main Menu", command=lambda: (self.controller.reset_frames(), self.controller.show_frame("MainWindow")))
+        back_button.pack(pady=5, side='bottom')
+
     def save(self):
         if self.logic_controller.file_handler.get_continuing_session():
             session_time = self.logic_controller.time_tracker.get_total_time()

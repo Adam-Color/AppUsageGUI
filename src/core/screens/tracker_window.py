@@ -14,6 +14,7 @@ class TrackerWindow(tk.Frame):
         self.app = ""
         self.track_time_disp = "Looking for app..."
         self.rec_time = 0
+        self.stop_event = threading.Event()
 
         # Display the note label
         self.note_label = tk.Label(self, text="Tracking stops automatically when tracked app is fully closed")
@@ -44,7 +45,7 @@ class TrackerWindow(tk.Frame):
 
     def update_time_label(self):
         secs = 0
-        while True:
+        while not self.stop_event.is_set():
             self.app = self.logic_controller.app_tracker.get_selected_app()
 
             app_names = self.logic_controller.app_tracker.get_app_names()
@@ -96,7 +97,8 @@ class TrackerWindow(tk.Frame):
                 self.update_queue.put(("time", "Looking for application..."))
 
             time.sleep(0.1)
-        self.controller.show_frame("SaveWindow")
+        if not self.stop_event.is_set():
+            self.controller.show_frame("SaveWindow")
 
 
     def periodic_update(self):
@@ -111,3 +113,6 @@ class TrackerWindow(tk.Frame):
         except queue.Empty:
             pass
         self.after(500, self.periodic_update)
+
+    def stop_threads(self):
+        self.stop_event.set()
