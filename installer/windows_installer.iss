@@ -1,5 +1,5 @@
 [Setup]
-AppName=App Usage GUI
+AppName=AppUsageGUI
 AppVersion={#MyAppVersion}
 DefaultDirName={autopf}\AppUsageGUI
 DefaultGroupName=AppUsageGUI
@@ -12,5 +12,5 @@ SolidCompression=yes
 Source: "dist\App-${#MyAppVersion}.exe"; DestDir: "{app}"
 
 [Icons]
-Name: "{group}\App Usage GUI"; Filename: "{app}\App-${#MyAppVersion}.exe"
-Name: "{commondesktop}\App Usage GUI"; Filename: "{app}\App-${#MyAppVersion}.exe"
+Name: "{group}\AppUsageGUI"; Filename: "{app}\App-${#MyAppVersion}.exe"
+Name: "{commondesktop}\AppUsageGUI"; Filename: "{app}\App-${#MyAppVersion}.exe"

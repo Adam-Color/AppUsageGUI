@@ -59,7 +59,7 @@ def main():
     icon_path = resource_path(icon_name)
 
     root.iconbitmap(icon_path)
-    root.title(f"App Usage GUI - v{__version__}")
+    root.title(f"AppUsageGUI - v{__version__}")
 
     win = GUIRoot(root)
     win.pack(side="top", fill="both", expand=True)
