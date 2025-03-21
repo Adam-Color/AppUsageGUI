@@ -59,7 +59,7 @@ class SessionTotalWindow(tk.Frame):
             except TypeError:
                 pass
 
-            # Sleep for 3 seconds before the next update
+            # Sleep for 1 second before the next update
             time.sleep(1)
     
     def stop_threads(self):
