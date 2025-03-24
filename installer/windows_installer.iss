@@ -6,6 +6,7 @@
 #define MyAppPublisher "Adam Blair-Smith"
 #define MyAppURL "https://github.com/Adam-Color/AppUsageGUI"
 #define MyAppExeName "AppUsageGUI-v1.0.5.exe"
+#define MyInstallerName "AppUsageGUI_v1.0.5_WINDOWS_setup"
 
 [Setup]
 ; NOTE: The value of AppId uniquely identifies this application. Do not use the same AppId value in installers for other applications.
@@ -33,7 +34,7 @@ LicenseFile=C:\Users\adamj\Documents\code\AppUsageGUI\LICENSE.txt
 ; Uncomment the following line to run in non administrative install mode (install for current user only).
 ;PrivilegesRequired=lowest
 OutputDir=C:\Users\adamj\Documents\code\AppUsageGUI\dist
-OutputBaseFilename=AppUsageGUI_v1.0.0_WINDOWS_setup
+OutputBaseFilename={#MyInstallerName}
 SetupIconFile=C:\Users\adamj\Documents\code\AppUsageGUI\src\core\resources\icon.ico
 SolidCompression=yes
 WizardStyle=modern
