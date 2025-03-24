@@ -53,7 +53,6 @@ def apply_dark_theme(root):
 
 
 def main():
-    # calls to create the app directories
     root = tk.Tk()
 
     icon_name = "core/resources/icon.ico" if os.name == 'nt' else "core/resources/icon.icns"
@@ -68,6 +67,7 @@ def main():
     if is_dark_mode():
         apply_dark_theme(root)
 
+    # calls to create the app directories
     sessions_exist()
     user_dir_exists()
 
