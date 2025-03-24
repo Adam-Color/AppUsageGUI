@@ -1,4 +1,5 @@
 import tkinter as tk
+
 from core.utils.file_utils import sessions_exist
 
 class MainWindow(tk.Frame):

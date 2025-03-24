@@ -20,6 +20,7 @@
 import tkinter as tk
 import os
 import sys
+import requests
 
 from _version import __version__
 
@@ -52,6 +53,19 @@ def apply_dark_theme(root):
     root.tk_setPalette(background=dark_bg, foreground=dark_fg)
 
 
+def new_updates():
+    """Check for new updates on GitHub. Returns a boolean"""
+    try:
+        response = requests.get("https://api.github.com/repos/adam-color/AppUsageGUI/releases/latest", timeout=3)
+        if response.status_code == 200:
+            data = response.json()
+            latest_version = data["tag_name"]
+            if latest_version!= __version__:
+                return True
+    except Exception as e:
+        print(f"Error checking for updates: {str(e)}")
+    return False
+
 def main():
     # calls to create the app directories
     root = tk.Tk()
@@ -65,7 +79,7 @@ def main():
     win = GUIRoot(root)
     win.pack(side="top", fill="both", expand=True)
 
-    if is_dark_mode():
+    if os.name == 'nt' and is_dark_mode():
         apply_dark_theme(root)
 
     sessions_exist()
