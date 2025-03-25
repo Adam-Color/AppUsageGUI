@@ -7,7 +7,6 @@ from core.utils.time_utils import format_time
 
 class TrackerWindow(tk.Frame):
     def __init__(self, parent, controller, logic_controller):
-        print("init") #! debug
         tk.Frame.__init__(self, parent)
         self.controller = controller
         self.logic_controller = logic_controller

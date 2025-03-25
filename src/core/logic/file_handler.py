@@ -56,7 +56,6 @@ class FileHandler:
                     self.data = None
             except _pickle.UnpicklingError as e:
                 self.corrupt_sessions.append((filename, "Data is corrupt"))
-                print(filename + ": " + str(e))
                 self.data = None
         else:
             self.corrupt_sessions.append((filename, "No hash file found"))
