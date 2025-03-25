@@ -87,7 +87,7 @@ def splash_screen():
     """Display a splash screen while the application loads."""
     # Check for new updates
     if new_updates():
-        ask_update = tk.messagebox.askquestion('Confirmation', "A new update is available. Would you like to download it from the github page?")
+        ask_update = tk.messagebox.askquestion('AppUsageGUI Updates', "A new update is available. Would you like to download it from the github page?")
         if ask_update == "yes":
             webbrowser.open_new_tab("https://github.com/adam-color/AppUsageGUI/releases/latest")
 
