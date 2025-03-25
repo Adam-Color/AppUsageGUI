@@ -93,7 +93,7 @@ def splash_screen():
 
     splash_window = tk.Tk()
     splash_window.attributes("-topmost", True)
-    splash_window.geometry("400x50")
+    splash_window.geometry("200x50")
     splash_window.title("AppUsageGUI - Loading...")
 
     # Display loading text
