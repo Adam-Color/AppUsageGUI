@@ -20,6 +20,8 @@
 import tkinter as tk
 import os
 import sys
+import time
+import webbrowser
 import requests
 
 from _version import __version__
@@ -56,17 +58,58 @@ def apply_dark_theme(root):
 def new_updates():
     """Check for new updates on GitHub. Returns a boolean"""
     try:
-        response = requests.get("https://api.github.com/repos/adam-color/AppUsageGUI/releases/latest", timeout=3)
-        if response.status_code == 200:
-            data = response.json()
-            latest_version = data["tag_name"]
-            if latest_version!= __version__:
+        response = requests.get("https://api.github.com/repos/adam-color/AppUsageGUI/releases/latest", timeout=10)
+        response.raise_for_status()  # Raises an HTTPError for bad responses
+
+        data = response.json()
+        latest_version = data["tag_name"].lstrip('v').split('.')
+        current_version = __version__.split('.')
+
+        # Compare version numbers
+        for latest, current in zip(latest_version, current_version):
+            if int(latest) > int(current):
                 return True
+            elif int(latest) < int(current):
+                return False
+
+        # If we've gotten here, the versions are equal
+        return False
+
+    except requests.RequestException as e:
+        print(f"Error checking for updates: Network error - {str(e)}")
+    except (KeyError, ValueError, IndexError) as e:
+        print(f"Error checking for updates: Parsing error - {str(e)}")
     except Exception as e:
-        print(f"Error checking for updates: {str(e)}")
+        print(f"Error checking for updates: Unexpected error - {str(e)}")
     return False
 
+def splash_screen():
+    """Display a splash screen while the application loads."""
+    # Check for new updates
+    if new_updates():
+        ask_update = tk.messagebox.askquestion('Confirmation', "A new update is available. Would you like to download it from the github page?")
+        if ask_update == "yes":
+            webbrowser.open_new_tab("https://github.com/adam-color/AppUsageGUI/releases/latest")
+
+    splash_window = tk.Tk()
+    splash_window.attributes("-topmost", True)
+    splash_window.geometry("400x50")
+    splash_window.title("AppUsageGUI - Loading...")
+
+    # Display loading text
+    loading_label = tk.Label(splash_window, text="\nLoading...")
+    loading_label.pack()
+
+    # Simulate loading process
+    for i in range(10):
+        splash_window.update_idletasks()
+        splash_window.update()
+        time.sleep(0.1)
+
+    splash_window.destroy()
+
 def main():
+    splash_screen()
     root = tk.Tk()
 
     icon_name = "core/resources/icon.ico" if os.name == 'nt' else "core/resources/icon.icns"
