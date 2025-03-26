@@ -29,5 +29,5 @@ class MainWindow(tk.Frame):
         show_frame("TrackerSettingsWindow"))
         button3.pack(pady=3)
 
-        exit_button = tk.Button(self, text="Exit", command=lambda: controller.on_close())
-        exit_button.pack(pady=5, side='bottom')
+        exit_button = tk.Button(self, text=" Exit ", command=lambda: controller.on_close())
+        exit_button.pack(pady=10, side='bottom')

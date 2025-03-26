@@ -54,7 +54,6 @@ def apply_dark_theme(root):
 
     root.tk_setPalette(background=dark_bg, foreground=dark_fg)
 
-
 def new_updates():
     """Check for new updates on GitHub. Returns a boolean"""
     try:
