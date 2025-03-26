@@ -5,7 +5,7 @@
 #define MyAppVersion "1.1.4"
 #define MyAppPublisher "Adam Blair-Smith"
 #define MyAppURL "https://github.com/Adam-Color/AppUsageGUI"
-#define MyAppExeName "AppUsageGUI-v1.1.4.exe"
+#define MyAppExeName "AppUsageGUI.exe"
 #define MyInstallerName "AppUsageGUI_v1.1.4_WINDOWS_setup"
 
 [Setup]
