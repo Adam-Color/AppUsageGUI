@@ -38,7 +38,6 @@ class TrackerWindow(tk.Frame):
 
         self.update_thread = threading.Thread(target=self.update_time_label)
         self.update_thread.daemon = True
-        self.update_thread.start()
 
         self.periodic_update()
 
@@ -112,6 +111,9 @@ class TrackerWindow(tk.Frame):
         except queue.Empty:
             pass
         self.after(500, self.periodic_update)
+    
+    def start_update_thread(self):
+        self.update_thread.start()
 
     def stop_threads(self):
         self.stop_event.set()

@@ -65,9 +65,10 @@ class SelectAppWindow(tk.Frame):
     def select_app(self):
         selected_index = self.app_listbox.curselection()
         if selected_index:
+            self.controller.frames["TrackerWindow"].start_update_thread()
             selected_app = self.app_listbox.get(selected_index)
-            self.controller.show_frame("TrackerWindow")
             self.app_tracker.set_selected_app(selected_app)
+            self.controller.show_frame("TrackerWindow")
         else:
             messagebox.showerror("Error", "No application selected")
 
