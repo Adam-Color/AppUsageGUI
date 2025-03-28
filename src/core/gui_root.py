@@ -46,39 +46,30 @@ class GUIRoot(tk.Frame):
         frame = self.frames[page_name]
         frame.tkraise()
 
-    #FIXME: thread duplication in update_total_time
     def reset_frames(self):
-        print("Resetting frames...")  #! Debugging prints
-
         try:
             # Stop trackers
             if self.logic_controller.app_tracker:
-                print("Stopping AppTracker...")
                 self.logic_controller.app_tracker.reset()
 
             if self.logic_controller.time_tracker:
-                print("Stopping TimeTracker...")
                 self.logic_controller.time_tracker.reset()
 
             if self.logic_controller.mouse_tracker:
-                print("Stopping MouseTracker...")
                 self.logic_controller.mouse_tracker.stop()
 
             # Stop GUI threads
             for frame_name, frame in self.frames.items():
                 if hasattr(frame, "stop_threads"):
-                    print(f"Stopping threads for {frame_name}...")
                     frame.stop_threads()
 
             # Destroy frames
             for frame_name, frame in self.frames.items():
-                print(f"Destroying frame {frame_name}...")
                 frame.destroy()
 
             self.frames = {}
 
             # Reinitialize screens
-            print("Reinitializing screens...")
             self.init_screens()
 
         except Exception as e:

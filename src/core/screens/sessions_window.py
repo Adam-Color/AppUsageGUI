@@ -72,6 +72,7 @@ class SessionsWindow(tk.Frame):
         if not self.get_session_text():
             tk.messagebox.showerror("Error", "No session selected")
             return 0
+        self.controller.frames["TrackerWindow"].start_update_thread()
         selected_app_name = self.get_session_text().split(": ")[1].split(", ")[0]
         selected_session_name = self.get_session_text().split(": ")[0]
 
@@ -88,7 +89,6 @@ class SessionsWindow(tk.Frame):
         # start/reset tracking threads
         self.logic_controller.app_tracker.reset()
         self.logic_controller.app_tracker.set_selected_app(selected_app_name)
-        self.logic_controller.app_tracker.start()
         self.logic_controller.time_tracker.reset(add_time=self.logic_controller.file_handler.get_data()['time_spent'])
         self.logic_controller.time_tracker.start()
         self.logic_controller.time_tracker.clock()

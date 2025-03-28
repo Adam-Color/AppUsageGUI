@@ -12,3 +12,4 @@ PyScreeze==1.0.1
 pytweening==1.2.0
 rubicon-objc==0.5.0
 pyinstaller
+requests
