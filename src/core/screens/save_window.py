@@ -1,5 +1,4 @@
 import tkinter as tk
-import pickle
 
 class SaveWindow(tk.Frame):
     def __init__(self, parent, controller, logic_controller):
@@ -17,7 +16,7 @@ class SaveWindow(tk.Frame):
         button_no = tk.Button(self, text="No", command=self.dont_save)
         button_no.pack(pady=5)
 
-        back_button = tk.Button(self, text="Main Menu", command=lambda: (self.controller.reset_frames(), self.controller.show_frame("MainWindow")))
+        back_button = tk.Button(self, text="Main Menu", command=self.dont_save)
         back_button.pack(pady=5, side='bottom')
 
     def save(self):
@@ -38,7 +37,7 @@ class SaveWindow(tk.Frame):
     
     def dont_save(self):
         """confirm data deletion"""
-        ans = tk.messagebox.askyesno("Delete Confirmation", "Are you sure you don't want to save?")
+        ans = tk.messagebox.askyesno("AppUsageGUI", "Are you sure you don't want to save?")
         if ans:
             self.logic_controller.time_tracker.reset()
             self.logic_controller.app_tracker.reset()
