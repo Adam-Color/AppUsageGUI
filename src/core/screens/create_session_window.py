@@ -1,6 +1,8 @@
 import tkinter as tk
 import re
 
+from core.utils.file_utils import read_file, config_file
+
 def validate_name(value):
     """Check if name is valid for saving as a file"""
     if value == "":  # Allow empty string (for backspace)
@@ -10,10 +12,8 @@ def validate_name(value):
     illegal_chars = r'[<>:"/\\|?*\x00-\x1F.]'
     if re.search(illegal_chars, value):
         return False
-    
+
     return True
-
-
 
 class CreateSessionWindow(tk.Frame):
     def __init__(self, parent, controller, logic_controller):
@@ -41,7 +41,7 @@ class CreateSessionWindow(tk.Frame):
         back_button.pack(pady=5, side='bottom')
 
     def on_confirm(self):
-        """Resets trackers upon confirmation"""
+        """Saves session and resets trackers upon confirmation"""
         self.session_save(self.session_name.get())
         self.logic_controller.time_tracker.reset()
         self.logic_controller.app_tracker.reset()
@@ -51,7 +51,16 @@ class CreateSessionWindow(tk.Frame):
         self.logic_controller.file_handler.set_file_name(session_name)
         session_time = self.logic_controller.time_tracker.get_time(saved=True)
         session_app_name = self.logic_controller.app_tracker.get_selected_app()
+        try:
+            self.config = read_file(config_file())
+        except FileNotFoundError:
+            self.config = {}
 
-        data = {'app_name': session_app_name, 'time_spent': session_time}
+        data = {
+                'app_name': session_app_name,
+                'time_spent': session_time,
+                'config': self.config,
+                'paused_time': self.logic_controller.TimeTracker.get_paused_time()
+                }
 
         self.logic_controller.file_handler.save_session_data(data)

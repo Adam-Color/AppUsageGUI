@@ -67,6 +67,9 @@ class TimeTracker:
 
     def get_total_time(self):
         return self.total_time + self.elapsed_time
+    
+    def get_paused_time(self):
+        return self.paused_time
 
     def is_running(self):
         return self.track
