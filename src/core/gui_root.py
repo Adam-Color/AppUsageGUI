@@ -47,33 +47,27 @@ class GUIRoot(tk.Frame):
         frame.tkraise()
 
     def reset_frames(self):
-        try:
-            # Stop trackers
-            if self.logic_controller.app_tracker:
-                self.logic_controller.app_tracker.reset()
+        # Stop trackers
+        if self.logic_controller.app_tracker:
+            self.logic_controller.app_tracker.reset()
+        if self.logic_controller.time_tracker:
+            self.logic_controller.time_tracker.reset()
+        if self.logic_controller.mouse_tracker:
+            self.logic_controller.mouse_tracker.stop()
 
-            if self.logic_controller.time_tracker:
-                self.logic_controller.time_tracker.reset()
+        # Stop GUI threads
+        for frame_name, frame in self.frames.items():
+            if hasattr(frame, "stop_threads"):
+                frame.stop_threads()
 
-            if self.logic_controller.mouse_tracker:
-                self.logic_controller.mouse_tracker.stop()
+        # Destroy frames
+        for frame_name, frame in self.frames.items():
+            frame.destroy()
 
-            # Stop GUI threads
-            for frame_name, frame in self.frames.items():
-                if hasattr(frame, "stop_threads"):
-                    frame.stop_threads()
+        self.frames = {}
 
-            # Destroy frames
-            for frame_name, frame in self.frames.items():
-                frame.destroy()
-
-            self.frames = {}
-
-            # Reinitialize screens
-            self.init_screens()
-
-        except Exception as e:
-            print(f"Crash in reset_frames(): {e}")
+        # Reinitialize screens
+        self.init_screens()
 
 
 

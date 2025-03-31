@@ -1,5 +1,7 @@
 import tkinter as tk
 
+from core.utils.file_utils import read_file, config_file
+
 class SaveWindow(tk.Frame):
     def __init__(self, parent, controller, logic_controller):
         tk.Frame.__init__(self, parent)
@@ -22,11 +24,19 @@ class SaveWindow(tk.Frame):
     def save(self):
         if self.logic_controller.file_handler.get_continuing_session():
             session_time = self.logic_controller.time_tracker.get_total_time()
-            #print("Session time: ", session_time) #! debug print
             session_app_name = self.logic_controller.app_tracker.get_selected_app()
-            #print("Session_app_name: ", session_app_name) #! debug print
+            captures = self.logic_controller.time_tracker.get_time_captures()
+            try:
+                self.config = read_file(config_file())
+            except FileNotFoundError:
+                self.config = {}
 
-            data = {'app_name': session_app_name, 'time_spent': session_time}
+            data = {
+                    'app_name': session_app_name,
+                    'time_spent': session_time,
+                    'config': self.config,
+                    'time_captures': captures # {'starts': [], 'stops': [], 'pauses': [{start: 0, how_long: 0}]}
+                    }
 
             self.logic_controller.file_handler.save_session_data(data)
 

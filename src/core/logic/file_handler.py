@@ -59,7 +59,15 @@ class FileHandler:
             self.data = None
 
     def get_data(self):
-        return self.data
+        """Gets session data, and ensures the returned data is always a dictionary."""
+        if isinstance(self.data, bytes):  # If data is bytes, unpickle it
+            try:
+                return pickle.loads(self.data)
+            except _pickle.UnpicklingError:
+                print("Error: Could not unpickle session data.")
+                return {}
+        return self.data if isinstance(self.data, dict) else {}
+
 
     def set_file_name(self, file_name):
         if file_name is not None:

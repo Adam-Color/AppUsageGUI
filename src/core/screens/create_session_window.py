@@ -61,7 +61,6 @@ class CreateSessionWindow(tk.Frame):
                 'app_name': session_app_name,
                 'time_spent': session_time,
                 'config': self.config,
-                'paused_time': self.logic_controller.time_tracker.get_paused_time(),
                 'time_captures': captures # {'starts': [], 'stops': [], 'pauses': [{start: 0, how_long: 0}]}
                 }
 

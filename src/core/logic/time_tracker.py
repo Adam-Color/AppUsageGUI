@@ -70,14 +70,16 @@ class TimeTracker:
         self.total_time = add_time
         self.track = False
         self.start_time = None
+        self.captures = {'starts': [], 'stops': [], 'pauses': []}
+        self.update_captures()  # update captures from session file if applicable
     
     def update_captures(self):
         """populates the captures dictionary with data from the session file"""
         try:
             self.captures = self.controller.file_handler.get_data()['time_captures']
-        except KeyError:
+        except KeyError as e:
             # handle v1 session files
-            pass
+            print("Error updating time captures from session file:", e)
 
     def get_is_paused(self):
         return self.is_paused
