@@ -69,6 +69,7 @@ class FileHandler:
         self.continuing_session = continuation
         if continuation:
             self.set_continuing_tracker(True)
+            self.controller.time_tracker.update_captures()
 
     def set_continuing_tracker(self, value=bool):
         self.continuing_tracker = value

@@ -29,13 +29,7 @@ class TimeTracker:
 
         # time captures for data analysis are saved in the following format:
         # {'starts': [], 'stops': [], 'pauses': [{start: 0, how_long: 0}, ...]}
-        if self.controller.file_handler.get_continuing_tracker():
-            try:
-                self.captures = self.controller.file_handler.get_data()['time_captures']
-            except KeyError:
-                self.captures = {'starts': [], 'stops': [], 'pauses': []}
-        else:
-            self.captures = {'starts': [], 'stops': [], 'pauses': []}
+        self.captures = {'starts': [], 'stops': [], 'pauses': []}
 
     @threaded
     def clock(self):
@@ -70,6 +64,20 @@ class TimeTracker:
             self.offset_time += self.resumed_time - self.paused_time
             self.captures['pauses'].append({'start': self.paused_time,
                                             'how_long': self.offset_time})
+    
+    def reset(self, add_time=0.0):
+        self.elapsed_time = 0.0
+        self.total_time = add_time
+        self.track = False
+        self.start_time = None
+    
+    def update_captures(self):
+        """populates the captures dictionary with data from the session file"""
+        try:
+            self.captures = self.controller.file_handler.get_data()['time_captures']
+        except KeyError:
+            # handle v1 session files
+            pass
 
     def get_is_paused(self):
         return self.is_paused
@@ -90,9 +98,3 @@ class TimeTracker:
 
     def is_running(self):
         return self.track
-
-    def reset(self, add_time=0.0):
-        self.elapsed_time = 0.0
-        self.total_time = add_time
-        self.track = False
-        self.start_time = None
