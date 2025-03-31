@@ -51,7 +51,7 @@ class FileHandler:
                 else:
                     self.corrupt_sessions.append((filename, "Hash mismatch"))
                     self.data = None
-            except _pickle.UnpicklingError as e:
+            except _pickle.UnpicklingError:
                 self.corrupt_sessions.append((filename, "Data is corrupt"))
                 self.data = None
         else:

@@ -29,7 +29,10 @@ class TimeTracker:
 
         # {'starts': [], 'stops': [], 'pauses': [{start: 0, how_long: 0}, ...]}
         if self.controller.file_handler.get_continuing_tracker():
-            self.captures = self.controller.file_handler.get_data()['time_captures']
+            try:
+                self.captures = self.controller.file_handler.get_data()['time_captures']
+            except KeyError:
+                self.captures = {'starts': [], 'stops': [], 'pauses': []}
         else:
             self.captures = {'starts': [], 'stops': [], 'pauses': []}
 
