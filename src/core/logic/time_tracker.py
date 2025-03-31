@@ -27,6 +27,7 @@ class TimeTracker:
         self.offset_time = 0.0
         self.is_paused = False
 
+        # time captures for data analysis are saved in the following format:
         # {'starts': [], 'stops': [], 'pauses': [{start: 0, how_long: 0}, ...]}
         if self.controller.file_handler.get_continuing_tracker():
             try:
