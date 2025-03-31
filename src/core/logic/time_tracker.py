@@ -27,6 +27,12 @@ class TimeTracker:
         self.offset_time = 0.0
         self.is_paused = False
 
+        # {'starts': [], 'stops': [], 'pauses': [{start: 0, how_long: 0}, ...]}
+        if self.controller.file_handler.get_continuing_tracker():
+            self.captures = self.controller.file_handler.get_data()['time_captures']
+        else:
+            self.captures = {'starts': [], 'stops': [], 'pauses': []}
+
     @threaded
     def clock(self):
         """This method runs in a separate 
@@ -41,9 +47,11 @@ class TimeTracker:
 
     def start(self):
         self.track = True
+        self.captures['starts'].append(time.time())
 
     def stop(self):
         self.track = False
+        self.captures['stops'].append(time.time())
 
     def pause(self):
         if self.track and not self.is_paused:
@@ -56,6 +64,8 @@ class TimeTracker:
             self.is_paused = False
             self.resumed_time = time.time()
             self.offset_time += self.resumed_time - self.paused_time
+            self.captures['pauses'].append({'start': self.paused_time,
+                                            'how_long': self.offset_time})
 
     def get_is_paused(self):
         return self.is_paused
@@ -70,6 +80,9 @@ class TimeTracker:
     
     def get_paused_time(self):
         return self.paused_time
+    
+    def get_time_captures(self):
+        return self.captures
 
     def is_running(self):
         return self.track

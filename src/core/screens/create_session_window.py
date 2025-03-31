@@ -51,6 +51,7 @@ class CreateSessionWindow(tk.Frame):
         self.logic_controller.file_handler.set_file_name(session_name)
         session_time = self.logic_controller.time_tracker.get_time(saved=True)
         session_app_name = self.logic_controller.app_tracker.get_selected_app()
+        captures = self.logic_controller.time_tracker.get_time_captures()
         try:
             self.config = read_file(config_file())
         except FileNotFoundError:
@@ -60,7 +61,8 @@ class CreateSessionWindow(tk.Frame):
                 'app_name': session_app_name,
                 'time_spent': session_time,
                 'config': self.config,
-                'paused_time': self.logic_controller.TimeTracker.get_paused_time()
+                'paused_time': self.logic_controller.time_tracker.get_paused_time(),
+                'time_captures': captures # {'starts': [], 'stops': [], 'pauses': [{start: 0, how_long: 0}]}
                 }
 
         self.logic_controller.file_handler.save_session_data(data)

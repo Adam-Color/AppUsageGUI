@@ -1,7 +1,6 @@
 """Handler for all file io operations"""
 
 import os
-import time
 import pickle
 import _pickle
 
@@ -11,9 +10,7 @@ class FileHandler:
     def __init__(self, parent, logic_controller):
         self.parent = parent
         self.controller = logic_controller
-        time1 = str(time.localtime().tm_year) + '-' + str(time.localtime().tm_mon) + '-' + str(time.localtime().tm_mday) + '-' + str(time.localtime().tm_hour) + '-' + str(time.localtime().tm_min)
-        self.fileName = f"{time1}.dat"
-        self.hashFileName = f"{time1}.hash"
+        self.file_name = ""
         self.directory = get_sessions_directory()
         if not os.path.exists(self.directory):
             os.mkdir(self.directory)
@@ -25,8 +22,8 @@ class FileHandler:
     def save_session_data(self, data):
         """Special function to save and hash session data"""
         self.data = pickle.dumps(data)
-        file_path = os.path.join(self.directory, self.fileName + '.dat')
-        hash_path = os.path.join(self.directory, self.fileName + '.hash')
+        file_path = os.path.join(self.directory, self.file_name + '.dat')
+        hash_path = os.path.join(self.directory, self.file_name + '.hash')
 
         # Save data to file
         write_file(file_path, self.data)
@@ -66,7 +63,7 @@ class FileHandler:
 
     def set_file_name(self, file_name):
         if file_name is not None:
-            self.fileName = file_name
+            self.file_name = file_name
 
     def set_continuing_session(self, continuation=bool):
         self.continuing_session = continuation
