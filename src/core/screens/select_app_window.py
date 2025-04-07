@@ -19,7 +19,7 @@ class SelectAppWindow(tk.Frame):
         self.controller = controller
         self.logic_controller = logic_controller
 
-        label = tk.Label(self, text="Ensure the desired application is running.\n\nSelect which application you would like to track:")
+        label = tk.Label(self, text="Ensure the desired application is running.\nYou may need to hit \'Refresh List\' if it was not.\n\nSelect which application you would like to track:")
         label.pack(side="top", fill="x", pady=5)
         
         # Search entry
