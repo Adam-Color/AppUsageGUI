@@ -1,6 +1,7 @@
 import tkinter as tk
 
 from core.utils.file_utils import sessions_exist
+from core.screens.analyze_data_window import AnalyzeDataWindow
 
 class MainWindow(tk.Frame):
     def __init__(self, parent, controller, logic_controller):
@@ -26,7 +27,7 @@ class MainWindow(tk.Frame):
             button2.pack(pady=3)
 
             button3 = tk.Button(self, text="Analyze session data",
-                                command=print(1), width=20)
+                                command=lambda: controller.show_frame("AnalyzeDataWindow"), width=20)
             button3.pack(pady=3)
 
         button4 = tk.Button(self, text="Configure custom rules", command=lambda: controller.

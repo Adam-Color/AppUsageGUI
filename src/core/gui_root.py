@@ -10,6 +10,7 @@ from .screens.save_window import SaveWindow
 from .screens.create_session_window import CreateSessionWindow
 from .screens.session_total_window import SessionTotalWindow
 from .screens.tracker_settings_window import TrackerSettingsWindow
+from .screens.analyze_data_window import AnalyzeDataWindow
 
 class GUIRoot(tk.Frame):
     def __init__(self, parent):
