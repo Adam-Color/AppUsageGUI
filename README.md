@@ -26,3 +26,4 @@ Contributions are welcome and needed on the Develop branch! Here is a TODO list:
 
 1. Add ways to analyze app usage data in the app
 2. Move to a single QT UI instead of multiple 'screens'
+3. Add support for tracking more than one executable per session
