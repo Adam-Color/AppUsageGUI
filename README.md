@@ -1,6 +1,6 @@
 ![version](https://img.shields.io/badge/Version-1.1.4-white.svg)
 ![license](https://img.shields.io/badge/License-GPL%20v3-blue.svg)
-![python](https://img.shields.io/badge/Python-1.12.7-green.svg)
+![python](https://img.shields.io/badge/Python-3.12.7-green.svg)
 
 # AppUsageGUI
 ### Application Runtime Tracker
@@ -26,3 +26,4 @@ Contributions are welcome and needed on the Develop branch! Here is a TODO list:
 
 1. Add ways to analyze app usage data in the app
 2. Move to a single QT UI instead of multiple 'screens'
+3. Add support for tracking more than one executable per session
