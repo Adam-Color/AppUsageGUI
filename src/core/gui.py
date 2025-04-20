@@ -2,11 +2,11 @@ import sys
 import os
 import webbrowser
 import requests
-from PyQt5.QtWidgets import (
+from PyQt6.QtWidgets import (
     QApplication, QWidget, QLabel, QVBoxLayout, QMessageBox
 )
-from PyQt5.QtGui import QIcon
-from PyQt5.QtCore import Qt
+from PyQt6.QtGui import QIcon
+from PyQt6.QtCore import Qt
 
 from _version import __version__
 from core.utils.file_utils import sessions_exist, user_dir_exists
@@ -55,6 +55,8 @@ def new_updates():
         for latest, current in zip(latest_version, current_version):
             if int(latest) > int(current):
                 return True
+            elif int(latest) < int(current):
+                return False
         return False
     except requests.RequestException as e:
         print(f"Error checking for updates: Network error - {str(e)}")
@@ -76,7 +78,8 @@ def splash_screen():
             webbrowser.open_new_tab("https://github.com/adam-color/AppUsageGUI/releases/latest")
 
     splash = QWidget()
-    splash.setWindowFlags(Qt.WindowStaysOnTopHint | Qt.CustomizeWindowHint)
+    splash.setWindowFlags(Qt.WindowType.WindowStaysOnTopHint | Qt.WindowType.CustomizeWindowHint)
+    splash.setAttribute(Qt.WidgetAttribute.WA_DeleteOnClose)
     splash.setGeometry(600, 300, 250, 80)
     splash.setWindowTitle("AppUsageGUI - Loading...")
     layout = QVBoxLayout()
@@ -101,6 +104,8 @@ class GUIRoot(QWidget):
         label = QLabel("Welcome to AppUsageGUI")
         layout.addWidget(label)
         self.setLayout(layout)
+        # self.setWindowFlags()
+        self.setAttribute(Qt.WidgetAttribute.WA_DeleteOnClose)
         self.setWindowTitle(f"AppUsageGUI - v{__version__}")
         icon_name = "core/resources/icon.ico" if os.name == 'nt' else "core/resources/icon.icns"
         icon_path = resource_path(icon_name)
@@ -111,3 +116,9 @@ class GUIRoot(QWidget):
 
         sessions_exist()
         user_dir_exists()
+
+    def closeEvent(self, event):
+        print("Closing the application...")
+        self.logic_controller.close()
+        QApplication.instance().quit()
+        event.accept()
