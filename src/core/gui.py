@@ -95,6 +95,10 @@ class GUIRoot(QWidget):
         # Initialize LogicRoot
         self.logic_controller = LogicRoot(self)
 
+        # calls to create the app directories
+        sessions_exist()
+        user_dir_exists()
+
     def init_ui(self):
         splash_screen()
         layout = QVBoxLayout()
@@ -109,5 +113,21 @@ class GUIRoot(QWidget):
         if is_dark_mode():
             self.setStyleSheet("background-color: #2E2E2E; color: white;")
 
-        sessions_exist()
-        user_dir_exists()
+        # Bind the close event to ensure cleanup
+        self.parent.protocol("WM_DELETE_WINDOW", self.on_close)
+
+    def on_close(self):
+        # Stop trackers
+        if self.logic_controller.app_tracker:
+            self.logic_controller.app_tracker.reset()
+        if self.logic_controller.time_tracker:
+            self.logic_controller.time_tracker.reset()
+        if self.logic_controller.mouse_tracker:
+            self.logic_controller.mouse_tracker.stop()
+
+        # Stop GUI threads
+        for frame_name, frame in self.frames.items():
+            if hasattr(frame, "stop_threads"):
+                frame.stop_threads()
+
+        self.close()
