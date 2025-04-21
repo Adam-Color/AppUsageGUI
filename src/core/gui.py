@@ -69,12 +69,12 @@ def new_updates():
 def splash_screen():
     if new_updates():
         msg_box = QMessageBox()
-        msg_box.setIcon(QMessageBox.Information)
+        msg_box.setIcon(QMessageBox.Icon.Information)
         msg_box.setWindowTitle("AppUsageGUI")
         msg_box.setText("A new update is available. Would you like to download it from the GitHub page?")
-        msg_box.setStandardButtons(QMessageBox.Yes | QMessageBox.No)
-        response = msg_box.exec_()
-        if response == QMessageBox.Yes:
+        msg_box.setStandardButtons(QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No)
+        response = msg_box.exec()
+        if response == 16385: # if the user clicked "Yes"
             webbrowser.open_new_tab("https://github.com/adam-color/AppUsageGUI/releases/latest")
 
     splash = QWidget()
@@ -118,9 +118,6 @@ class GUIRoot(QWidget):
         if is_dark_mode():
             self.setStyleSheet("background-color: #2E2E2E; color: white;")
 
-        # Bind the close event to ensure cleanup
-        self.parent.protocol("WM_DELETE_WINDOW", self.on_close)
-
     def on_close(self):
         # Stop trackers
         if self.logic_controller.app_tracker:
@@ -130,17 +127,13 @@ class GUIRoot(QWidget):
         if self.logic_controller.mouse_tracker:
             self.logic_controller.mouse_tracker.stop()
 
-        # Stop GUI threads
-        for frame_name, frame in self.frames.items():
-            if hasattr(frame, "stop_threads"):
-                frame.stop_threads()
-
         self.close()
         sessions_exist()
         user_dir_exists()
 
     def closeEvent(self, event):
         print("Closing the application...")
+        self.on_close()
         self.logic_controller.close()
         QApplication.instance().quit()
         event.accept()

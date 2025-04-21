@@ -12,6 +12,7 @@ def threaded(fn):
     return wrapper
 
 class TimeTracker:
+    """A clock that runs in a separate thread to track elapsed time, with pause and resume functionality."""
     def __init__(self, parent, logic_controller):
         self.parent = parent
 
@@ -68,6 +69,9 @@ class TimeTracker:
     
     def reset(self, add_time=0.0):
         self.elapsed_time = 0.0
+        self.offset_time = 0.0
+        self.paused_time = 0.0
+        self.resumed_time = 0.0
         self.total_time = add_time
         self.track = False
         self.start_time = None
@@ -80,7 +84,8 @@ class TimeTracker:
             self.captures = self.controller.file_handler.get_data()['time_captures']
         except KeyError as e:
             # handle v1 session files
-            print("Error updating time captures from session file:", e)
+            if str(e) != '\'time_captures\'':
+                print("Error updating time captures from session file: KEYERROR |", str(e))
 
     def get_is_paused(self):
         return self.is_paused
