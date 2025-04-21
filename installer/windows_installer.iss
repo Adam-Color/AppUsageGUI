@@ -2,7 +2,7 @@
 ; SEE THE DOCUMENTATION FOR DETAILS ON CREATING INNO SETUP SCRIPT FILES!
 
 #define MyAppName "AppUsageGUI"
-#define MyAppVersion "1.1.4"
+#define MyAppVersion "2.0.0"
 #define MyAppPublisher "Adam Blair-Smith"
 #define MyAppURL "https://github.com/Adam-Color/AppUsageGUI"
 #define MyAppExeName "AppUsageGUI.exe"
@@ -30,12 +30,12 @@ ArchitecturesAllowed=x64compatible
 ; the 64-bit view of the registry.
 ArchitecturesInstallIn64BitMode=x64compatible
 DisableProgramGroupPage=yes
-LicenseFile=C:\Users\adamj\Documents\code\AppUsageGUI\LICENSE.txt
+LicenseFile={app}\LICENSE.txt
 ; Uncomment the following line to run in non administrative install mode (install for current user only).
 ;PrivilegesRequired=lowest
-OutputDir=C:\Users\adamj\Documents\code\AppUsageGUI\dist
+OutputDir={app}\dist
 OutputBaseFilename={#MyInstallerName}
-SetupIconFile=C:\Users\adamj\Documents\code\AppUsageGUI\src\core\resources\icon.ico
+SetupIconFile={app}\src\core\resources\icon.ico
 SolidCompression=yes
 WizardStyle=modern
 
@@ -46,8 +46,8 @@ Name: "english"; MessagesFile: "compiler:Default.isl"
 Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{cm:AdditionalIcons}"; Flags: unchecked
 
 [Files]
-Source: "C:\Users\adamj\Documents\code\AppUsageGUI\dist\{#MyAppExeName}"; DestDir: "{app}"; Flags: ignoreversion
-Source: "C:\Users\adamj\Documents\code\AppUsageGUI\src\core\resources\icon.ico"; DestDir: "{app}/src/core/resources"; Flags: ignoreversion
+Source: "{app}\dist\{#MyAppExeName}"; DestDir: "{app}"; Flags: ignoreversion
+Source: "{app}\src\core\resources\icon.ico"; DestDir: "{app}/src/core/resources"; Flags: ignoreversion
 ; NOTE: Don't use "Flags: ignoreversion" on any shared system files
 
 [Icons]
