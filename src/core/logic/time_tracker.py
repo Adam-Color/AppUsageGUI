@@ -48,8 +48,9 @@ class TimeTracker:
         self.captures['starts'].append(time.time())
 
     def stop(self):
-        self.track = False
-        self.captures['stops'].append(time.time())
+        if self.track:
+            self.captures['stops'].append(time.time())
+            self.track = False
 
     def pause(self):
         if self.track and not self.is_paused:
