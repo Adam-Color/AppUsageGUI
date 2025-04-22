@@ -27,7 +27,7 @@ class SelectAppWindow(tk.Frame):
         search_label.pack(pady=5)
         
         self.search_var = tk.StringVar()
-        self.search_var.trace("w", self.update_search)  # Update list as user types
+        self.search_var.trace_add("write", lambda *args: self.update_search())  # Update list as user types
         search_entry = tk.Entry(self, textvariable=self.search_var)
         search_entry.pack(pady=5)
 
