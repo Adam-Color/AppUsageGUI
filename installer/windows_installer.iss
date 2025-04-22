@@ -30,12 +30,12 @@ ArchitecturesAllowed=x64compatible
 ; the 64-bit view of the registry.
 ArchitecturesInstallIn64BitMode=x64compatible
 DisableProgramGroupPage=yes
-LicenseFile={app}\LICENSE.txt
+LicenseFile=..\LICENSE.txt
 ; Uncomment the following line to run in non administrative install mode (install for current user only).
 ;PrivilegesRequired=lowest
-OutputDir={app}\dist
+OutputDir=..\dist
 OutputBaseFilename={#MyInstallerName}
-SetupIconFile={app}\src\core\resources\icon.ico
+SetupIconFile=..\src\core\resources\icon.ico
 SolidCompression=yes
 WizardStyle=modern
 
@@ -46,8 +46,8 @@ Name: "english"; MessagesFile: "compiler:Default.isl"
 Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{cm:AdditionalIcons}"; Flags: unchecked
 
 [Files]
-Source: "{app}\dist\{#MyAppExeName}"; DestDir: "{app}"; Flags: ignoreversion
-Source: "{app}\src\core\resources\icon.ico"; DestDir: "{app}/src/core/resources"; Flags: ignoreversion
+Source: "..\dist\{#MyAppExeName}"; DestDir: "{app}"; Flags: ignoreversion
+Source: "..\src\core\resources\icon.ico"; DestDir: "{app}/src/core/resources"; Flags: ignoreversion
 ; NOTE: Don't use "Flags: ignoreversion" on any shared system files
 
 [Icons]
