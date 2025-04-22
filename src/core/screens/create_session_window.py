@@ -19,7 +19,7 @@ class CreateSessionWindow(tk.Frame):
     def __init__(self, parent, controller, logic_controller):
         tk.Frame.__init__(self, parent)
         self.controller = controller
-        self.logic_controller = logic_controller
+        self.logic = logic_controller
 
         vcmd = (self.register(validate_name), '%P')
         self.session_name = tk.StringVar()
@@ -43,15 +43,15 @@ class CreateSessionWindow(tk.Frame):
     def on_confirm(self):
         """Saves session and resets trackers upon confirmation"""
         self.session_save(self.session_name.get())
-        self.logic_controller.time_tracker.reset()
-        self.logic_controller.app_tracker.reset()
+        self.logic.time_tracker.reset()
+        self.logic.app_tracker.reset()
         self.controller.show_frame("SessionTotalWindow")
 
     def session_save(self, session_name):
-        self.logic_controller.file_handler.set_file_name(session_name)
-        session_time = self.logic_controller.time_tracker.get_time(saved=True)
-        session_app_name = self.logic_controller.app_tracker.get_selected_app()
-        captures = self.logic_controller.time_tracker.get_time_captures()
+        self.logic.file_handler.set_file_name(session_name)
+        session_time = self.logic.time_tracker.get_time(saved=True)
+        session_app_name = self.logic.app_tracker.get_selected_app()
+        captures = self.logic.time_tracker.get_time_captures()
         try:
             self.config = read_file(config_file())
         except FileNotFoundError:
@@ -64,4 +64,4 @@ class CreateSessionWindow(tk.Frame):
                 'time_captures': captures # {'starts': [], 'stops': [], 'pauses': [{start: 0, how_long: 0}]}
                 }
 
-        self.logic_controller.file_handler.save_session_data(data)
+        self.logic.file_handler.save_session_data(data)

@@ -18,7 +18,7 @@ class GUIRoot(tk.Frame):
         self.parent = parent
 
         # Initialize LogicRoot
-        self.logic_controller = LogicRoot(self)
+        self.logic = LogicRoot(self)
 
         self.container = tk.Frame(self)
         self.container.pack(side="top", fill="both", expand=True)
@@ -36,7 +36,7 @@ class GUIRoot(tk.Frame):
         # Pass the logic_controller when initializing screens
         for F in (MainWindow, SessionsWindow, SelectAppWindow, TrackerWindow, SaveWindow, CreateSessionWindow, SessionTotalWindow, TrackerSettingsWindow):
             page_name = F.__name__
-            frame = F(parent=self.container, controller=self, logic_controller=self.logic_controller)
+            frame = F(parent=self.container, controller=self, logic_controller=self.logic)
             self.frames[page_name] = frame
 
             frame.grid(row=0, column=0, sticky="nsew")
@@ -49,12 +49,12 @@ class GUIRoot(tk.Frame):
 
     def reset_frames(self):
         # Stop trackers
-        if self.logic_controller.app_tracker:
-            self.logic_controller.app_tracker.reset()
-        if self.logic_controller.time_tracker:
-            self.logic_controller.time_tracker.reset()
-        if self.logic_controller.mouse_tracker:
-            self.logic_controller.mouse_tracker.stop()
+        if self.logic.app_tracker:
+            self.logic.app_tracker.reset()
+        if self.logic.time_tracker:
+            self.logic.time_tracker.reset()
+        if self.logic.mouse_tracker:
+            self.logic.mouse_tracker.stop()
 
         # Stop GUI threads
         for frame_name, frame in self.frames.items():
@@ -75,16 +75,16 @@ class GUIRoot(tk.Frame):
     def on_close(self):
         """Handle cleanup and close the application."""
         # Stop the AppTracker thread
-        if self.logic_controller.app_tracker:
-            self.logic_controller.app_tracker.stop()
+        if self.logic.app_tracker:
+            self.logic.app_tracker.stop()
 
         # stop the TimeTracker thread
-        if self.logic_controller.time_tracker:
-            self.logic_controller.time_tracker.stop()
+        if self.logic.time_tracker:
+            self.logic.time_tracker.stop()
         
         # stop the MouseTracker thread
-        if self.logic_controller.mouse_tracker:
-            self.logic_controller.mouse_tracker.stop()
+        if self.logic.mouse_tracker:
+            self.logic.mouse_tracker.stop()
 
         # Destroy the root window
         self.parent.destroy()

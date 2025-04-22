@@ -3,7 +3,8 @@ import os
 import webbrowser
 import requests
 from PyQt6.QtWidgets import (
-    QApplication, QWidget, QLabel, QVBoxLayout, QMessageBox
+    QApplication, QWidget, QLabel, QVBoxLayout, QMessageBox,
+    QListWidget, QGridLayout
 )
 from PyQt6.QtGui import QIcon
 from PyQt6.QtCore import Qt
@@ -90,13 +91,17 @@ def splash_screen():
     QApplication.processEvents()
     splash.close()
 
-class GUIRoot(QWidget):
+class SessionsList(QListWidget):
+    def onItemClicked(self, item):
+        QMessageBox.information(self, "QListWidget Interaction", "You selected: " + item.text())
+
+class MainWindow(QWidget):
     def __init__(self):
         super().__init__()
         self.init_ui()
 
         # Initialize LogicRoot
-        self.logic_controller = LogicRoot(self)
+        self.logic = LogicRoot(self)
 
         # calls to create the app directories
         sessions_exist()
@@ -104,9 +109,11 @@ class GUIRoot(QWidget):
 
     def init_ui(self):
         splash_screen()
-        layout = QVBoxLayout()
-        label = QLabel("Welcome to AppUsageGUI")
-        layout.addWidget(label)
+
+        # define the layout type --
+        layout = QGridLayout()
+
+        # app setup --
         self.setLayout(layout)
         # self.setWindowFlags()
         self.setAttribute(Qt.WidgetAttribute.WA_DeleteOnClose)
@@ -118,14 +125,20 @@ class GUIRoot(QWidget):
         if is_dark_mode():
             self.setStyleSheet("background-color: #2E2E2E; color: white;")
 
+        # create widgets --
+        label = QLabel("Welcome to AppUsageGUI")
+
+        # add widgets to the layout --
+        layout.addWidget(label)
+
     def on_close(self):
         # Stop trackers
-        if self.logic_controller.app_tracker:
-            self.logic_controller.app_tracker.reset()
-        if self.logic_controller.time_tracker:
-            self.logic_controller.time_tracker.reset()
-        if self.logic_controller.mouse_tracker:
-            self.logic_controller.mouse_tracker.stop()
+        if self.logic.app_tracker:
+            self.logic.app_tracker.reset()
+        if self.logic.time_tracker:
+            self.logic.time_tracker.reset()
+        if self.logic.mouse_tracker:
+            self.logic.mouse_tracker.stop()
 
         self.close()
         sessions_exist()
@@ -134,6 +147,6 @@ class GUIRoot(QWidget):
     def closeEvent(self, event):
         print("Closing the application...")
         self.on_close()
-        self.logic_controller.close()
+        self.logic.close()
         QApplication.instance().quit()
         event.accept()

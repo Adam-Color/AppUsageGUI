@@ -17,7 +17,7 @@ class SelectAppWindow(tk.Frame):
     def __init__(self, parent, controller, logic_controller):
         tk.Frame.__init__(self, parent)
         self.controller = controller
-        self.logic_controller = logic_controller
+        self.logic = logic_controller
 
         label = tk.Label(self, text="Ensure the desired application is running.\nYou may need to hit \'Refresh List\' if it was not.\n\nSelect which application you would like to track:")
         label.pack(side="top", fill="x", pady=5)
@@ -52,7 +52,7 @@ class SelectAppWindow(tk.Frame):
         self.app_listbox.config(yscrollcommand=scrollbar.set)
 
         # Track the apps and filtered apps
-        self.app_tracker = self.logic_controller.app_tracker
+        self.app_tracker = self.logic.app_tracker
         self.all_apps = []  # Store all apps to filter through
         self.refresh_apps()  # Populate list initially
         

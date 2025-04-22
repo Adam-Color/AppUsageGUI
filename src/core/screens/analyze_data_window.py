@@ -6,7 +6,7 @@ class AnalyzeDataWindow(tk.Toplevel):
     def __init__(self, parent, controller, logic_controller):
         super().__init__(parent)  # Toplevel window with `parent` as master
         self.controller = controller
-        self.logic_controller = logic_controller
+        self.logic = logic_controller
 
         self.title("Popout Window")
         self.geometry("1600x1200")

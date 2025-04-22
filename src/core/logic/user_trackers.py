@@ -19,7 +19,7 @@ class MouseTracker:
             self.idle_time_limit = 300  # Default value
         x = 0
         y = 0
-        self.logic_controller = logic_controller
+        self.logic = logic_controller
         self.mouse_position = x, y
         self.last_mouse_position = x , y
         self.stop_event = threading.Event()  # Used to stop the thread gracefully
@@ -37,7 +37,7 @@ class MouseTracker:
             self.last_mouse_position = self.mouse_position
 
             # time limit handling
-            if not self.logic_controller.time_tracker.get_is_paused():
+            if not self.logic.time_tracker.get_is_paused():
                 time.sleep(self.idle_time_limit)
             else:
                 time.sleep(1)
@@ -47,10 +47,10 @@ class MouseTracker:
 
             # pause the timer
             if self.last_mouse_position == self.mouse_position:
-                self.logic_controller.time_tracker.pause()
+                self.logic.time_tracker.pause()
                 self.pausing = True
-            elif self.logic_controller.time_tracker.get_is_paused():
-                self.logic_controller.time_tracker.resume()
+            elif self.logic.time_tracker.get_is_paused():
+                self.logic.time_tracker.resume()
                 self.pausing = False
 
     def start(self):
