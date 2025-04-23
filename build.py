@@ -33,7 +33,7 @@ def build_executable():
         f'--collect-submodules core '
         f'--collect-all psutil '
         f'--collect-all pyautogui '
-        f'--collect-all tkinter '
+        f'--collect-all PyQt6 '
         f'--icon={icon_file} '
         f'--add-data "src/_version.py:." '
         f'--debug=imports {ENTRY_POINT}'
