@@ -1,3 +1,5 @@
+"""The entire GUI is created here, in one file."""
+
 import sys
 import os
 import webbrowser
@@ -11,6 +13,7 @@ from PyQt6.QtCore import Qt
 
 from _version import __version__
 from core.utils.file_utils import sessions_exist, user_dir_exists
+from core.utils.time_utils import format_time, unix_to_datetime
 from .logic_root import LogicRoot
 
 def resource_path(relative_path):
@@ -110,8 +113,11 @@ class MainWindow(QWidget):
     def init_ui(self):
         splash_screen()
 
-        # define the layout type --
-        layout = QGridLayout()
+        # define the main layout type --
+        layout = QVBoxLayout()
+
+        # nested layouts --
+        controls_layout = QGridLayout()
 
         # app setup --
         self.setLayout(layout)
@@ -126,26 +132,30 @@ class MainWindow(QWidget):
             self.setStyleSheet("background-color: #2E2E2E; color: white;")
 
         # create widgets --
-        label = QLabel("Welcome to AppUsageGUI")
+        tracking_status_label = QLabel("Tracking Status: No App or Session Selected")
+        tracking_status_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        tracking_status_label.setStyleSheet("font-size: 18px;")
+
+        time_label = QLabel("0h 0m 0s")
+        time_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        time_label.setStyleSheet("font-size: 64px;")
 
         # add widgets to the layout --
-        layout.addWidget(label)
+        layout.addWidget(tracking_status_label)
+        layout.addWidget(time_label)
+        layout.addLayout(controls_layout)
 
-    def on_close(self):
-        # Stop trackers
+    def closeEvent(self, event):
+        print("Closing the application...")
         if self.logic.app_tracker:
             self.logic.app_tracker.reset()
         if self.logic.time_tracker:
             self.logic.time_tracker.reset()
         if self.logic.mouse_tracker:
             self.logic.mouse_tracker.stop()
-
         self.close()
         sessions_exist()
         user_dir_exists()
-
-    def closeEvent(self, event):
-        print("Closing the application...")
         self.on_close()
         self.logic.close()
         QApplication.instance().quit()

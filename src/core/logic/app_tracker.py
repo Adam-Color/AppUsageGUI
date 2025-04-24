@@ -19,7 +19,7 @@ class AppTracker:
 
     def _fetch_app_names(self):
         apps = []
-        seen_names = set()
+        seen_names = set('AppUsageGUI')  # Initialize a set containing excluded names
         for process in psutil.process_iter(['name']):
             try:
                 app_name = process.info['name']
