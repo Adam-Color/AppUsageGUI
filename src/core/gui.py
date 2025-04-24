@@ -116,7 +116,7 @@ class MainWindow(QWidget):
         # define the main layout type --
         layout = QVBoxLayout()
 
-        # nested layouts --
+        # define nested layouts --
         controls_layout = QGridLayout()
 
         # app setup --
@@ -132,7 +132,7 @@ class MainWindow(QWidget):
             self.setStyleSheet("background-color: #2E2E2E; color: white;")
 
         # create widgets --
-        tracking_status_label = QLabel("Tracking Status: No App or Session Selected")
+        tracking_status_label = QLabel("Tracking Status: No Session Loaded")
         tracking_status_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
         tracking_status_label.setStyleSheet("font-size: 18px;")
 
@@ -140,7 +140,7 @@ class MainWindow(QWidget):
         time_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
         time_label.setStyleSheet("font-size: 64px;")
 
-        # add widgets to the layout --
+        # add widgets and nested layouts to the main layout --
         layout.addWidget(tracking_status_label)
         layout.addWidget(time_label)
         layout.addLayout(controls_layout)
@@ -156,7 +156,6 @@ class MainWindow(QWidget):
         self.close()
         sessions_exist()
         user_dir_exists()
-        self.on_close()
         self.logic.close()
         QApplication.instance().quit()
         event.accept()
