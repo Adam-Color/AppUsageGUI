@@ -6,10 +6,10 @@ import webbrowser
 import requests
 from PyQt6.QtWidgets import (
     QApplication, QWidget, QLabel, QVBoxLayout, QMessageBox,
-    QListWidget, QGridLayout
+    QListWidget, QHBoxLayout, QPushButton, QMenu
 )
 from PyQt6.QtGui import QIcon
-from PyQt6.QtCore import Qt
+from PyQt6.QtCore import Qt, QThread, pyqtSignal, pyqtSlot
 
 from _version import __version__
 from core.utils.file_utils import sessions_exist, user_dir_exists
@@ -117,7 +117,7 @@ class MainWindow(QWidget):
         layout = QVBoxLayout()
 
         # define nested layouts --
-        controls_layout = QGridLayout()
+        controls_layout = QHBoxLayout()
 
         # app setup --
         self.setLayout(layout)
@@ -140,10 +140,18 @@ class MainWindow(QWidget):
         time_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
         time_label.setStyleSheet("font-size: 64px;")
 
+        # create buttons --
+        sessions_button = QPushButton("Sessions...")
+        sessions_button.clicked.connect(self.closeEvent)
+
+        pause_resume_button = QPushButton("Pause")
+
         # add widgets and nested layouts to the main layout --
         layout.addWidget(tracking_status_label)
         layout.addWidget(time_label)
         layout.addLayout(controls_layout)
+        controls_layout.addWidget(sessions_button)
+        controls_layout.addWidget(pause_resume_button)
 
     def closeEvent(self, event):
         print("Closing the application...")
