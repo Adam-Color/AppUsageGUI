@@ -4,6 +4,7 @@ import sys
 import os
 import webbrowser
 import requests
+import pyautogui
 from PyQt6.QtWidgets import (
     QApplication, QWidget, QLabel, QVBoxLayout, QMessageBox,
     QListWidget, QHBoxLayout, QPushButton, QMenu
@@ -15,6 +16,8 @@ from _version import __version__
 from core.utils.file_utils import sessions_exist, user_dir_exists
 from core.utils.time_utils import format_time, unix_to_datetime
 from .logic_root import LogicRoot
+
+SCREEN_X, SCREEN_Y = pyautogui.size()
 
 def resource_path(relative_path):
     try:
@@ -98,10 +101,13 @@ class SessionsList(QListWidget):
     def onItemClicked(self, item):
         QMessageBox.information(self, "QListWidget Interaction", "You selected: " + item.text())
 
+# ----------------------------------------------------------------------------------------------
+
 class MainWindow(QWidget):
     def __init__(self):
         super().__init__()
         self.init_ui()
+        self.setFixedSize(round(SCREEN_X/4.3), round(SCREEN_Y/5.5))
 
         # Initialize LogicRoot
         self.logic = LogicRoot(self)
@@ -132,26 +138,44 @@ class MainWindow(QWidget):
             self.setStyleSheet("background-color: #2E2E2E; color: white;")
 
         # create widgets --
-        tracking_status_label = QLabel("Tracking Status: No Session Loaded")
-        tracking_status_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        tracking_status_label.setStyleSheet("font-size: 18px;")
+        self.tracking_status_label = QLabel("Tracking Status:\nNo Session Loaded")
+        self.tracking_status_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        self.tracking_status_label.setStyleSheet("font-size: 24px;")
 
-        time_label = QLabel("0h 0m 0s")
-        time_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        time_label.setStyleSheet("font-size: 64px;")
+        self.time_label = QLabel("0h 0m 0s")
+        self.time_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        self.time_label.setStyleSheet("font-size: 96px;")
 
         # create buttons --
-        sessions_button = QPushButton("Sessions...")
-        sessions_button.clicked.connect(self.closeEvent)
+        self.new_session_button = QPushButton("New Session")
+        self.new_session_button.clicked.connect(self.closeEvent)
 
-        pause_resume_button = QPushButton("Pause")
+        self.load_session_button = QPushButton("Load Session")
+        self.load_session_button.setEnabled(False)
+        self.load_session_button.clicked.connect(self.closeEvent)
+
+        self.pause_resume_button = QPushButton("Pause")
+        self.pause_resume_button.setEnabled(False)
+        self.pause_resume_button.clicked.connect(lambda: self.pause_resume_logic())
+
+        stop_button = QPushButton("Stop Tracking")
+        stop_button.setEnabled(False)
+        stop_button.clicked.connect(self.closeEvent)
 
         # add widgets and nested layouts to the main layout --
-        layout.addWidget(tracking_status_label)
-        layout.addWidget(time_label)
+        layout.addWidget(self.tracking_status_label)
+        layout.addWidget(self.time_label)
         layout.addLayout(controls_layout)
-        controls_layout.addWidget(sessions_button)
-        controls_layout.addWidget(pause_resume_button)
+        controls_layout.addWidget(self.new_session_button)
+        controls_layout.addWidget(self.load_session_button)
+        controls_layout.addWidget(self.pause_resume_button)
+        controls_layout.addWidget(stop_button)
+
+    def pause_resume_logic(self):
+        if self.pause_resume_button.text() == "Pause":
+            self.pause_resume_button.setText("Resume")
+        else:
+            self.pause_resume_button.setText("Pause")
 
     def closeEvent(self, event):
         print("Closing the application...")
@@ -162,8 +186,6 @@ class MainWindow(QWidget):
         if self.logic.mouse_tracker:
             self.logic.mouse_tracker.stop()
         self.close()
-        sessions_exist()
-        user_dir_exists()
         self.logic.close()
         QApplication.instance().quit()
         event.accept()
