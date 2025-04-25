@@ -104,7 +104,7 @@ class MainWindow(QWidget):
     def __init__(self):
         super().__init__()
         self.init_ui()
-        self.setFixedSize(600, 250)
+        self.setFixedSize(500, 250)
 
         # Initialize LogicRoot
         self.logic = LogicRoot(self)
