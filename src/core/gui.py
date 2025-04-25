@@ -4,7 +4,6 @@ import sys
 import os
 import webbrowser
 import requests
-import pyautogui
 from PyQt6.QtWidgets import (
     QApplication, QWidget, QLabel, QVBoxLayout, QMessageBox,
     QListWidget, QHBoxLayout, QPushButton, QMenu
@@ -16,8 +15,6 @@ from _version import __version__
 from core.utils.file_utils import sessions_exist, user_dir_exists
 from core.utils.time_utils import format_time, unix_to_datetime
 from .logic_root import LogicRoot
-
-SCREEN_X, SCREEN_Y = pyautogui.size()
 
 def resource_path(relative_path):
     try:
@@ -107,7 +104,7 @@ class MainWindow(QWidget):
     def __init__(self):
         super().__init__()
         self.init_ui()
-        self.setFixedSize(round(SCREEN_X/4.3), round(SCREEN_Y/5.5))
+        self.setFixedSize(600, 250)
 
         # Initialize LogicRoot
         self.logic = LogicRoot(self)
