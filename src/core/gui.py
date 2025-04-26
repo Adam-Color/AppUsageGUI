@@ -94,11 +94,7 @@ def splash_screen():
     QApplication.processEvents()
     splash.close()
 
-class SessionsList(QListWidget):
-    def onItemClicked(self, item):
-        QMessageBox.information(self, "QListWidget Interaction", "You selected: " + item.text())
-
-# ----------------------------------------------------------------------------------------------
+# ------------------------------------------------------------------------
 
 class MainWindow(QWidget):
     def __init__(self):
@@ -186,3 +182,20 @@ class MainWindow(QWidget):
         self.logic.close()
         QApplication.instance().quit()
         event.accept()
+
+class SessionsPopout(QWidget):
+    def __init__(self, parent=None):
+        super().__init__(parent)
+        self.setWindowTitle("Sessions")
+        self.setGeometry(100, 100, 300, 400)
+        self.setAttribute(Qt.WidgetAttribute.WA_DeleteOnClose)
+        self.setWindowIcon(QIcon(resource_path("core/resources/icon.ico")))
+        self.setStyleSheet("background-color: #2E2E2E; color: white;")
+
+        layout = QVBoxLayout(self)
+
+        self.session_list = QListWidget(self)
+        layout.addWidget(self.session_list)
+
+        self.load_button = QPushButton("Load Session", self)
+        layout.addWidget(self.load_button)
