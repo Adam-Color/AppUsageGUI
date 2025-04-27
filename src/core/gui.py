@@ -137,7 +137,7 @@ class MainWindow(QWidget):
 
         self.time_label = QLabel("0h 0m 0s")
         self.time_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        self.time_label.setStyleSheet("font-size: 96px;")
+        self.time_label.setStyleSheet("font-size: 72px;")
 
         # create buttons --
         self.new_session_button = QPushButton("New Session")

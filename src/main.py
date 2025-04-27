@@ -1,21 +1,21 @@
 import sys
-import psutil
+import socket
 from PyQt6.QtWidgets import QApplication
 
 from core.gui import MainWindow
 
-def is_app_running():
-    """Check if the application is already running."""
-    current_process = psutil.Process()
-    for process in psutil.process_iter(['pid', 'name']):
-        if process.info['name'] == current_process.name() and process.info['pid'] != current_process.pid:
-            return True
-    return False
 
 def main():
     # check if app is already running
-    if is_app_running():
-        sys.exit(0)
+    try:
+        # create a socket to check if the app is already running
+        sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        sock.bind(("localhost", 0))  # bind to an available port
+        sock.listen(1)  # listen for incoming connections
+    except socket.error:
+        # if there is an error, it means the app is already running
+        print("App is already running")
+        sys.exit()
 
     app = QApplication(sys.argv)
     window = MainWindow()
