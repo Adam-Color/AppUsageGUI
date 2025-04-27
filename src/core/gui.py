@@ -110,7 +110,10 @@ class MainWindow(QWidget):
         user_dir_exists()
 
     def init_ui(self):
-        splash_screen()
+        splash_thread = QThread()
+        splash_thread.finished.connect(splash_thread.deleteLater)
+
+        splash_thread.start()
 
         # define the main layout type --
         layout = QVBoxLayout()
