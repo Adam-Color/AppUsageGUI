@@ -21,9 +21,9 @@ import tkinter as tk
 import os
 import sys
 import webbrowser
-import requests
 import socket
 import time
+import requests
 
 from _version import __version__
 
@@ -114,8 +114,10 @@ def new_updates():
         # Compare version numbers
         for latest, current in zip(latest_version, current_version):
             if int(latest) > int(current):
+                print("New update available!")
                 return True
             elif int(latest) < int(current):
+                print("No new updates available.")
                 return False
 
         # If we've gotten here, the versions are equal
@@ -164,7 +166,7 @@ def main():
 
     root.attributes("-topmost", True)
 
-    if os.name == 'nt' and is_dark_mode():
+    if is_dark_mode():
         apply_dark_theme(root)
 
     splash_screen()

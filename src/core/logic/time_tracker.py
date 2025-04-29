@@ -40,9 +40,11 @@ class TimeTracker:
             time.sleep(0.1)
 
     def start(self):
+        print("Starting time tracker")
         self.track = True
 
     def stop(self):
+        print("Stopping time tracker")
         self.track = False
 
     def pause(self):
