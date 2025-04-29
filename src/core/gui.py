@@ -9,7 +9,7 @@ from PyQt6.QtWidgets import (
     QListWidget, QHBoxLayout, QPushButton, QMenu
 )
 from PyQt6.QtGui import QIcon
-from PyQt6.QtCore import Qt, QThread, pyqtSignal, pyqtSlot
+from PyQt6.QtCore import Qt, QThread, pyqtSignal, pyqtSlot, QObject
 
 from _version import __version__
 from core.utils.file_utils import sessions_exist, user_dir_exists
@@ -71,16 +71,6 @@ def new_updates():
     return False
 
 def splash_screen():
-    if new_updates():
-        msg_box = QMessageBox()
-        msg_box.setIcon(QMessageBox.Icon.Information)
-        msg_box.setWindowTitle("AppUsageGUI")
-        msg_box.setText("A new update is available. Would you like to download it from the GitHub page?")
-        msg_box.setStandardButtons(QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No)
-        response = msg_box.exec()
-        if response == 16385: # if the user clicked "Yes"
-            webbrowser.open_new_tab("https://github.com/adam-color/AppUsageGUI/releases/latest")
-
     splash = QWidget()
     splash.setWindowFlags(Qt.WindowType.WindowStaysOnTopHint | Qt.WindowType.CustomizeWindowHint)
     splash.setAttribute(Qt.WidgetAttribute.WA_DeleteOnClose)
@@ -91,7 +81,24 @@ def splash_screen():
     layout.addWidget(label)
     splash.setLayout(layout)
     splash.show()
+
     QApplication.processEvents()
+
+    # calls to create the app directories
+    sessions_exist()
+    user_dir_exists()
+
+    if new_updates():
+        msg_box = QMessageBox()
+        msg_box.setIcon(QMessageBox.Icon.Information)
+        msg_box.setWindowTitle("AppUsageGUI")
+        msg_box.setText("A new update is available. Would you like to download it from the GitHub page?")
+        msg_box.setStandardButtons(QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No)
+        response = msg_box.exec()
+        print(response)
+        if response == 16385: # if the user clicked "Yes"
+            webbrowser.open_new_tab("https://github.com/adam-color/AppUsageGUI/releases/latest")
+
     splash.close()
 
 # ------------------------------------------------------------------------
@@ -105,15 +112,8 @@ class MainWindow(QWidget):
         # Initialize LogicRoot
         self.logic = LogicRoot(self)
 
-        # calls to create the app directories
-        sessions_exist()
-        user_dir_exists()
-
     def init_ui(self):
-        splash_thread = QThread()
-        splash_thread.finished.connect(splash_thread.deleteLater)
-
-        splash_thread.start()
+        splash_screen()
 
         # define the main layout type --
         layout = QVBoxLayout()
