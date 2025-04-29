@@ -170,8 +170,8 @@ class MainWindow(QWidget):
     def open_sessions_popout(self):
         # Example list of sessions
         sessions = ["Session 1", "Session 2", "Session 3"]
-        self.popout = SessionsPopout(sessions, parent=self)
-        self.popout.session_selected.connect(self.handle_session_loaded)
+        self.popout = SessionsPopout(parent=self)
+        # self.popout.session_selected.connect(self.handle_session_loaded)
         self.popout.show()
     
     def handle_session_loaded(self, session_name):
