@@ -95,8 +95,7 @@ def splash_screen():
         msg_box.setText("A new update is available. Would you like to download it from the GitHub page?")
         msg_box.setStandardButtons(QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No)
         response = msg_box.exec()
-        print(response)
-        if response == 16385: # if the user clicked "Yes"
+        if response == QMessageBox.StandardButton.Yes: # if the user clicked "Yes"
             webbrowser.open_new_tab("https://github.com/adam-color/AppUsageGUI/releases/latest")
 
     splash.close()
