@@ -20,6 +20,10 @@ class AppTracker:
     def _fetch_app_names(self):
         apps = []
         seen_names = set()
+
+        # add excluded apps to seen_names
+        excluded_apps = {'python', 'AppUsageGUI'}
+        seen_names.update(excluded_apps)
         for process in psutil.process_iter(['name']):
             try:
                 app_name = process.info['name']
