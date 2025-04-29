@@ -85,30 +85,17 @@ def new_updates():
 
 def splash_screen():
     """Display a splash screen while the application loads."""
-    # Check for new updates
-    if new_updates():
-        ask_update = tk.messagebox.askquestion('AppUsageGUI Updates', "A new update is available. Would you like to download it from the github page?")
-        if ask_update == "yes":
-            webbrowser.open_new_tab("https://github.com/adam-color/AppUsageGUI/releases/latest")
-
     splash_window = tk.Tk()
     splash_window.attributes("-topmost", True)
     splash_window.geometry("200x50")
     splash_window.title("AppUsageGUI - Loading...")
+    splash_window.update_idletasks()
+    splash_window.update()
 
-    # Display loading text
-    loading_label = tk.Label(splash_window, text="\nLoading...")
-    loading_label.pack()
-
-    # Simulate loading process
-    for i in range(10):
-        splash_window.update_idletasks()
-        splash_window.update()
-        time.sleep(0.1)
-
-    splash_window.destroy()
-
-def main():
+    # calls to create the app directories
+    sessions_exist()
+    user_dir_exists()
+    
     # check if app is already running
     try:
         # create a socket to check if the app is already running
@@ -119,6 +106,20 @@ def main():
         # if there is an error, it means the app is already running
         print("App is already running")
         sys.exit()
+
+    # Check for new updates
+    if new_updates():
+        ask_update = tk.messagebox.askquestion('AppUsageGUI Updates', "A new update is available. Would you like to download it from the github page?")
+        if ask_update == "yes":
+            webbrowser.open_new_tab("https://github.com/adam-color/AppUsageGUI/releases/latest")
+
+    # Display loading text
+    loading_label = tk.Label(splash_window, text="\nLoading...")
+    loading_label.pack()
+
+    splash_window.destroy()
+
+def main():
     splash_screen()
     root = tk.Tk()
 
@@ -133,10 +134,6 @@ def main():
 
     if os.name == 'nt' and is_dark_mode():
         apply_dark_theme(root)
-
-    # calls to create the app directories
-    sessions_exist()
-    user_dir_exists()
 
     root.mainloop()
 
