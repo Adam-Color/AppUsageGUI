@@ -146,8 +146,9 @@ class MainWindow(QWidget):
         self.new_session_button.clicked.connect(self.closeEvent)
 
         self.load_session_button = QPushButton("Load Session")
-        self.load_session_button.setEnabled(False)
-        self.load_session_button.clicked.connect(self.closeEvent)
+        if not sessions_exist():
+            self.load_session_button.setEnabled(False)
+        self.load_session_button.clicked.connect(self.open_sessions_popout)
 
         self.pause_resume_button = QPushButton("Pause")
         self.pause_resume_button.setEnabled(False)
@@ -165,6 +166,18 @@ class MainWindow(QWidget):
         controls_layout.addWidget(self.load_session_button)
         controls_layout.addWidget(self.pause_resume_button)
         controls_layout.addWidget(stop_button)
+
+    def open_sessions_popout(self):
+        # Example list of sessions
+        sessions = ["Session 1", "Session 2", "Session 3"]
+        self.popout = SessionsPopout(sessions, parent=self)
+        self.popout.session_selected.connect(self.handle_session_loaded)
+        self.popout.show()
+    
+    def handle_session_loaded(self, session_name):
+        print(f"User selected session: {session_name}")
+        self.tracking_status_label.setText(f"Loaded Session: {session_name}")
+
 
     def pause_resume_logic(self):
         if self.pause_resume_button.text() == "Pause":

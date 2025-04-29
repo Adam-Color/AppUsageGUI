@@ -5,7 +5,7 @@ the timer during the session.
 
 import threading
 import time
-import pyautogui
+import pynput
 
 from core.utils.file_utils import read_file, config_file
 
@@ -42,7 +42,7 @@ class MouseTracker:
             else:
                 time.sleep(1)
 
-            x, y = pyautogui.position()
+            x, y = pynput.mouse.Controller().position
             self.mouse_position = x, y
 
             # pause the timer
