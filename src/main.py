@@ -10,7 +10,7 @@ def main():
     try:
         # create a socket to check if the app is already running
         sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        sock.bind(("localhost", 0))  # bind to an available port
+        sock.bind(("localhost", 55552))  # bind to an available port
         sock.listen(1)  # listen for incoming connections
     except socket.error:
         # if there is an error, it means the app is already running
