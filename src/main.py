@@ -20,7 +20,6 @@
 import tkinter as tk
 import os
 import sys
-import time
 import webbrowser
 import requests
 import socket
@@ -93,8 +92,8 @@ def splash_screen():
     splash_window.update()
 
     # calls to create the app directories
-    sessions_exist()
-    user_dir_exists()
+    sessions_exist(p=True)
+    user_dir_exists(p=True)
     
     # check if app is already running
     try:
