@@ -65,6 +65,17 @@ def is_dark_mode():
         except FileNotFoundError:
             return False
 
+def is_running():
+    """Check if the application is already running"""
+    try:
+        # Try to create a socket to check if the port is available
+        sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        sock.bind(('localhost', 0))  # Bind to an available port
+        sock.close()
+        return False  # If we can bind, the app is not running
+    except OSError:
+        return True  # If we can't bind, the app is likely running
+
 def apply_dark_theme(root):
     dark_bg = "#2E2E2E"  # Dark gray background
     dark_fg = "#FFFFFF"  # White text
@@ -116,16 +127,10 @@ def splash_screen():
     sessions_exist(p=True)
     user_dir_exists(p=True)
     
-    # check if app is already running
-    try:
-        # create a socket to check if the app is already running
-        sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        sock.bind(("localhost", 0))  # bind to an available port
-        sock.listen(1)  # listen for incoming connections
-    except socket.error:
-        # if there is an error, it means the app is already running
-        print("App is already running")
-        sys.exit()
+    if is_running():
+        print("AppUsageGUI is already running. Exiting the new instance.")
+        splash_window.destroy()
+        sys.exit(0)
 
     # Check for new updates
     if new_updates():
