@@ -3,6 +3,23 @@ import time
 import os
 import psutil
 
+excluded_apps = {
+    'python', 'AppUsageGUI', 'Adobe Crash Processor', 'AdobeIPCBroker',
+    'AdobeUpdateService', 'BMDStreamingServer', 'DesktopVideoUpdater',
+    'gamingservices', 'gamingservicesnet', 'Registry', 'services',
+    'System', 'system', 'System Idle Process', 'svchost', 'taskhostw',
+    'taskhostex', 'wmi', 'WmiPrvSE', 'Windows Internal Database',
+    'Windows Security Notification Icon', 'Windows Terminal',
+    'wininit', 'winlogon', 'wlanext', 'WmiApSrv','dwm', 'explorer', 
+    'SearchIndexer', 'SearchProtocolHost', 'xrdd', 'conhost', 'csrss',
+    'smss', 'lsass', 'win32k', 'SystemSettings', 'RuntimeBroker',
+    'Taskmgr', 'ApplicationFrameHost', 'ShellExperienceHost',
+    'SearchApp', 'ShellInfrastructureHost', 'amdfendrsr',
+    'CrossDeviceService', 'dwmcore', 'fontdrvhost',
+    'lghub_agent', 'lghub_updater', 'lghub_system_tray',
+    'AggregatorHost', 'sntlkeyssrvr', 'sntlsrvnt'
+}
+
 class AppTracker:
     def __init__(self, parent, logic_controller):
         self.app_names = []
@@ -22,9 +39,6 @@ class AppTracker:
         seen_names = set()
 
         # add excluded apps to seen_names
-        excluded_apps = {
-            'python', 'AppUsageGUI'
-            }
         seen_names.update(excluded_apps)
 
         for process in psutil.process_iter(['name']):
