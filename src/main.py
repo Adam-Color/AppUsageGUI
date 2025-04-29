@@ -102,9 +102,13 @@ def new_updates():
 def splash_screen():
     """Display a splash screen while the application loads."""
     splash_window = tk.Tk()
-    splash_window.attributes("-topmost", True)
     splash_window.geometry("200x50")
     splash_window.title("AppUsageGUI - Loading...")
+
+    # Display loading text
+    loading_label = tk.Label(splash_window, text="\nLoading...")
+    loading_label.pack()
+
     splash_window.update_idletasks()
     splash_window.update()
 
@@ -129,16 +133,17 @@ def splash_screen():
         if ask_update == "yes":
             webbrowser.open_new_tab("https://github.com/adam-color/AppUsageGUI/releases/latest")
 
-    # Display loading text
-    loading_label = tk.Label(splash_window, text="\nLoading...")
-    loading_label.pack()
-
     splash_window.destroy()
 
 def main():
-    splash_screen()
     root = tk.Tk()
 
+    root.attributes("-topmost", True)
+
+    if os.name == 'nt' and is_dark_mode():
+        apply_dark_theme(root)
+
+    splash_screen()
     icon_name = "core/resources/icon.ico" if os.name == 'nt' else "core/resources/icon.icns"
     icon_path = resource_path(icon_name)
 
@@ -147,10 +152,6 @@ def main():
 
     win = GUIRoot(root)
     win.pack(side="top", fill="both", expand=True)
-
-    if os.name == 'nt' and is_dark_mode():
-        apply_dark_theme(root)
-
     root.mainloop()
 
 if __name__ == "__main__":
