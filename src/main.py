@@ -23,11 +23,12 @@ import sys
 import webbrowser
 import requests
 import socket
+import time
 
 from _version import __version__
 
 from core.gui_root import GUIRoot
-from core.utils.file_utils import sessions_exist, user_dir_exists
+from core.utils.file_utils import sessions_exist, user_dir_exists, config_file, read_file, write_file
 
 def resource_path(relative_path):
     """ Get absolute path to resource, works for dev and for PyInstaller """
@@ -84,7 +85,25 @@ def apply_dark_theme(root):
 
 def new_updates():
     """Check for new updates on GitHub. Returns a boolean"""
+    if os.path.exists(config_file()):
+        try:
+            last_update_check = read_file(config_file())["last_update_check"]
+        except (KeyError):
+         # If the config file doesn't have the key
+            last_update_check = time.time()
+            settings = read_file(config_file())
+            settings.update({"last_update_check": last_update_check})
+            write_file(config_file(), settings)
+    else:
+        os.makedirs(os.path.dirname(config_file()), exist_ok=True)
+        last_update_check = time.time()  # Default to 0 if the file doesn't exist
+        settings = read_file(config_file())
+        settings.update({"last_update_check": last_update_check})
+        write_file(config_file(), settings)
+    if time.time() - last_update_check < 43200:
+        return False  # Check for updates only once every 12 hours
     try:
+        print("Checking for updates...")
         response = requests.get("https://api.github.com/repos/adam-color/AppUsageGUI/releases/latest", timeout=10)
         response.raise_for_status()  # Raises an HTTPError for bad responses
 
