@@ -165,6 +165,7 @@ def main():
     root = tk.Tk()
 
     root.attributes("-topmost", True)
+    root.attributes("-topmost", False)
 
     if is_dark_mode():
         apply_dark_theme(root)

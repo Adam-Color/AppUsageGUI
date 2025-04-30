@@ -44,6 +44,7 @@ class MouseTracker:
 
             x, y = pynput.mouse.Controller().position
             self.mouse_position = x, y
+            print(f"Mouse position: {self.mouse_position}")
 
             # pause the timer
             if self.last_mouse_position == self.mouse_position:
@@ -54,7 +55,7 @@ class MouseTracker:
                 self.pausing = False
 
     def start(self):
-        if self.enabled and not self.update_thread:
+        if self.enabled:
             self.update_thread.start()
 
     def stop(self):
