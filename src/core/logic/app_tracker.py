@@ -76,6 +76,7 @@ class AppTracker:
         self.selected_app = app
 
     def stop(self):
+        print("Stopping AppTracker")
         self.stop_event.set()
         if self.update_thread is not None:
             try:
@@ -84,6 +85,7 @@ class AppTracker:
                 pass
 
     def start(self):
+        print("Starting AppTracker")
         self.stop_event = threading.Event()
         self._start_tracking()
 

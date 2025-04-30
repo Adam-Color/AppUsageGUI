@@ -88,6 +88,7 @@ def new_updates():
     if os.path.exists(config_file()):
         try:
             last_update_check = read_file(config_file())["last_update_check"]
+            settings = read_file(config_file())
         except (KeyError):
          # If the config file doesn't have the key
             last_update_check = time.time()
@@ -96,12 +97,16 @@ def new_updates():
             write_file(config_file(), settings)
     else:
         os.makedirs(os.path.dirname(config_file()), exist_ok=True)
-        last_update_check = time.time()  # Default to 0 if the file doesn't exist
+        last_update_check = time.time()  # if the file doesn't exist
         settings = read_file(config_file())
         settings.update({"last_update_check": last_update_check})
         write_file(config_file(), settings)
+    
     if time.time() - last_update_check < 43200:
         return False  # Check for updates only once every 12 hours
+    
+    settings.update({"last_update_check": time.time()})
+    write_file(config_file(), settings)
     try:
         print("Checking for updates...")
         response = requests.get("https://api.github.com/repos/adam-color/AppUsageGUI/releases/latest", timeout=10)
@@ -114,13 +119,14 @@ def new_updates():
         # Compare version numbers
         for latest, current in zip(latest_version, current_version):
             if int(latest) > int(current):
-                print("New update available!")
+                print("New updates available!")
                 return True
             elif int(latest) < int(current):
                 print("No new updates available.")
                 return False
 
         # If we've gotten here, the versions are equal
+        print("No new updates available.")
         return False
 
     except requests.RequestException as e:
@@ -163,9 +169,6 @@ def splash_screen():
 
 def main():
     root = tk.Tk()
-
-    root.attributes("-topmost", True)
-    root.attributes("-topmost", False)
 
     if is_dark_mode():
         apply_dark_theme(root)

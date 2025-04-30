@@ -1,3 +1,5 @@
+"""Screen that displays the time tracked for a specific application. Needs optimazations"""
+
 import tkinter as tk
 import threading
 import queue

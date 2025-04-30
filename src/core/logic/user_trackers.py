@@ -4,7 +4,6 @@ the timer during the session.
 """
 
 import threading
-import time
 import pynput
 
 from core.utils.file_utils import read_file, config_file
@@ -36,22 +35,23 @@ class MouseTracker:
         while not self.stop_event.is_set():
             self.last_mouse_position = self.mouse_position
 
-            # time limit handling
-            if not self.logic_controller.time_tracker.get_is_paused():
-                time.sleep(self.idle_time_limit)
-            else:
-                time.sleep(1)
+            wait_time = self.idle_time_limit if not self.logic_controller.time_tracker.get_is_paused() else 1
+
+            # Wait for the idle time or exit early if stop_event is set
+            if self.stop_event.wait(timeout=wait_time):
+                break
 
             x, y = pynput.mouse.Controller().position
             self.mouse_position = x, y
 
-            # pause the timer
+            # Pause the timer if mouse hasn’t moved
             if self.last_mouse_position == self.mouse_position:
                 self.logic_controller.time_tracker.pause()
                 self.pausing = True
             elif self.logic_controller.time_tracker.get_is_paused():
                 self.logic_controller.time_tracker.resume()
                 self.pausing = False
+
 
     def start(self):
         if self.enabled:
