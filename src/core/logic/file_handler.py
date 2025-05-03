@@ -61,6 +61,16 @@ class FileHandler:
             self.corrupt_sessions.append((filename, "No hash file found"))
             self.data = None
 
+    def delete_session(self, filename):
+        """Delete data and hash files of a session"""
+        file_path = os.path.join(self.directory, filename + '.dat')
+        hash_path = os.path.join(self.directory, filename + '.hash')
+
+        if os.path.exists(file_path):
+            os.remove(file_path)
+        if os.path.exists(hash_path):
+            os.remove(hash_path)
+
     def get_data(self):
         return self.data
 

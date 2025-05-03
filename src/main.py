@@ -168,12 +168,13 @@ def splash_screen():
     splash_window.destroy()
 
 def main():
+    splash_screen()
+
     root = tk.Tk()
 
     if is_dark_mode():
         apply_dark_theme(root)
 
-    splash_screen()
     icon_name = "core/resources/icon.ico" if os.name == 'nt' else "core/resources/icon.icns"
     icon_path = resource_path(icon_name)
 
