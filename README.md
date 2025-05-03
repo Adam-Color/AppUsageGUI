@@ -22,7 +22,7 @@ Find them [here](https://github.com/Adam-Color/AppUsageGUI/releases)
 
 ## Contributing
 
-Contributions are welcome and needed! Here is a TODO list:
+### Contributions are welcome and needed! Here is a TODO list:
 
 * Optimize everything
 * Add support for tracking more than one executable per session
