@@ -32,8 +32,12 @@ class SessionsWindow(tk.Frame):
         self.load_sessions()
 
         # button to make the selection
-        select_button = tk.Button(self, text="Select", command=self.select_session)
-        select_button.pack(pady=10)
+        select_button = tk.Button(self, text="Continue from selected session", command=self.select_session)
+        select_button.pack(pady=5)
+
+        # button to delete the session
+        delete_button = tk.Button(self, text="Delete selected session", command=self.delete_session)
+        delete_button.pack(pady=5)
 
         back_button = tk.Button(self, text="Main Menu", command=lambda: (self.controller.reset_frames(), self.controller.show_frame("MainWindow")))
         back_button.pack(pady=5, side='bottom')
@@ -95,3 +99,15 @@ class SessionsWindow(tk.Frame):
 
         # show the TrackerWindow
         self.controller.show_frame('TrackerWindow')
+
+    def delete_session(self):
+        if not self.get_session_text():
+            tk.messagebox.showerror("Error", "No session selected")
+            return 0
+        else:
+            selected_session_name = self.get_session_text().split(": ")[0]
+            # ask for confirmation
+            confirm = tk.messagebox.askyesno("Confirm Deletion", f"Are you sure you want to delete the session '{selected_session_name}'? \nThis action cannot be undone.")
+            if confirm:
+                self.logic_controller.file_handler.delete_session(selected_session_name)
+                self.session_listbox.delete(self.session_listbox.curselection())

@@ -32,7 +32,7 @@ def build_executable():
         f'--add-data "{icon_file}:." '
         f'--collect-submodules core '
         f'--collect-all psutil '
-        f'--collect-all pyautogui '
+        f'--collect-all pynput '
         f'--collect-all tkinter '
         f'--icon={icon_file} '
         f'--add-data "src/_version.py:." '

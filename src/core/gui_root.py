@@ -75,8 +75,6 @@ class GUIRoot(tk.Frame):
         except Exception as e:
             print(f"Crash in reset_frames(): {e}")
 
-
-
     def on_close(self):
         """Handle cleanup and close the application."""
         # Stop the AppTracker thread

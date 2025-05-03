@@ -26,11 +26,13 @@ def config_file():
     """Returns the path to the config file"""
     return os.path.join(get_user_directory(), 'config.dat')
 
-def sessions_exist():
-    """Check if sessions exist, and if not, create the directory"""
+def sessions_exist(p=False):
+    """Check if sessions exist, and if not, create the directory.
+    Set p=True to print directory path"""
     file_extension = ".dat"
     sessions_dir = get_sessions_directory()
-    print("sessions_dir: %s" % sessions_dir) #!
+    if p:
+        print("sessions_dir: %s" % sessions_dir)
     # Ensure the directory exists
     if not os.path.exists(sessions_dir):
         os.makedirs(sessions_dir, exist_ok=True)
@@ -40,10 +42,12 @@ def sessions_exist():
             return True
     return False
 
-def user_dir_exists():
-    """Check if user directory exists, and if not, create the directory"""
+def user_dir_exists(p=False):
+    """Check if user directory exists, and if not, create the directory.
+    Set p=True to print directory path"""
     user_dir = get_user_directory()
-    print("user_dir: %s" % user_dir) #!
+    if p:
+        print("user_dir: %s" % user_dir)
     # Ensure the directory exists
     if not os.path.exists(user_dir):
         os.makedirs(user_dir, exist_ok=True)

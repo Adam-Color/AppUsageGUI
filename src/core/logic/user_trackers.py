@@ -4,8 +4,7 @@ the timer during the session.
 """
 
 import threading
-import time
-import pyautogui
+import pynput
 
 from core.utils.file_utils import read_file, config_file
 
@@ -21,7 +20,7 @@ class MouseTracker:
         y = 0
         self.logic_controller = logic_controller
         self.mouse_position = x, y
-        self.last_mouse_position = x , y
+        self.last_mouse_position = x, y
         self.stop_event = threading.Event()  # Used to stop the thread gracefully
         try:
             self.enabled = read_file(config_file())["mouse_tracker_enabled"]
@@ -36,16 +35,16 @@ class MouseTracker:
         while not self.stop_event.is_set():
             self.last_mouse_position = self.mouse_position
 
-            # time limit handling
-            if not self.logic_controller.time_tracker.get_is_paused():
-                time.sleep(self.idle_time_limit)
-            else:
-                time.sleep(1)
+            wait_time = self.idle_time_limit if not self.logic_controller.time_tracker.get_is_paused() else 1
 
-            x, y = pyautogui.position()
+            # Wait for the idle time or exit early if stop_event is set
+            if self.stop_event.wait(timeout=wait_time):
+                break
+
+            x, y = pynput.mouse.Controller().position
             self.mouse_position = x, y
 
-            # pause the timer
+            # Pause the timer if mouse hasn’t moved
             if self.last_mouse_position == self.mouse_position:
                 self.logic_controller.time_tracker.pause()
                 self.pausing = True
@@ -53,12 +52,17 @@ class MouseTracker:
                 self.logic_controller.time_tracker.resume()
                 self.pausing = False
 
+
     def start(self):
-        if self.enabled and not self.update_thread:
+        if self.enabled:
+            self.stop_event = threading.Event()  # Reset the stop event to allow the thread to run again
+            self.update_thread = threading.Thread(target=self._update_mouse_position)
+            print("Starting mouse tracker")
             self.update_thread.start()
 
     def stop(self):
         self.stop_event.set()
+        print("Stopping mouse tracker")
         if self.update_thread is not None:
             try:
                 self.update_thread.join()

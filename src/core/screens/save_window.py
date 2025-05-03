@@ -1,5 +1,6 @@
 import tkinter as tk
-import pickle
+
+from core.utils.time_utils import format_time
 
 class SaveWindow(tk.Frame):
     def __init__(self, parent, controller, logic_controller):
@@ -23,9 +24,9 @@ class SaveWindow(tk.Frame):
     def save(self):
         if self.logic_controller.file_handler.get_continuing_session():
             session_time = self.logic_controller.time_tracker.get_total_time()
-            #print("Session time: ", session_time) #! debug print
+            print("Session time: ", format_time(round(session_time)))
             session_app_name = self.logic_controller.app_tracker.get_selected_app()
-            #print("Session_app_name: ", session_app_name) #! debug print
+            print("Session app name: ", session_app_name)
 
             data = {'app_name': session_app_name, 'time_spent': session_time}
 

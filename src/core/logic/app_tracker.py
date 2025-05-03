@@ -3,6 +3,23 @@ import time
 import os
 import psutil
 
+excluded_apps = {
+    'python', 'AppUsageGUI', 'Adobe Crash Processor', 'AdobeIPCBroker',
+    'AdobeUpdateService', 'BMDStreamingServer', 'DesktopVideoUpdater',
+    'gamingservices', 'gamingservicesnet', 'Registry', 'services',
+    'System', 'system', 'System Idle Process', 'svchost', 'taskhostw',
+    'taskhostex', 'wmi', 'WmiPrvSE', 'Windows Internal Database',
+    'Windows Security Notification Icon', 'Windows Terminal',
+    'wininit', 'winlogon', 'wlanext', 'WmiApSrv','dwm', 'explorer', 
+    'SearchIndexer', 'SearchProtocolHost', 'xrdd', 'conhost', 'csrss',
+    'smss', 'lsass', 'win32k', 'SystemSettings', 'RuntimeBroker',
+    'Taskmgr', 'ApplicationFrameHost', 'ShellExperienceHost',
+    'SearchApp', 'ShellInfrastructureHost', 'amdfendrsr',
+    'CrossDeviceService', 'dwmcore', 'fontdrvhost',
+    'lghub_agent', 'lghub_updater', 'lghub_system_tray',
+    'AggregatorHost', 'sntlkeyssrvr', 'sntlsrvnt'
+}
+
 class AppTracker:
     def __init__(self, parent, logic_controller):
         self.app_names = []
@@ -20,6 +37,10 @@ class AppTracker:
     def _fetch_app_names(self):
         apps = []
         seen_names = set()
+
+        # add excluded apps to seen_names
+        seen_names.update(excluded_apps)
+
         for process in psutil.process_iter(['name']):
             try:
                 app_name = process.info['name']
@@ -55,6 +76,7 @@ class AppTracker:
         self.selected_app = app
 
     def stop(self):
+        print("Stopping App Tracker")
         self.stop_event.set()
         if self.update_thread is not None:
             try:
@@ -63,6 +85,7 @@ class AppTracker:
                 pass
 
     def start(self):
+        print("Starting App Tracker")
         self.stop_event = threading.Event()
         self._start_tracking()
 
