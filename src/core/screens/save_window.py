@@ -1,5 +1,4 @@
 import tkinter as tk
-import pickle
 
 from core.utils.time_utils import format_time
 

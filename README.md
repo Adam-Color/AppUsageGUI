@@ -1,4 +1,4 @@
-![version](https://img.shields.io/badge/Version-1.1.5-white.svg)
+![version](https://img.shields.io/badge/Version-1.2.0-white.svg)
 ![license](https://img.shields.io/badge/License-GPL%20v3-blue.svg)
 ![python](https://img.shields.io/badge/Python-3.12-green.svg)
 
@@ -24,6 +24,7 @@ Find them [here](https://github.com/Adam-Color/AppUsageGUI/releases)
 
 ### Contributions are welcome and needed! Here is a TODO list:
 
+* add integrations with professional applications
 * Optimize everything
 * Add support for tracking more than one executable per session
 
