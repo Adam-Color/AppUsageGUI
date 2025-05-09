@@ -38,7 +38,7 @@ class TrackerWindow(tk.Frame):
 
         self.update_queue = queue.Queue()
 
-        self.update_thread = threading.Thread(target=self.update_time_label)
+        self.update_thread = threading.Thread(target=self.update_time_label, name="update_time_label")
         self.update_thread.daemon = True
 
         self.periodic_update()
