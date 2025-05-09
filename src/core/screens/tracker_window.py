@@ -1,3 +1,5 @@
+"""Screen that displays the time tracked for a specific application. Needs optimazations"""
+
 import tkinter as tk
 import threading
 import queue
@@ -36,7 +38,7 @@ class TrackerWindow(tk.Frame):
 
         self.update_queue = queue.Queue()
 
-        self.update_thread = threading.Thread(target=self.update_time_label)
+        self.update_thread = threading.Thread(target=self.update_time_label, name="update_time_label")
         self.update_thread.daemon = True
 
         self.periodic_update()
@@ -96,6 +98,7 @@ class TrackerWindow(tk.Frame):
 
             time.sleep(0.1)
         if not self.stop_event.is_set():
+            self.controller.frames["SessionTotalWindow"].stop_threads()
             self.controller.show_frame("SaveWindow")
 
 

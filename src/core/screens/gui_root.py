@@ -70,8 +70,6 @@ class GUIRoot(tk.Frame):
         # Reinitialize screens
         self.init_screens()
 
-
-
     def on_close(self):
         """Handle cleanup and close the application."""
         # Stop the AppTracker thread

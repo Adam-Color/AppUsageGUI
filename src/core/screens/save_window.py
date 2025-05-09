@@ -1,5 +1,6 @@
 import tkinter as tk
 
+from core.utils.time_utils import format_time
 from core.utils.file_utils import read_file, config_file
 
 class SaveWindow(tk.Frame):

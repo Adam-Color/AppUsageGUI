@@ -1,0 +1,11 @@
+import threading
+
+def threaded(fn):
+    def wrapper(*args, **kwargs):
+        result = []
+        def run_and_capture():
+            result.append(fn(*args, **kwargs))
+        thread = threading.Thread(target=run_and_capture, name=fn.__name__)
+        thread.start()
+        return thread, result
+    return wrapper

@@ -1,15 +1,6 @@
 import time
-import threading
 
-def threaded(fn):
-    def wrapper(*args, **kwargs):
-        result = []
-        def run_and_capture():
-            result.append(fn(*args, **kwargs))
-        thread = threading.Thread(target=run_and_capture)
-        thread.start()
-        return thread, result
-    return wrapper
+from core.utils.logic_utils import threaded
 
 class TimeTracker:
     """A clock that runs in a separate thread to track elapsed time, with pause and resume functionality."""
@@ -45,12 +36,14 @@ class TimeTracker:
             time.sleep(0.1)
 
     def start(self):
+        print("Starting time tracker")
         self.track = True
         self.captures['starts'].append(time.time())
 
     def stop(self):
         if self.track:
             self.captures['stops'].append(time.time())
+            print("Stopping time tracker")
             self.track = False
 
     def pause(self):
@@ -106,3 +99,12 @@ class TimeTracker:
 
     def is_running(self):
         return self.track
+
+    def reset(self, add_time=0.0):
+        self.elapsed_time = 0.0
+        self.offset_time = 0.0
+        self.paused_time = 0.0
+        self.resumed_time = 0.0
+        self.total_time = add_time
+        self.track = False
+        self.start_time = None

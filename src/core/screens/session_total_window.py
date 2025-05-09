@@ -30,7 +30,7 @@ class SessionTotalWindow(tk.Frame):
         back_button.pack(pady=5, side='bottom')
 
         # Start the total time thread
-        threading.Thread(target=self.total_time_thread, daemon=True).start()
+        threading.Thread(target=self.total_time_thread, daemon=True, name="total_session_time").start()
 
         # Start the update queue
         self.update_total_time()
