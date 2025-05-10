@@ -29,12 +29,12 @@ class TrackerWindow(tk.Frame):
         self.time_label = tk.Label(self, text=self.track_time_disp)
         self.time_label.pack(pady=10)
 
-        # TODO: pause and resume buttons need to be beutified
+        # pause/resume button
+        self.pause_toggle_text = tk.StringVar()
+        self.pause_toggle_text.set("Pause" if not self.logic_controller.time_tracker.get_is_paused else "Resume")
 
-        pause_button = tk.Button(self, text="Pause", command=self.logic_controller.time_tracker.pause)
+        pause_button = tk.Button(self,  textvariable=self.pause_toggle_text, command=self.logic_controller.time_tracker.pause if not self.logic_controller.time_tracker.get_is_paused() else self.logic_controller.time_tracker.resume)
         pause_button.pack(pady=5)
-        resume_button = tk.Button(self, text="Resume", command=self.logic_controller.time_tracker.resume)
-        resume_button.pack(pady=5)
 
         self.update_queue = queue.Queue()
 

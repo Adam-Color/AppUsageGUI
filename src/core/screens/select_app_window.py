@@ -66,16 +66,19 @@ class SelectAppWindow(tk.Frame):
     @threaded
     def refresh_apps(self):
         """Fetch all app names and display them in the listbox."""
-        self.app_listbox.delete(0, tk.END)
-        time.sleep(1)
-        self.all_apps = self.app_tracker.get_app_names()
+        try:
+            self.app_listbox.delete(0, tk.END)
+            time.sleep(1)
+            self.all_apps = self.app_tracker.get_app_names()
 
-        if not self.all_apps:
-            messagebox.showerror("Error", "No applications found.")
-        else:
-            for app in self.all_apps:
-                self.app_listbox.insert(tk.END, app)
-        self.update_search()
+            if not self.all_apps:
+                messagebox.showerror("Error", "No applications found.")
+            else:
+                for app in self.all_apps:
+                    self.app_listbox.insert(tk.END, app)
+            self.update_search()
+        except RuntimeError as e:
+            print("AppUsageGUI encountered an error it did not expect: ", e)
 
     @threaded
     def update_search(self, *args):
