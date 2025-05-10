@@ -39,7 +39,10 @@ class TrackerWindow(tk.Frame):
                                  width=10)
         pause_button.pack(pady=5)
 
+        # stop button
         self.stop_button_pressed = False
+        self.stop_button = tk.Button(self, text="Stop", command=self._stop, width=10)
+        self.stop_button.pack(pady=5)
 
         self.update_queue = queue.Queue()
 
@@ -120,6 +123,12 @@ class TrackerWindow(tk.Frame):
                 self.logic_controller.time_tracker.resume()
             else:
                 self.logic_controller.time_tracker.pause()
+    
+    def _stop(self):
+        """ask the user for confirmation to set the stop button pressed flag."""
+        confirm = tk.messagebox.askyesno("Confirm Stop Tracking", "Are you sure you want to stop tracking?\nProgress will be saved.")
+        if confirm:
+            self.stop_button_pressed = True
 
     def periodic_update(self):
         """Update the GUI clock"""
