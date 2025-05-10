@@ -31,10 +31,15 @@ class TrackerWindow(tk.Frame):
 
         # pause/resume button
         self.pause_toggle_text = tk.StringVar()
-        self.pause_toggle_text.set("Pause" if not self.logic_controller.time_tracker.get_is_paused else "Resume")
+        self.pause_toggle_text.set("Pause")
 
-        pause_button = tk.Button(self,  textvariable=self.pause_toggle_text, command=self.logic_controller.time_tracker.pause if not self.logic_controller.time_tracker.get_is_paused() else self.logic_controller.time_tracker.resume)
+        pause_button = tk.Button(self,
+                                 textvariable=self.pause_toggle_text,
+                                 command=self.toggle_pause_tracker,
+                                 width=10)
         pause_button.pack(pady=5)
+
+        self.stop_button_pressed = False
 
         self.update_queue = queue.Queue()
 
@@ -63,8 +68,9 @@ class TrackerWindow(tk.Frame):
                 self.logic_controller.mouse_tracker.start()
 
             # Stop tracking when the app closes
-            # includes exception for continuing tracking from a previous session.
-            if self.logic_controller.time_tracker.is_running() and self.app not in app_names and self.logic_controller.file_handler.get_continuing_tracker() is False:
+            # includes exception for continuing tracking from a previous session
+            # includes exception for when the user presses the stop button
+            if (self.logic_controller.time_tracker.is_running() and self.app not in app_names and self.logic_controller.file_handler.get_continuing_tracker() is False) or self.stop_button_pressed:
                 # handle situations where the time tracker is paused
                 self.logic_controller.time_tracker.resume()
 
@@ -85,6 +91,7 @@ class TrackerWindow(tk.Frame):
                     #TODO: needs a more scalable implementation
                     if self.logic_controller.mouse_tracker.is_pausing():
                         self.page_label.config(text="Tracking paused, mouse is idle...")
+                        self.toggle_pause_tracker(button=False)
                     else:
                         self.page_label.config(text=f"Tracking the selected app: {self.app}")
 
@@ -101,6 +108,18 @@ class TrackerWindow(tk.Frame):
             self.controller.frames["SessionTotalWindow"].stop_threads()
             self.controller.show_frame("SaveWindow")
 
+    def toggle_pause_tracker(self, button=True):
+        """Change the button text and pause/resume the tracker. Will not change the tracker if button is False."""
+        if self.pause_toggle_text.get() == "Pause":
+            self.pause_toggle_text.set("Resume")
+        else:
+            self.pause_toggle_text.set("Pause")
+
+        if button:
+            if self.logic_controller.time_tracker.get_is_paused():
+                self.logic_controller.time_tracker.resume()
+            else:
+                self.logic_controller.time_tracker.pause()
 
     def periodic_update(self):
         """Update the GUI clock"""
