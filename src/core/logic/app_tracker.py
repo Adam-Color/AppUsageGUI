@@ -31,7 +31,7 @@ class AppTracker:
 
     def _start_tracking(self):
         if self.update_thread is None:
-            self.update_thread = threading.Thread(target=self._monitor_processes)
+            self.update_thread = threading.Thread(target=self._monitor_processes, name="app_tracker")
             self.update_thread.start()
 
     def _fetch_app_names(self):

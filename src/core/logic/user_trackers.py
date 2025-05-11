@@ -29,7 +29,7 @@ class MouseTracker:
 
         self.pausing = False
 
-        self.update_thread = threading.Thread(target=self._update_mouse_position)
+        self.update_thread = threading.Thread(target=self._update_mouse_position, name="mouse_tracker")
 
     def _update_mouse_position(self):
         while not self.stop_event.is_set():
@@ -48,7 +48,7 @@ class MouseTracker:
             if self.last_mouse_position == self.mouse_position:
                 self.logic_controller.time_tracker.pause()
                 self.pausing = True
-            elif self.logic_controller.time_tracker.get_is_paused():
+            elif self.pausing:
                 self.logic_controller.time_tracker.resume()
                 self.pausing = False
 
@@ -56,7 +56,7 @@ class MouseTracker:
     def start(self):
         if self.enabled:
             self.stop_event = threading.Event()  # Reset the stop event to allow the thread to run again
-            self.update_thread = threading.Thread(target=self._update_mouse_position)
+            self.update_thread = threading.Thread(target=self._update_mouse_position, name="mouse_tracker")
             print("Starting mouse tracker")
             self.update_thread.start()
 
@@ -84,3 +84,18 @@ class MouseTracker:
     
     def is_enabled(self):
         return self.enabled
+
+class ResolveProjectTracker:
+    """Tracks if the user is in a DaVinci Resolve project or not"""
+    def __init__(self, parent, logic_controller):
+        self.parent = parent
+        self.logic_controller = logic_controller
+        self.paused = False
+        self.project_name = None
+        self.project_open = False
+        self.stop_event = threading.Event()  # Used to stop the thread gracefully
+        try:
+            self.enabled = read_file(config_file())["resolve_tracker_enabled"]
+        except FileNotFoundError or KeyError: #! KeyError for dev
+            self.enabled = False  # Default value
+        self.update_thread = threading.Thread(target=self._update_project_status)

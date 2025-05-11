@@ -1,17 +1,8 @@
 import tkinter as tk
 from tkinter import messagebox
 import time
-import threading
 
-def threaded(fn):
-    def wrapper(*args, **kwargs):
-        result = []
-        def run_and_capture():
-            result.append(fn(*args, **kwargs))
-        thread = threading.Thread(target=run_and_capture)
-        thread.start()
-        return thread, result
-    return wrapper
+from core.utils.logic_utils import threaded
 
 class SelectAppWindow(tk.Frame):
     def __init__(self, parent, controller, logic_controller):
@@ -75,16 +66,19 @@ class SelectAppWindow(tk.Frame):
     @threaded
     def refresh_apps(self):
         """Fetch all app names and display them in the listbox."""
-        self.app_listbox.delete(0, tk.END)
-        time.sleep(1)
-        self.all_apps = self.app_tracker.get_app_names()
+        try:
+            self.app_listbox.delete(0, tk.END)
+            time.sleep(1)
+            self.all_apps = self.app_tracker.get_app_names()
 
-        if not self.all_apps:
-            messagebox.showerror("Error", "No applications found.")
-        else:
-            for app in self.all_apps:
-                self.app_listbox.insert(tk.END, app)
-        self.update_search()
+            if not self.all_apps:
+                messagebox.showerror("Error", "No applications found.")
+            else:
+                for app in self.all_apps:
+                    self.app_listbox.insert(tk.END, app)
+            self.update_search()
+        except RuntimeError as e:
+            print("AppUsageGUI encountered an error it did not expect: ", e)
 
     @threaded
     def update_search(self, *args):
