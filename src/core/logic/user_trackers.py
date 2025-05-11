@@ -48,7 +48,7 @@ class MouseTracker:
             if self.last_mouse_position == self.mouse_position:
                 self.logic_controller.time_tracker.pause()
                 self.pausing = True
-            elif self.logic_controller.time_tracker.get_is_paused():
+            elif self.pausing:
                 self.logic_controller.time_tracker.resume()
                 self.pausing = False
 
