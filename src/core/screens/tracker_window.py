@@ -106,7 +106,7 @@ class TrackerWindow(tk.Frame):
             else:
                 self.update_queue.put(("time", "Looking for application..."))
 
-            time.sleep(0.1)
+            self.stop_event.wait(timeout=0.1)
         if not self.stop_event.is_set():
             self.controller.frames["SessionTotalWindow"].stop_threads()
             self.controller.show_frame("SaveWindow")

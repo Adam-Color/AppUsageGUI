@@ -60,7 +60,7 @@ class SessionTotalWindow(tk.Frame):
                 pass
 
             # Sleep for 1 second before the next update
-            time.sleep(1)
+            self.stop_event.wait(timeout=1)
     
     def stop_threads(self):
         self.stop_event.set()

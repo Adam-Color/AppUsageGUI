@@ -64,7 +64,7 @@ class AppTracker:
                 # Process count has changed; update app names
                 self.cached_process_count = current_process_count
                 self.app_names = self._fetch_app_names()
-            time.sleep(1)  # Check periodically to avoid excessive CPU usage
+            self.stop_event.wait(timeout=1)  # Check periodically to avoid excessive CPU usage
 
     def get_app_names(self):
         return self.app_names
