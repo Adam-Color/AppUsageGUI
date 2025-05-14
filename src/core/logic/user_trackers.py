@@ -86,7 +86,7 @@ class MouseTracker:
         return self.enabled
 
 class ResolveProjectTracker:
-    """Tracks if the user is in a DaVinci Resolve project or not"""
+    """Tracks if the user is in a specified DaVinci Resolve project or not"""
     def __init__(self, parent, logic_controller):
         self.parent = parent
         self.logic_controller = logic_controller
