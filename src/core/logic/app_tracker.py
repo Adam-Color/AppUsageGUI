@@ -3,8 +3,6 @@ import os
 import psutil
 import sys
 
-from core.utils.logic_utils import threaded
-
 if os.name == 'nt':
     import win32gui
     import win32process
