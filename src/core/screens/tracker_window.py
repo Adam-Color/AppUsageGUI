@@ -138,7 +138,7 @@ class TrackerWindow(tk.Frame):
                     self.page_label.config(text=f"Tracking: {item[1]}")
         except queue.Empty:
             pass
-        self.after(500, self._periodic_update)
+        self.after(250, self._periodic_update)
 
     def start_update_thread(self):
         self.update_thread.start()

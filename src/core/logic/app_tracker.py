@@ -1,24 +1,11 @@
 import threading
-import time
 import os
 import psutil
+if os.name == 'nt':
+    import win32gui
+    import win32process
 
-excluded_apps = {
-    'python', 'AppUsageGUI', 'Adobe Crash Processor', 'AdobeIPCBroker',
-    'AdobeUpdateService', 'BMDStreamingServer', 'DesktopVideoUpdater',
-    'gamingservices', 'gamingservicesnet', 'Registry', 'services',
-    'System', 'system', 'System Idle Process', 'svchost', 'taskhostw',
-    'taskhostex', 'wmi', 'WmiPrvSE', 'Windows Internal Database',
-    'Windows Security Notification Icon', 'Windows Terminal',
-    'wininit', 'winlogon', 'wlanext', 'WmiApSrv','dwm', 'explorer', 
-    'SearchIndexer', 'SearchProtocolHost', 'xrdd', 'conhost', 'csrss',
-    'smss', 'lsass', 'win32k', 'SystemSettings', 'RuntimeBroker',
-    'Taskmgr', 'ApplicationFrameHost', 'ShellExperienceHost',
-    'SearchApp', 'ShellInfrastructureHost', 'amdfendrsr',
-    'CrossDeviceService', 'dwmcore', 'fontdrvhost',
-    'lghub_agent', 'lghub_updater', 'lghub_system_tray',
-    'AggregatorHost', 'sntlkeyssrvr', 'sntlsrvnt'
-}
+EXCLUDED_APPS = {"AppUsageGUI"}
 
 class AppTracker:
     def __init__(self, parent, logic_controller):
@@ -28,6 +15,9 @@ class AppTracker:
         self.stop_event = threading.Event()  # Used to stop the thread gracefully
         self.cached_process_count = 0  # Tracks the last known process count
         self._start_tracking()  # Start the tracking thread
+
+        # exclude apps that are not relevant to the user
+        self._update_excluded_apps()
 
     def _start_tracking(self):
         if self.update_thread is None:
@@ -39,7 +29,7 @@ class AppTracker:
         seen_names = set()
 
         # add excluded apps to seen_names
-        seen_names.update(excluded_apps)
+        seen_names.update(EXCLUDED_APPS)
 
         for process in psutil.process_iter(['name']):
             try:
@@ -48,7 +38,7 @@ class AppTracker:
                 if app_name not in seen_names and len(app_name) > 0:
                     apps.append(app_name)
                     seen_names.add(app_name)
-                    #print(app_name) #! use to help optimize
+                    print(app_name) #! use to help optimize
             except (psutil.NoSuchProcess, psutil.AccessDenied, psutil.ZombieProcess):
                 # Skip processes that terminate mid-iteration or are inaccessible
                 pass
@@ -92,3 +82,35 @@ class AppTracker:
     def reset(self):
         self.selected_app = None
         self.update_thread = None
+
+    def _update_excluded_apps(self):
+        for process in psutil.process_iter(['name']):
+            try:
+                app_name = process.info['name']
+                app_name = app_name.split(".")[0]  # Use the base name of the process
+            except (psutil.NoSuchProcess, psutil.AccessDenied, psutil.ZombieProcess):
+                # Skip processes that terminate mid-iteration or are inaccessible
+                pass
+            if not self._has_gui(app_name):
+                EXCLUDED_APPS.add(app_name)
+
+    def _is_process_running(self, process_name):
+        for proc in psutil.process_iter(['name']):
+            if proc.info['name'] == process_name:
+                return True
+        return False
+
+    def _has_gui(self, process_name):
+        if not self._is_process_running(process_name):
+            return False
+        def callback(hwnd, hwnds):
+            if win32gui.IsWindowVisible(hwnd) and win32gui.GetWindowText(hwnd):
+                _, pid = win32process.GetWindowThreadProcessId(hwnd)
+                for proc in psutil.process_iter(['pid']):
+                    if proc.info['pid'] == pid:
+                        if proc.info['name'] == process_name:
+                            return True
+                return False
+        hwnds = []
+        win32gui.EnumWindows(callback, hwnds)
+        return False
