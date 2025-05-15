@@ -1,9 +1,15 @@
 import threading
 import os
 import psutil
+import sys
+
+from core.utils.logic_utils import threaded
+
 if os.name == 'nt':
     import win32gui
     import win32process
+elif sys.platform == 'darwin':
+    import AppKit
 
 EXCLUDED_APPS = {"AppUsageGUI"}
 
@@ -14,10 +20,11 @@ class AppTracker:
         self.update_thread = None
         self.stop_event = threading.Event()  # Used to stop the thread gracefully
         self.cached_process_count = 0  # Tracks the last known process count
-        self._start_tracking()  # Start the tracking thread
 
         # exclude apps that are not relevant to the user
         self._update_excluded_apps()
+
+        self._start_tracking()  # Start the tracking thread
 
     def _start_tracking(self):
         if self.update_thread is None:
@@ -38,7 +45,7 @@ class AppTracker:
                 if app_name not in seen_names and len(app_name) > 0:
                     apps.append(app_name)
                     seen_names.add(app_name)
-                    print(app_name) #! use to help optimize
+                    #print(app_name) #! use to help optimize
             except (psutil.NoSuchProcess, psutil.AccessDenied, psutil.ZombieProcess):
                 # Skip processes that terminate mid-iteration or are inaccessible
                 pass
@@ -84,15 +91,25 @@ class AppTracker:
         self.update_thread = None
 
     def _update_excluded_apps(self):
-        for process in psutil.process_iter(['name']):
+        seen = set()
+        for process in psutil.process_iter(['pid', 'name']):
             try:
                 app_name = process.info['name']
+                if app_name.startswith("com.") or app_name in seen:
+                    # Skip macOS system processes
+                    continue
+                #print(f"Checking process: {app_name} ({len(seen)})") # Debugging line
+                app_id = process.info['pid']
                 app_name = app_name.split(".")[0]  # Use the base name of the process
             except (psutil.NoSuchProcess, psutil.AccessDenied, psutil.ZombieProcess):
                 # Skip processes that terminate mid-iteration or are inaccessible
                 pass
-            if not self._has_gui(app_name):
+            seen.add(app_name)
+            if not self._has_gui(app_name, app_id):
                 EXCLUDED_APPS.add(app_name)
+            if len(seen) > 400:
+                # limit the number of seen apps to avoid long loading times
+                break
 
     def _is_process_running(self, process_name):
         for proc in psutil.process_iter(['name']):
@@ -100,17 +117,24 @@ class AppTracker:
                 return True
         return False
 
-    def _has_gui(self, process_name):
+    def _has_gui(self, process_name, process_id):
         if not self._is_process_running(process_name):
             return False
-        def callback(hwnd, hwnds):
-            if win32gui.IsWindowVisible(hwnd) and win32gui.GetWindowText(hwnd):
-                _, pid = win32process.GetWindowThreadProcessId(hwnd)
-                for proc in psutil.process_iter(['pid']):
-                    if proc.info['pid'] == pid:
-                        if proc.info['name'] == process_name:
-                            return True
+        if os.name == 'nt':
+            def callback(hwnd, hwnds):
+                if win32gui.IsWindowVisible(hwnd) and win32gui.GetWindowText(hwnd):
+                    _, pid = win32process.GetWindowThreadProcessId(hwnd)
+                    if pid == process_id:
+                        hwnds.append(hwnd)
+            hwnds = []
+            win32gui.EnumWindows(callback, hwnds)
+            return bool(hwnds)
+        elif sys.platform == 'darwin':
+            try:
+                app = AppKit.NSRunningApplication.runningApplicationWithProcessIdentifier_(process_id)
+                if app is None:
+                    return False
+                return app.activationPolicy() != AppKit.NSApplicationActivationPolicyProhibited
+            except Exception as e:
+                print(f"GUI check error: {e}")
                 return False
-        hwnds = []
-        win32gui.EnumWindows(callback, hwnds)
-        return False
