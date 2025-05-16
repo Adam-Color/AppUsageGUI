@@ -46,7 +46,7 @@ class AppTracker:
                 ):
                     apps.append(app_name)
                     seen_names.add(app_name)
-                    print(app_name)  # Debugging line to help optimize
+                    #print(app_name)  # Debugging line to help optimize
             except (psutil.NoSuchProcess, psutil.AccessDenied, psutil.ZombieProcess):
                 # Skip processes that terminate mid-iteration or are inaccessible
                 pass
@@ -103,7 +103,7 @@ class AppTracker:
                 seen_pids.add(pid)
                 if process.info['status'] == psutil.STATUS_RUNNING and not self._has_gui(pid):
                     EXCLUDED_APP_PIDS.add(pid)
-                if len(seen_pids) > 400:
+                if len(seen_pids) > (400 if os.name == 'nt' else 10000):
                     # Limit the number of seen processes to avoid long loading times
                     break
             except (psutil.NoSuchProcess, psutil.AccessDenied, psutil.ZombieProcess):
