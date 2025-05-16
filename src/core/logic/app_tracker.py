@@ -39,10 +39,10 @@ class AppTracker:
             try:
                 app_name = process.info['name']
                 app_name = app_name.split(".")[0]  # Use the base name of the process
-                if process.info['status'] == psutil.STATUS_RUNNING and len(app_name) > 0 and app_name not in seen_names:
+                if process.status() == psutil.STATUS_RUNNING and len(app_name) > 0 and app_name not in seen_names:
                     apps.append(app_name)
                     seen_names.add(app_name)
-                    #print(app_name) #! use to help optimize
+                    print(app_name) #! use to help optimize
             except (psutil.NoSuchProcess, psutil.AccessDenied, psutil.ZombieProcess):
                 # Skip processes that terminate mid-iteration or are inaccessible
                 pass
@@ -102,23 +102,16 @@ class AppTracker:
                 # Skip processes that terminate mid-iteration or are inaccessible
                 pass
             seen.add(app_name)
-            if process.info['status'] == psutil.STATUS_RUNNING and not self._has_gui(app_name, app_id):
+            if process.info['status'] == psutil.STATUS_RUNNING and self._has_gui(app_id) is False:
                 EXCLUDED_APPS.add(app_name)
             if len(seen) > 400:
                 # limit the number of seen apps to avoid long loading times
                 break
+        print(f"Excluded apps: {EXCLUDED_APPS}")
 
-    def _is_process_running(self, process_name):
-        for proc in psutil.process_iter(['name']):
-            if proc.info['name'] == process_name:
-                return True
-        return False
-
-    def _has_gui(self, process_name, process_id):
-        if not self._is_process_running(process_name):
-            return False
+    def _has_gui(self, process_id):
         if os.name == 'nt':
-            pass
+            return True
         elif sys.platform == 'darwin':
             try:
                 app = AppKit.NSRunningApplication.runningApplicationWithProcessIdentifier_(process_id)
