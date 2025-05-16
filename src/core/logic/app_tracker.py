@@ -9,7 +9,12 @@ if os.name == 'nt':
 elif sys.platform == 'darwin':
     import AppKit
 
+from core.utils.file_utils import read_file, write_file, apps_file, user_dir_exists
+
 EXCLUDED_APP_PIDS = set()
+
+if user_dir_exists() and os.path.exists(apps_file()):
+    EXCLUDED_APP_PIDS.update(read_file(apps_file())['excluded_app_pids'])
 
 class AppTracker:
     def __init__(self, parent, logic_controller):
@@ -32,6 +37,7 @@ class AppTracker:
     def _fetch_app_names(self):
         apps = []
         seen_names = set()
+        seen_names.add("AppUsageGUI")
 
         for process in psutil.process_iter(['pid', 'name', 'status']):
             try:
@@ -109,7 +115,10 @@ class AppTracker:
             except (psutil.NoSuchProcess, psutil.AccessDenied, psutil.ZombieProcess):
                 # Skip processes that terminate mid-iteration or are inaccessible
                 pass
-        print(f"Excluded app PIDs: {EXCLUDED_APP_PIDS}")
+
+        print(f"Excluded app PIDs: {EXCLUDED_APP_PIDS}")  # Debugging line
+        data = {'excluded_app_pids': EXCLUDED_APP_PIDS}
+        write_file(apps_file(), data)
 
     def _has_gui(self, process_id):
         if os.name == 'nt':

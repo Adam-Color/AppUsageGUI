@@ -26,6 +26,10 @@ def config_file():
     """Returns the path to the config file"""
     return os.path.join(get_user_directory(), 'config.dat')
 
+def apps_file():
+    """Returns the path to the apps file"""
+    return os.path.join(get_user_directory(), 'apps.dat')
+
 def sessions_exist(p=False):
     """Check if sessions exist, and if not, create the directory.
     Set p=True to print directory path"""
