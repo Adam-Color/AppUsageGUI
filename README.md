@@ -36,5 +36,6 @@ Find them [here](https://github.com/Adam-Color/AppUsageGUI/releases)
 > In **macOS**, PyQt6 conflicts with py-objc, leading to a broken venv.
 > As a result, v2 is not currently being worked on until this issue is fixed.
 
+* Merge and resolve changes from Develop into v2
 * Move to a single QT UI instead of multiple 'screens'
 * Add ways to analyze app usage data in the app
