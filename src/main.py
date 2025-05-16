@@ -134,7 +134,7 @@ def new_updates():
     except (KeyError, ValueError, IndexError) as e:
         print(f"Error checking for updates: Parsing error - {str(e)}")
     except Exception as e:
-        print(f"Error checking for updates: Unexpected error - {str(e)}")
+        tk.messagebox.showerror("Error", f"An unexpected error occurred while checking for updates: {str(e)}")
     return False
 
 def splash_screen(root):
@@ -164,6 +164,7 @@ def splash_screen(root):
         ask_update = tk.messagebox.askquestion('AppUsageGUI Updates', "A new update is available. Would you like to download it from the github page?")
         if ask_update == "yes":
             webbrowser.open_new_tab("https://github.com/adam-color/AppUsageGUI/releases/latest")
+            sys.exit(0)
 
     win = GUIRoot(root)
     
