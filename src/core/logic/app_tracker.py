@@ -4,11 +4,12 @@ import psutil
 import sys
 
 if os.name == 'nt':
-    pass
+    from pywinauto import Desktop
+    from pywinauto.findwindows import ElementNotFoundError
 elif sys.platform == 'darwin':
     import AppKit
 
-EXCLUDED_APPS = {"AppUsageGUI"}
+EXCLUDED_APP_PIDS = set()
 
 class AppTracker:
     def __init__(self, parent, logic_controller):
@@ -32,17 +33,20 @@ class AppTracker:
         apps = []
         seen_names = set()
 
-        # add excluded apps to seen_names
-        seen_names.update(EXCLUDED_APPS)
-
-        for process in psutil.process_iter(['name']):
+        for process in psutil.process_iter(['pid', 'name', 'status']):
             try:
+                pid = process.info['pid']
                 app_name = process.info['name']
                 app_name = app_name.split(".")[0]  # Use the base name of the process
-                if process.status() == psutil.STATUS_RUNNING and len(app_name) > 0 and app_name not in seen_names:
+                if (
+                    process.status() == psutil.STATUS_RUNNING
+                    and pid not in EXCLUDED_APP_PIDS
+                    and app_name not in seen_names
+                    and len(app_name) > 0
+                ):
                     apps.append(app_name)
                     seen_names.add(app_name)
-                    print(app_name) #! use to help optimize
+                    print(app_name)  # Debugging line to help optimize
             except (psutil.NoSuchProcess, psutil.AccessDenied, psutil.ZombieProcess):
                 # Skip processes that terminate mid-iteration or are inaccessible
                 pass
@@ -88,30 +92,37 @@ class AppTracker:
         self.update_thread = None
 
     def _update_excluded_apps(self):
-        seen = set()
+        seen_pids = set()
         for process in psutil.process_iter(['pid', 'name', 'status']):
             try:
+                pid = process.info['pid']
                 app_name = process.info['name']
-                if app_name.startswith("com.") or app_name in seen:
-                    # Skip macOS system processes
+                if pid in seen_pids:
                     continue
-                print(f"Checking process: {app_name} ({len(seen)})") # Debugging line
-                app_id = process.info['pid']
-                app_name = app_name.split(".")[0]  # Use the base name of the process
+                print(f"Checking process: {app_name} (PID: {pid})")  # Debugging line
+                seen_pids.add(pid)
+                if process.info['status'] == psutil.STATUS_RUNNING and not self._has_gui(pid):
+                    EXCLUDED_APP_PIDS.add(pid)
+                if len(seen_pids) > 400:
+                    # Limit the number of seen processes to avoid long loading times
+                    break
             except (psutil.NoSuchProcess, psutil.AccessDenied, psutil.ZombieProcess):
                 # Skip processes that terminate mid-iteration or are inaccessible
                 pass
-            seen.add(app_name)
-            if process.info['status'] == psutil.STATUS_RUNNING and self._has_gui(app_id) is False:
-                EXCLUDED_APPS.add(app_name)
-            if len(seen) > 400:
-                # limit the number of seen apps to avoid long loading times
-                break
-        print(f"Excluded apps: {EXCLUDED_APPS}")
+        print(f"Excluded app PIDs: {EXCLUDED_APP_PIDS}")
 
     def _has_gui(self, process_id):
         if os.name == 'nt':
-            return True
+            try:
+                # Enumerate all top-level windows
+                windows = Desktop(backend="uia").windows()
+                for win in windows:
+                    if win.process_id() == process_id:
+                        # Found a visible window for this process
+                        return True
+            except (ElementNotFoundError, RuntimeError):
+                return True  # Handle the case where the process is not found
+            return False
         elif sys.platform == 'darwin':
             try:
                 app = AppKit.NSRunningApplication.runningApplicationWithProcessIdentifier_(process_id)
