@@ -137,7 +137,7 @@ def new_updates():
         print(f"Error checking for updates: Unexpected error - {str(e)}")
     return False
 
-def splash_screen():
+def splash_screen(root):
     """Display a splash screen while the application loads."""
     splash_window = tk.Tk()
     splash_window.geometry("200x50")
@@ -165,10 +165,13 @@ def splash_screen():
         if ask_update == "yes":
             webbrowser.open_new_tab("https://github.com/adam-color/AppUsageGUI/releases/latest")
 
+    win = GUIRoot(root)
+    
     splash_window.destroy()
 
+    return win
+
 def main():
-    splash_screen()
 
     root = tk.Tk()
 
@@ -181,7 +184,7 @@ def main():
     root.iconbitmap(icon_path)
     root.title(f"AppUsageGUI - v{__version__}")
 
-    win = GUIRoot(root)
+    win = splash_screen(root)
     win.pack(side="top", fill="both", expand=True)
     root.mainloop()
 

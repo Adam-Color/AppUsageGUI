@@ -4,8 +4,7 @@ import psutil
 import sys
 
 if os.name == 'nt':
-    import win32gui
-    import win32process
+    pass
 elif sys.platform == 'darwin':
     import AppKit
 
@@ -40,7 +39,7 @@ class AppTracker:
             try:
                 app_name = process.info['name']
                 app_name = app_name.split(".")[0]  # Use the base name of the process
-                if app_name not in seen_names and len(app_name) > 0:
+                if process.info['status'] == psutil.STATUS_RUNNING and len(app_name) > 0 and app_name not in seen_names:
                     apps.append(app_name)
                     seen_names.add(app_name)
                     #print(app_name) #! use to help optimize
@@ -90,20 +89,20 @@ class AppTracker:
 
     def _update_excluded_apps(self):
         seen = set()
-        for process in psutil.process_iter(['pid', 'name']):
+        for process in psutil.process_iter(['pid', 'name', 'status']):
             try:
                 app_name = process.info['name']
                 if app_name.startswith("com.") or app_name in seen:
                     # Skip macOS system processes
                     continue
-                #print(f"Checking process: {app_name} ({len(seen)})") # Debugging line
+                print(f"Checking process: {app_name} ({len(seen)})") # Debugging line
                 app_id = process.info['pid']
                 app_name = app_name.split(".")[0]  # Use the base name of the process
             except (psutil.NoSuchProcess, psutil.AccessDenied, psutil.ZombieProcess):
                 # Skip processes that terminate mid-iteration or are inaccessible
                 pass
             seen.add(app_name)
-            if not self._has_gui(app_name, app_id):
+            if process.info['status'] == psutil.STATUS_RUNNING and not self._has_gui(app_name, app_id):
                 EXCLUDED_APPS.add(app_name)
             if len(seen) > 400:
                 # limit the number of seen apps to avoid long loading times
@@ -119,14 +118,7 @@ class AppTracker:
         if not self._is_process_running(process_name):
             return False
         if os.name == 'nt':
-            def callback(hwnd, hwnds):
-                if win32gui.IsWindowVisible(hwnd) and win32gui.GetWindowText(hwnd):
-                    _, pid = win32process.GetWindowThreadProcessId(hwnd)
-                    if pid == process_id:
-                        hwnds.append(hwnd)
-            hwnds = []
-            win32gui.EnumWindows(callback, hwnds)
-            return bool(hwnds)
+            pass
         elif sys.platform == 'darwin':
             try:
                 app = AppKit.NSRunningApplication.runningApplicationWithProcessIdentifier_(process_id)
