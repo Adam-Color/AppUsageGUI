@@ -80,7 +80,7 @@ class AppTracker:
         self.selected_app = app
 
     def stop(self):
-        print("Stopping App Tracker")
+        print("Stopping app tracker")
         self.stop_event.set()
         if self.update_thread is not None:
             try:
@@ -89,7 +89,7 @@ class AppTracker:
                 pass
 
     def start(self):
-        print("Starting App Tracker")
+        print("Starting app tracker")
         self.stop_event = threading.Event()
         self._start_tracking()
 
@@ -105,7 +105,7 @@ class AppTracker:
                 app_name = process.info['name']
                 if pid in seen_pids:
                     continue
-                print(f"Checking process: {app_name} (PID: {pid})")  # Debugging line
+                print(f"\rChecking process: {app_name} (PID: {pid})", end="                  ",)  # Debugging line
                 seen_pids.add(pid)
                 if process.info['status'] == psutil.STATUS_RUNNING and not self._has_gui(pid):
                     EXCLUDED_APP_PIDS.add(pid)
