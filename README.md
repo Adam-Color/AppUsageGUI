@@ -24,11 +24,17 @@ Find them [here](https://github.com/Adam-Color/AppUsageGUI/releases)
 
 ### Contributions are welcome and needed! Here is a TODO list:
 
-* add integrations with professional applications
+* Add integrations with professional applications
 * Optimize everything
 * Add support for tracking more than one executable per session
+* Impliment a better way to filter out non-gui apps on macOS
+* Switch all logic to use pid instead of process names
 
 #### Version 2 ('v2-change-to-pyqt6' branch):
+
+> [!WARNING]
+> In **macOS**, PyQt6 conflicts with py-objc, leading to a broken venv.
+> As a result, v2 is not currently being worked on until this issue is fixed.
 
 * Move to a single QT UI instead of multiple 'screens'
 * Add ways to analyze app usage data in the app

@@ -135,6 +135,7 @@ class AppTracker:
                 return True  # Handle the case where the process is not found
             return False
         elif sys.platform == 'darwin':
+            #TODO: Implement a better GUI check for macOS
             try:
                 app = AppKit.NSRunningApplication.runningApplicationWithProcessIdentifier_(process_id)
                 if app is None:
