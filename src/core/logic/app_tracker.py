@@ -99,15 +99,16 @@ class AppTracker:
 
     def _update_excluded_apps(self):
         seen_pids = set()
+        i = 0
         for process in psutil.process_iter(['pid', 'name', 'status']):
             try:
                 pid = process.info['pid']
-                app_name = process.info['name']
                 if pid in seen_pids:
                     continue
-                print(f"\rChecking process: {app_name} (PID: {pid})", end="                  ",)  # Debugging line
+                #print(f"Checking process: {app_name} (PID: {pid})")  # Debugging line
                 seen_pids.add(pid)
-                if process.info['status'] == psutil.STATUS_RUNNING and not self._has_gui(pid):
+                if process.info['status'] == psutil.STATUS_RUNNING and pid not in EXCLUDED_APP_PIDS and not self._has_gui(pid):
+                    i += 1
                     EXCLUDED_APP_PIDS.add(pid)
                 if len(seen_pids) > (400 if os.name == 'nt' else 10000):
                     # Limit the number of seen processes to avoid long loading times
@@ -116,7 +117,8 @@ class AppTracker:
                 # Skip processes that terminate mid-iteration or are inaccessible
                 pass
 
-        print(f"Excluded app PIDs: {EXCLUDED_APP_PIDS}")  # Debugging line
+        #print(f"\nExcluded app PIDs: {EXCLUDED_APP_PIDS}")  # Debugging line
+        #print(f"New exlusions: {i}")
         data = {'excluded_app_pids': EXCLUDED_APP_PIDS}
         write_file(apps_file(), data)
 
