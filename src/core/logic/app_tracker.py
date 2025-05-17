@@ -106,7 +106,7 @@ class AppTracker:
                 pid = process.info['pid']
                 if pid in seen_pids:
                     continue
-                #print(f"Checking process: {app_name} (PID: {pid})")  # Debugging line
+                #print(f"Checking process: {process.name()} (PID: {pid})")  # Debugging line
                 seen_pids.add(pid)
                 if process.info['status'] == psutil.STATUS_RUNNING and pid not in EXCLUDED_APP_PIDS and not self._has_gui(pid):
                     i += 1
