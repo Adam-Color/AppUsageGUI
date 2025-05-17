@@ -6,6 +6,7 @@ import sys
 if os.name == 'nt':
     from pywinauto import Desktop
     from pywinauto.findwindows import ElementNotFoundError
+    windows = Desktop(backend="uia").windows()
 elif sys.platform == 'darwin':
     import AppKit
 
@@ -118,7 +119,7 @@ class AppTracker:
                 pass
 
         #print(f"\nExcluded app PIDs: {EXCLUDED_APP_PIDS}")  # Debugging line
-        #print(f"New exlusions: {i}")
+        print(f"New exlusions: {i}")
         data = {'excluded_app_pids': EXCLUDED_APP_PIDS}
         write_file(apps_file(), data)
 
@@ -126,7 +127,6 @@ class AppTracker:
         if os.name == 'nt':
             try:
                 # Enumerate all top-level windows
-                windows = Desktop(backend="uia").windows()
                 for win in windows:
                     if win.process_id() == process_id:
                         # Found a visible window for this process
