@@ -2,11 +2,11 @@
 ; SEE THE DOCUMENTATION FOR DETAILS ON CREATING INNO SETUP SCRIPT FILES!
 
 #define MyAppName "AppUsageGUI"
-#define MyAppVersion "1.3.1"
+#define MyAppVersion "1.4.0"
 #define MyAppPublisher "Adam Blair-Smith"
 #define MyAppURL "https://github.com/Adam-Color/AppUsageGUI"
 #define MyAppExeName "AppUsageGUI.exe"
-#define MyInstallerName "AppUsageGUI_v1.3.1_WINDOWS_setup"
+#define MyInstallerName "AppUsageGUI_v1.4.0_WINDOWS_setup"
 
 [Setup]
 ; NOTE: The value of AppId uniquely identifies this application. Do not use the same AppId value in installers for other applications.
