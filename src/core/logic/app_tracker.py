@@ -8,7 +8,7 @@ if os.name == 'nt':
     from pywinauto.findwindows import ElementNotFoundError
     windows = Desktop(backend="uia").windows()
 elif sys.platform == 'darwin':
-    import AppKit
+    from AppKit import NSWorkspace
 
 from core.utils.file_utils import read_file, write_file, apps_file, user_dir_exists
 
@@ -137,10 +137,14 @@ class AppTracker:
         elif sys.platform == 'darwin':
             #TODO: Implement a better GUI check for macOS
             try:
-                app = AppKit.NSRunningApplication.runningApplicationWithProcessIdentifier_(process_id)
-                if app is None:
-                    return False
-                return app.activationPolicy() != AppKit.NSApplicationActivationPolicyProhibited
+                apps = NSWorkspace.sharedWorkspace().runningApplications()
+                for app in apps:
+                    if app.processIdentifier() == process_id:
+                        return True
+                if app.processIdentifier() == None:
+                    # Handle the case where the process is not found
+                    return True
+                return False
             except Exception as e:
                 print(f"GUI check error: {e}")
-                return False
+                return True
