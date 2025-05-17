@@ -78,7 +78,10 @@ class SelectAppWindow(tk.Frame):
                     self.app_listbox.insert(tk.END, app)
             self.update_search()
         except RuntimeError as e:
-            print("AppUsageGUI encountered an error it did not expect: ", e)
+            if str(e) == "main thread is not in main loop":
+                self.refresh_apps()  # Retry if the error is due to unsafe threading
+            else:
+                messagebox.showerror("Error", f"refresh_apps() encountered an error it did not expect: {e}")
 
     @threaded
     def update_search(self, *args):

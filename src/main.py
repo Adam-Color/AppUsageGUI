@@ -24,11 +24,13 @@ import webbrowser
 import socket
 import time
 import requests
+from PIL import ImageTk, Image
 
 from _version import __version__
 
 from core.gui_root import GUIRoot
 from core.utils.file_utils import sessions_exist, user_dir_exists, config_file, read_file, write_file
+from core.utils.tk_utils import center
 
 def resource_path(relative_path):
     """ Get absolute path to resource, works for dev and for PyInstaller """
@@ -139,20 +141,32 @@ def new_updates():
 
 def splash_screen(root):
     """Display a splash screen while the application loads."""
-    splash_window = tk.Tk()
-    splash_window.geometry("200x50")
+    splash_window = tk.Toplevel(root)
+    splash_window.geometry("256x280")
     splash_window.title("AppUsageGUI - Loading...")
+    splash_window.overrideredirect(True)  # Remove window decorations
+    splash_window.attributes("-topmost", True)
+    center(splash_window)
+    splash_window.configure(bg="#2E2E2E")
 
-    # Display loading text
-    loading_label = tk.Label(splash_window, text="\nLoading...")
-    loading_label.pack()
+    # Display icon
+    icon_img_path = "core/resources/icon-resources/icon.png"
+    icon_img = Image.open(resource_path(icon_img_path))
+    icon_img = icon_img.resize((256, 256), Image.Resampling.LANCZOS)
+    icon_img = ImageTk.PhotoImage(icon_img) 
+    icon_label = tk.Label(splash_window, image=icon_img, bg="#2E2E2E")
+    icon_label.image = icon_img  # Keep a reference to avoid garbage collection
+    icon_label.pack(pady=10)
 
     splash_window.update_idletasks()
     splash_window.update()
 
     # calls to create the app directories
+    if user_dir_exists(p=True) == False:
+        first_run_note = tk.Label(splash_window, text="Note: loading for the first time can take a while...", bg="#2E2E2E", fg="#FFFFFF")
+        first_run_note.pack(pady=5)
+
     sessions_exist(p=True)
-    user_dir_exists(p=True)
     
     if is_running():
         print("AppUsageGUI is already running. Exiting the new instance.")

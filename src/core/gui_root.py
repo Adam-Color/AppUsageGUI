@@ -73,7 +73,7 @@ class GUIRoot(tk.Frame):
             self.init_screens()
 
         except Exception as e:
-            print(f"Crash in reset_frames(): {e}")
+            tk.messagebox.showerror("Error", f"Crash in reset_frames(): {e}")
 
     def on_close(self):
         """Handle cleanup and close the application."""

@@ -14,3 +14,4 @@ rubicon-objc==0.5.0
 pyinstaller
 requests==2.32.3
 pywinauto; sys_platform == "win32"
+Pillow==11.2.1
