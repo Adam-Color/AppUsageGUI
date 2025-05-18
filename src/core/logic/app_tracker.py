@@ -37,17 +37,16 @@ class AppTracker:
 
     def _fetch_app_names(self):
         apps = []
-        seen_names = []
-        seen_names.append("AppUsageGUI")
+        seen_names = ["AppUsageGUI", "Python"]
 
-        for process in psutil.process_iter(['pid', 'name', 'status']):
+        for process in psutil.process_iter(['pid', 'name']):
             try:
                 pid = process.info['pid']
                 app_name = process.info['name']
                 app_name = app_name.split(".")[0]  # Use the base name of the process
                 if (
-                    pid not in EXCLUDED_APP_PIDS
-                    and app_name not in seen_names
+                    app_name not in seen_names
+                    and pid not in EXCLUDED_APP_PIDS
                     and len(app_name) > 0
                 ):
                     apps.append(app_name)
