@@ -56,7 +56,7 @@ class SessionsWindow(tk.Frame):
                 app_name = session_data['app_name']
                 time_spent = session_data['time_spent']
                 # Format the time spent
-                formatted_time = format_time(round(time_spent))
+                formatted_time = format_time(int(time_spent))
                 # Insert into the Listbox
                 self.session_listbox.insert(tk.END, f"{session_name}: {app_name}, {formatted_time} on record")
         corrupt_sessions = self.logic_controller.file_handler.get_corrupt_sessions()

@@ -51,7 +51,7 @@ class AppTracker:
                 ):
                     apps.append(app_name)
                     seen_names.append(app_name)
-                    print(app_name)  # Debugging line to help optimize
+                    #print(app_name)  # Debugging line to help optimize
             except (psutil.NoSuchProcess, psutil.AccessDenied, psutil.ZombieProcess):
                 # Skip processes that terminate mid-iteration or are inaccessible
                 pass

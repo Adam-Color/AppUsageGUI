@@ -24,11 +24,11 @@ class SaveWindow(tk.Frame):
     def save(self):
         if self.logic_controller.file_handler.get_continuing_session():
             session_time = self.logic_controller.time_tracker.get_total_time()
-            print("Session time: ", format_time(round(session_time)))
             session_app_name = self.logic_controller.app_tracker.get_selected_app()
-            print("Session app name: ", session_app_name)
 
             data = {'app_name': session_app_name, 'time_spent': session_time}
+
+            print(f"app_name: {session_app_name}, time_spent: {format_time(int(session_time))}")
 
             self.logic_controller.file_handler.save_session_data(data)
 

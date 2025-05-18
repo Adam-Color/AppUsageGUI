@@ -96,7 +96,7 @@ class TrackerWindow(tk.Frame):
     def _update_display(self):
         secs = self.logic_controller.time_tracker.get_time()
         if secs is not None:
-            time_text = f"{format_time(round(secs))} recorded."
+            time_text = f"{format_time(int(secs))} recorded."
         else:
             time_text = "No time data available"
 
