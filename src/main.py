@@ -221,6 +221,8 @@ def splash_screen(root):
             win = GUIRoot(root)
 
             update_progress(100)
+            root.update()
+            root.deiconify()
             splash_window.after(300, splash_window.destroy)
             root.after(300, lambda: win.pack(side="top", fill="both", expand=True))
 
@@ -232,8 +234,8 @@ def splash_screen(root):
     splash_window.after(100, load_app)
 
 def main():
-
     root = tk.Tk()
+    root.withdraw()
 
     if is_dark_mode():
         apply_dark_theme(root)
@@ -245,6 +247,7 @@ def main():
     root.title(f"AppUsageGUI - v{__version__}")
 
     splash_screen(root)
+
     root.mainloop()
 
 if __name__ == "__main__":
