@@ -12,10 +12,10 @@ elif sys.platform == 'darwin':
 
 from core.utils.file_utils import read_file, write_file, apps_file, user_dir_exists
 
-EXCLUDED_APP_PIDS = set()
+EXCLUDED_APP_PIDS = []
 
 if user_dir_exists() and os.path.exists(apps_file()):
-    EXCLUDED_APP_PIDS.update(read_file(apps_file())['excluded_app_pids'])
+    EXCLUDED_APP_PIDS = read_file(apps_file())['excluded_app_pids']
 
 class AppTracker:
     def __init__(self, parent, logic_controller):
@@ -37,8 +37,8 @@ class AppTracker:
 
     def _fetch_app_names(self):
         apps = []
-        seen_names = set()
-        seen_names.add("AppUsageGUI")
+        seen_names = []
+        seen_names.append("AppUsageGUI")
 
         for process in psutil.process_iter(['pid', 'name', 'status']):
             try:
@@ -46,14 +46,13 @@ class AppTracker:
                 app_name = process.info['name']
                 app_name = app_name.split(".")[0]  # Use the base name of the process
                 if (
-                    process.status() == psutil.STATUS_RUNNING
-                    and pid not in EXCLUDED_APP_PIDS
+                    pid not in EXCLUDED_APP_PIDS
                     and app_name not in seen_names
                     and len(app_name) > 0
                 ):
                     apps.append(app_name)
-                    seen_names.add(app_name)
-                    #print(app_name)  # Debugging line to help optimize
+                    seen_names.append(app_name)
+                    print(app_name)  # Debugging line to help optimize
             except (psutil.NoSuchProcess, psutil.AccessDenied, psutil.ZombieProcess):
                 # Skip processes that terminate mid-iteration or are inaccessible
                 pass
@@ -110,7 +109,7 @@ class AppTracker:
                 seen_pids.add(pid)
                 if process.info['status'] == psutil.STATUS_RUNNING and pid not in EXCLUDED_APP_PIDS and not self._has_gui(pid):
                     i += 1
-                    EXCLUDED_APP_PIDS.add(pid)
+                    EXCLUDED_APP_PIDS.append(pid)
                 if len(seen_pids) > (400 if os.name == 'nt' else 10000):
                     # Limit the number of seen processes to avoid long loading times
                     break
