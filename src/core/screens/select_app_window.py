@@ -1,6 +1,7 @@
 import tkinter as tk
 from tkinter import messagebox
 import time
+import traceback
 
 from core.utils.logic_utils import threaded
 
@@ -81,7 +82,7 @@ class SelectAppWindow(tk.Frame):
             if str(e) == "main thread is not in main loop":
                 self.refresh_apps()  # Retry if the error is due to unsafe threading
             else:
-                messagebox.showerror("Error", f"refresh_apps() encountered an error it did not expect: {e}")
+                messagebox.showerror("Error", f"refresh_apps() encountered an error it did not expect: {str(traceback.format_exc())}")
 
     @threaded
     def update_search(self, *args):

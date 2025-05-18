@@ -24,6 +24,7 @@ import webbrowser
 import socket
 import time
 import requests
+import traceback
 from PIL import ImageTk, Image
 from tkinter.ttk import *
 
@@ -137,7 +138,7 @@ def new_updates():
     except (KeyError, ValueError, IndexError) as e:
         print(f"Error checking for updates: Parsing error - {str(e)}")
     except Exception as e:
-        tk.messagebox.showerror("Error", f"An unexpected error occurred while checking for updates: {str(e)}")
+        tk.messagebox.showerror("Error", f"An unexpected error occurred while checking for updates: {str(traceback.format_exc())}")
     return False
 
 def splash_screen(root):
@@ -226,9 +227,9 @@ def splash_screen(root):
             splash_window.after(300, splash_window.destroy)
             root.after(300, lambda: win.pack(side="top", fill="both", expand=True))
 
-        except Exception as e:
+        except Exception:
             splash_window.destroy()
-            tk.messagebox.showerror("Startup Error", str(e))
+            tk.messagebox.showerror("Startup Error", str(traceback.format_exc()))
             sys.exit(1)
 
     splash_window.after(100, load_app)
