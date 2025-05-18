@@ -166,7 +166,20 @@ def splash_screen(root):
     icon_label.grid(row=0, column=0, pady=(10, 0))
 
     # Progress bar
-    progress = Progressbar(frame, orient="horizontal", length=200, mode="determinate", maximum=100)
+    # Apply a modern-looking style to the progress bar
+    style = Style()
+    style.theme_use('default')
+
+    style.configure("custom.Horizontal.TProgressbar",
+                troughcolor="#3C3F41",  # Dark trough background
+                background="#61AFEF",   # Qt-style blue progress fill
+                bordercolor="#3C3F41",  # Match trough to look seamless
+                lightcolor="#61AFEF",
+                darkcolor="#61AFEF",
+                thickness=10)
+    
+    progress = Progressbar(frame, orient="horizontal", length=200, mode="determinate", 
+                           maximum=100, style="custom.Horizontal.TProgressbar")
     progress.grid(row=1, column=0, pady=(10, 0))
 
     # First run message / loading message
