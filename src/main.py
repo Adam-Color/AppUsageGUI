@@ -25,6 +25,7 @@ import socket
 import time
 import requests
 from PIL import ImageTk, Image
+from tkinter.ttk import *
 
 from _version import __version__
 
@@ -142,49 +143,80 @@ def new_updates():
 def splash_screen(root):
     """Display a splash screen while the application loads."""
     splash_window = tk.Toplevel(root)
-    splash_window.geometry("256x280")
+    splash_window.geometry("300x340")
     splash_window.title("AppUsageGUI - Loading...")
-    splash_window.overrideredirect(True)  # Remove window decorations
+    splash_window.overrideredirect(True)
     splash_window.attributes("-topmost", True)
     center(splash_window)
     splash_window.configure(bg="#2E2E2E")
 
-    # Display icon
+    # Setup layout
+    frame = tk.Frame(splash_window, bg="#2E2E2E")
+    frame.pack(expand=True, fill="both")
+
+    frame.grid_rowconfigure(0, weight=1)
+    frame.grid_columnconfigure(0, weight=1)
+
+    # App icon
     icon_img_path = "core/resources/icon-resources/icon.png"
-    icon_img = Image.open(resource_path(icon_img_path))
-    icon_img = icon_img.resize((256, 256), Image.Resampling.LANCZOS)
-    icon_img = ImageTk.PhotoImage(icon_img) 
-    icon_label = tk.Label(splash_window, image=icon_img, bg="#2E2E2E")
-    icon_label.image = icon_img  # Keep a reference to avoid garbage collection
-    icon_label.pack(pady=10)
+    icon_img = Image.open(resource_path(icon_img_path)).resize((256, 256), Image.Resampling.LANCZOS)
+    icon_img = ImageTk.PhotoImage(icon_img)
+    icon_label = tk.Label(frame, image=icon_img, bg="#2E2E2E")
+    icon_label.image = icon_img  # keep reference
+    icon_label.grid(row=0, column=0, pady=(10, 0))
 
-    splash_window.update_idletasks()
-    splash_window.update()
+    # Progress bar
+    progress = Progressbar(frame, orient="horizontal", length=200, mode="determinate", maximum=100)
+    progress.grid(row=1, column=0, pady=(10, 0))
 
-    # calls to create the app directories
-    if user_dir_exists(p=True) == False:
-        first_run_note = tk.Label(splash_window, text="Note: loading for the first time can take a while...", bg="#2E2E2E", fg="#FFFFFF")
-        first_run_note.pack(pady=5)
+    # First run message / loading message
+    if not user_dir_exists(p=True):
+        first_run_note = tk.Label(frame, text="Note: first-time loading may take longer...",
+                                  bg="#2E2E2E", fg="#AAAAAA")
+        first_run_note.grid(row=2, column=0, pady=(5, 0))
+    else:
+        loading_note = tk.Label(frame, text="Loading...", bg="#2E2E2E", fg="#AAAAAA")
+        loading_note.grid(row=2, column=0, pady=(5, 0))
 
-    sessions_exist(p=True)
-    
-    if is_running():
-        print("AppUsageGUI is already running. Exiting the new instance.")
-        splash_window.destroy()
-        sys.exit(0)
+    def update_progress(value):
+        """Update the progress bar."""
+        progress["value"] = value
+        splash_window.update_idletasks()
 
-    # Check for new updates
-    if new_updates():
-        ask_update = tk.messagebox.askquestion('AppUsageGUI Updates', "A new update is available. Would you like to download it from the github page?")
-        if ask_update == "yes":
-            webbrowser.open_new_tab("https://github.com/adam-color/AppUsageGUI/releases/latest")
-            sys.exit(0)
+    def load_app():
+        try:
+            update_progress(10)
+            sessions_exist(p=True)
 
-    win = GUIRoot(root)
-    
-    splash_window.destroy()
+            update_progress(30)
+            if is_running():
+                print("AppUsageGUI is already running. Exiting the new instance.")
+                splash_window.destroy()
+                sys.exit(0)
 
-    return win
+            update_progress(50)
+            if new_updates():
+                ask_update = tk.messagebox.askquestion(
+                    'AppUsageGUI Updates',
+                    "A new update is available. Would you like to download it from the GitHub page?"
+                )
+                if ask_update == "yes":
+                    webbrowser.open_new_tab("https://github.com/adam-color/AppUsageGUI/releases/latest")
+                    sys.exit(0)
+
+            update_progress(70)
+            win = GUIRoot(root)
+
+            update_progress(100)
+            splash_window.after(300, splash_window.destroy)
+            root.after(300, lambda: win.pack(side="top", fill="both", expand=True))
+
+        except Exception as e:
+            splash_window.destroy()
+            tk.messagebox.showerror("Startup Error", str(e))
+            sys.exit(1)
+
+    splash_window.after(100, load_app)
 
 def main():
 
@@ -199,8 +231,7 @@ def main():
     root.iconbitmap(icon_path)
     root.title(f"AppUsageGUI - v{__version__}")
 
-    win = splash_screen(root)
-    win.pack(side="top", fill="both", expand=True)
+    splash_screen(root)
     root.mainloop()
 
 if __name__ == "__main__":
