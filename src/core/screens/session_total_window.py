@@ -1,6 +1,5 @@
 import tkinter as tk
 import queue
-import time
 import threading
 
 from core.utils.time_utils import format_time

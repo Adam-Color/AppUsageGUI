@@ -11,7 +11,7 @@ class FileHandler:
     def __init__(self, parent, logic_controller):
         self.parent = parent
         self.controller = logic_controller
-        time1 = str(time.localtime().tm_year) + '-' + str(time.localtime().tm_mon) + '-' + str(time.localtime().tm_mday) + '-' + str(time.localtime().tm_hour) + '-' + str(time.localtime().tm_min)
+        time1 = str(int(time.Time()))
         self.fileName = f"{time1}.dat"
         self.hashFileName = f"{time1}.hash"
         self.directory = get_sessions_directory()
