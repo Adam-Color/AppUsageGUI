@@ -61,9 +61,10 @@ class SessionTotalWindow(tk.Frame):
             # Sleep for 1 second before the next update
             self.stop_event.wait(timeout=1)
     
-    def stop_threads(self):
+    def stop_threads(self, wait=True):
         """Stop the threads gracefully."""
-        self.stop_event.wait(timeout=1)  # Wait for the threads to finish
+        if wait:
+            self.stop_event.wait(timeout=1)  # Wait for the threads to finish
         self.stop_event.set()
 
         # Cancel scheduled update_total_time calls

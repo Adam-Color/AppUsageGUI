@@ -1,5 +1,6 @@
 import tkinter as tk
 import traceback
+import time
 
 from .logic_root import LogicRoot
 
@@ -60,9 +61,8 @@ class GUIRoot(tk.Frame):
                 self.logic_controller.mouse_tracker.stop()
 
             # Stop GUI threads
-            for frame_name, frame in self.frames.items():
-                if hasattr(frame, "stop_threads"):
-                    frame.stop_threads()
+            self.frames["TrackerWindow"].stop_threads()
+            self.frames["SessionTotalWindow"].stop_threads(wait=False)
 
             # Destroy frames
             for frame_name, frame in self.frames.items():
