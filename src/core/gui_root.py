@@ -78,6 +78,11 @@ class GUIRoot(tk.Frame):
 
     def on_close(self):
         """Handle cleanup and close the application."""
+
+        # Stop GUI threads
+        self.frames["TrackerWindow"].stop_threads()
+        self.frames["SessionTotalWindow"].stop_threads(wait=False)
+        
         # Stop the AppTracker thread
         if self.logic_controller.app_tracker:
             self.logic_controller.app_tracker.stop()
