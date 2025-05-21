@@ -97,12 +97,12 @@ class AppTracker:
     def _update_excluded_apps(self):
         seen_pids = set()
         i = 0
-        for process in psutil.process_iter(['pid', 'name', 'status']):
+        for process in psutil.process_iter(['pid', 'status']):
             try:
                 pid = process.info['pid']
                 if pid in seen_pids:
                     continue
-                #print(f"Checking process: {process.name()} (PID: {pid})")  # Debugging line
+                #print(f"Checking process: (PID: {pid})")  # Debugging line
                 seen_pids.add(pid)
                 if process.info['status'] == psutil.STATUS_RUNNING and pid not in EXCLUDED_APP_PIDS and not self._has_gui(pid):
                     i += 1
