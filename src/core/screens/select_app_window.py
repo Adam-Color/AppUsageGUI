@@ -75,7 +75,6 @@ class SelectAppWindow(tk.Frame):
             else:
                 for app in self.all_apps:
                     self.app_listbox.insert(tk.END, app)
-            self.update_search()
         except RuntimeError as e:
             if str(e) == "main thread is not in main loop":
                 self.refresh_apps()  # Retry if the error is due to unsafe threading
