@@ -46,6 +46,8 @@ def new_updates():
         response.raise_for_status()  # Raises an HTTPError for bad responses
 
         data = response.json()
+        global RELEASE_DATA
+        RELEASE_DATA = data  # Store the release data globally
         latest_version = data["tag_name"].lstrip('v').split('.')
         current_version = __version__.split('.')
 
@@ -155,7 +157,26 @@ def splash_screen(root):
                     "A new update is available. Would you like to download it from the GitHub page?"
                 )
                 if ask_update == "yes":
-                    webbrowser.open_new_tab("https://github.com/adam-color/AppUsageGUI/releases/latest")
+                    if sys.platform == "win32":
+                        suffix = "WINDOWS_setup.exe"
+                    elif sys.platform == "darwin":
+                        if platform.processor() == "arm":
+                            suffix = "macOS_arm64_setup.dmg"
+                        else:
+                            suffix = None
+                    else:
+                        suffix = None
+                    
+                    for asset in RELEASE_DATA['assets']:
+                        if asset['name'].endswith(suffix):
+                            download_url = asset['browser_download_url']
+                            break
+                    if suffix is None:
+                        webbrowser.open_new_tab("https://github.com/adam-color/AppUsageGUI/releases/latest")
+                        tk.showinfo("Update", "Your platform is currently unsupported.")
+                    elif download_url is not None:
+                        webbrowser.open_new_tab(download_url)
+                        tk.showinfo("Update", "Please install the latest version after it downloads,\nautomatic updates are not yet available.\n\nThe application will now close.")
                     sys.exit(0)
 
             update_progress(70)
