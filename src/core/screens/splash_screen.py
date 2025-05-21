@@ -111,7 +111,7 @@ def splash_screen(root):
     # Progress bar
     # Apply a modern-looking style to the progress bar
     style = Style()
-    style.theme_use('default')
+    style.theme_use('alt')
 
     style.configure("custom.Horizontal.TProgressbar",
                 troughcolor="#3C3F41",  # Dark trough background
