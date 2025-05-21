@@ -69,7 +69,6 @@ class SelectAppWindow(tk.Frame):
         """Fetch all app names and display them in the listbox."""
         try:
             self.app_listbox.delete(0, tk.END)
-            time.sleep(1)
             self.all_apps = self.app_tracker.get_app_names()
 
             if not self.all_apps:
