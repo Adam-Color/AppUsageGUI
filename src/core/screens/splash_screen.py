@@ -31,7 +31,7 @@ def new_updates():
     else:
         os.makedirs(os.path.dirname(config_file()), exist_ok=True)
         last_update_check = time.time()  # if the file doesn't exist
-        settings = read_file(config_file())
+        settings = {}
         settings.update({"last_update_check": last_update_check})
         write_file(config_file(), settings)
     
