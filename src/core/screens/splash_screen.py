@@ -146,7 +146,7 @@ def splash_screen(root):
 
             update_progress(30)
             if is_running():
-                print("AppUsageGUI is already running. Exiting the new instance.")
+                tk.messagebox.showerror("Error", "The application is already running.\n\nExiting.")
                 splash_window.destroy()
                 sys.exit(0)
 

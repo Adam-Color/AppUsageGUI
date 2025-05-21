@@ -57,12 +57,10 @@ class MouseTracker:
         if self.enabled:
             self.stop_event = threading.Event()  # Reset the stop event to allow the thread to run again
             self.update_thread = threading.Thread(target=self._update_mouse_position, name="mouse_tracker")
-            print("Starting mouse tracker")
             self.update_thread.start()
 
     def stop(self):
         self.stop_event.set()
-        print("Stopping mouse tracker")
         if self.update_thread is not None:
             try:
                 self.update_thread.join()
