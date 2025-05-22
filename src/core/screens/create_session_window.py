@@ -1,17 +1,36 @@
 import tkinter as tk
+import re
+
 from core.utils.time_utils import format_time
+
+def validate_name(value):
+    """Check if name is valid for saving as a file"""
+    if value == "":  # Allow empty string (for backspace)
+        return True
+
+    # Check for illegal characters
+    illegal_chars = r'[<>:"/\\|?*\x00-\x1F.]'
+    if re.search(illegal_chars, value):
+        return False
+
+    return True
 
 class CreateSessionWindow(tk.Frame):
     def __init__(self, parent, controller, logic_controller):
         tk.Frame.__init__(self, parent)
         self.controller = controller
-        self.logic_controller = logic_controller
+        self.logic = logic_controller
+
+        vcmd = (self.register(validate_name), '%P')
+        self.session_name = tk.StringVar()
+        self.session_name.set("")
 
         name_label = tk.Label(self, text="Name this session:")
         name_label.pack(side="top", fill="x", pady=5)
 
         # User inputs session name
-        self.session_name_input = tk.Entry(self, text="")
+        self.session_name_input = tk.Entry(self, textvariable=self.session_name,
+                                            validate="key", validatecommand=vcmd)
         self.session_name_input.pack(side="top", fill="x", pady=5, padx=20)
 
         # Confirm session name entry
@@ -24,6 +43,9 @@ class CreateSessionWindow(tk.Frame):
     def on_confirm(self):
         """Resets trackers upon confirmation"""
         session_name = self.session_name_input.get()
+        if session_name == "":
+            tk.messagebox.showerror("Error", "Please enter a session name.")
+            return
         self.session_save(session_name)
         self.logic_controller.time_tracker.reset()
         self.logic_controller.app_tracker.reset()
