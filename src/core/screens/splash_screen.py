@@ -8,6 +8,7 @@ import webbrowser
 from PIL import ImageTk, Image
 from tkinter.ttk import *
 import traceback
+import platform
 
 from core.utils.tk_utils import center
 from core.gui_root import GUIRoot
