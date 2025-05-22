@@ -1,4 +1,5 @@
 import tkinter as tk
+import time
 
 from core.utils.time_utils import format_time
 
@@ -18,10 +19,8 @@ class SaveWindow(tk.Frame):
         button_no = tk.Button(self, text="No", command=self.dont_save)
         button_no.pack(pady=5)
 
-        back_button = tk.Button(self, text="Main Menu", command=lambda: (self.controller.reset_frames(), self.controller.show_frame("MainWindow")))
-        back_button.pack(pady=5, side='bottom')
-
     def save(self):
+        time.sleep(0.3)
         if self.logic_controller.file_handler.get_continuing_session():
             session_time = self.logic_controller.time_tracker.get_total_time()
             session_app_name = self.logic_controller.app_tracker.get_selected_app()
@@ -41,6 +40,7 @@ class SaveWindow(tk.Frame):
         """confirm data deletion"""
         ans = tk.messagebox.askyesno("Delete Confirmation", "Are you sure you don't want to save?")
         if ans:
+            time.sleep(0.3)
             self.logic_controller.time_tracker.reset()
             self.logic_controller.app_tracker.reset()
             self.controller.reset_frames()

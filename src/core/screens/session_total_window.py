@@ -38,7 +38,7 @@ class SessionTotalWindow(tk.Frame):
         try:
             # Fetch the total time from the queue if available
             item = self.update_queue.get_nowait()
-            self.time_readout = f"{format_time(int(item))}"  # Update the time readout string
+            self.time_readout = f"{format_time(int(item)+1)}"  # Update the time readout string
             self.total_time_label.config(text=self.time_readout)  # Update the label
         except queue.Empty:
             pass
