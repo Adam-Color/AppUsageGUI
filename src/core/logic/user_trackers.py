@@ -87,7 +87,7 @@ class ResolveProjectTracker:
     """Tracks if the user is in a specified DaVinci Resolve project or not"""
     def __init__(self, parent, logic_controller):
         self.parent = parent
-        self.logic_controller = logic_controller
+        self.logic = logic_controller
         self.paused = False
         self.project_name = None
         self.project_open = False
