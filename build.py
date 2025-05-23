@@ -38,7 +38,7 @@ def build_executable():
         f'--add-data "{icon_file}:." '
         f'--collect-submodules core '
         f'--collect-all psutil '
-        f'--collect-all PyQt6 '
+        f'--collect-all tkinter '
         f'--collect-all pynput '
         f'--icon={icon_file} '
         f'--add-data "src/_version.py:." '

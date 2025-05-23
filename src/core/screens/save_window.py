@@ -37,6 +37,7 @@ class SaveWindow(tk.Frame):
             data = {
                     'app_name': session_app_name,
                     'time_spent': session_time,
+                    'session_version': '1.4',
                     'config': self.config,
                     'time_captures': captures # {'starts': [], 'stops': [], 'pauses': [{start: 0, how_long: 0}]}
                     }

@@ -1,7 +1,6 @@
 import tkinter as tk
 
 from core.utils.file_utils import sessions_exist
-from core.screens.analyze_data_window import AnalyzeDataWindow
 
 class MainWindow(tk.Frame):
     def __init__(self, parent, controller, logic_controller):
@@ -29,8 +28,9 @@ class MainWindow(tk.Frame):
                                 command=lambda: controller.show_frame("SessionsWindow"), width=20)
             button2.pack(pady=3)
 
-        button3 = tk.Button(self, text="   Configure custom rules   ", command=lambda: controller.
-        show_frame("TrackerSettingsWindow"))
+        button3 = tk.Button(self, text="Configure custom rules",
+                            command=lambda: controller.show_frame("TrackerSettingsWindow"),
+                            width=20)
         button3.pack(pady=3)
 
         exit_button = tk.Button(self, text=" Exit ", command=lambda: controller.on_close())

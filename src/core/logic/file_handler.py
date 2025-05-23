@@ -81,11 +81,10 @@ class FileHandler:
 
     def set_file_name(self, file_name):
         if file_name is not None:
-            self.fileName = file_name
+            self.file_name = file_name
     
     def get_file_name(self):
-        return self.fileName
-            self.file_name = file_name
+        return self.file_name
 
     def set_continuing_session(self, continuation=bool):
         self.continuing_session = continuation
