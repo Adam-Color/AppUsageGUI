@@ -51,14 +51,14 @@ class GUIRoot(tk.Frame):
     def reset_frames(self):
         try:
             # Stop trackers
-            if self.logic_controller.app_tracker:
-                self.logic_controller.app_tracker.reset()
+            if self.logic.app_tracker:
+                self.logic.app_tracker.reset()
 
-            if self.logic_controller.time_tracker:
-                self.logic_controller.time_tracker.reset()
+            if self.logic.time_tracker:
+                self.logic.time_tracker.reset()
 
-            if self.logic_controller.mouse_tracker:
-                self.logic_controller.mouse_tracker.stop()
+            if self.logic.mouse_tracker:
+                self.logic.mouse_tracker.stop()
 
             # Stop GUI threads
             self.frames["TrackerWindow"].stop_threads()
@@ -84,16 +84,16 @@ class GUIRoot(tk.Frame):
         self.frames["SessionTotalWindow"].stop_threads(wait=False)
         
         # Stop the AppTracker thread
-        if self.logic_controller.app_tracker:
-            self.logic_controller.app_tracker.stop()
+        if self.logic.app_tracker:
+            self.logic.app_tracker.stop()
 
         # stop the TimeTracker thread
-        if self.logic_controller.time_tracker:
-            self.logic_controller.time_tracker.stop()
+        if self.logic.time_tracker:
+            self.logic.time_tracker.stop()
         
         # stop the MouseTracker thread
-        if self.logic_controller.mouse_tracker:
-            self.logic_controller.mouse_tracker.stop()
+        if self.logic.mouse_tracker:
+            self.logic.mouse_tracker.stop()
 
         # Destroy the root window
         self.parent.destroy()

@@ -109,5 +109,5 @@ class SessionsWindow(tk.Frame):
             # ask for confirmation
             confirm = tk.messagebox.askyesno("Confirm Deletion", f"Are you sure you want to delete the session '{selected_session_name}'? \nThis action cannot be undone.")
             if confirm:
-                self.logic_controller.file_handler.delete_session(selected_session_name)
+                self.logic.file_handler.delete_session(selected_session_name)
                 self.session_listbox.delete(self.session_listbox.curselection())

@@ -30,12 +30,12 @@ def test_mouse_idle_triggers_pause(mock_sleep, mock_controller, tracker):
     # Run one iteration of the loop manually
     tracker.last_mouse_position = (100, 100)
     tracker.mouse_position = (100, 100)
-    tracker.logic_controller.time_tracker.get_is_paused.return_value = False
+    tracker.logic.time_tracker.get_is_paused.return_value = False
 
     tracker._update_mouse_position()  # Normally private; tested for now
 
     # Check pause was called
-    tracker.logic_controller.time_tracker.pause.assert_called_once()
+    tracker.logic.time_tracker.pause.assert_called_once()
     assert tracker.is_pausing() is True
 
 
@@ -46,8 +46,8 @@ def test_mouse_movement_triggers_resume(mock_sleep, mock_controller, tracker):
     tracker.last_mouse_position = (100, 100)
     mock_controller.return_value.position = (200, 200)
 
-    tracker.logic_controller.time_tracker.get_is_paused.return_value = True
+    tracker.logic.time_tracker.get_is_paused.return_value = True
 
     tracker._update_mouse_position()
 
-    tracker.logic_controller.time_tracker.resume
+    tracker.logic.time_tracker.resume

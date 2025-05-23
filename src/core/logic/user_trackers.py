@@ -35,7 +35,7 @@ class MouseTracker:
         while not self.stop_event.is_set():
             self.last_mouse_position = self.mouse_position
 
-            wait_time = self.idle_time_limit if not self.logic_controller.time_tracker.get_is_paused() else 1
+            wait_time = self.idle_time_limit if not self.logic.time_tracker.get_is_paused() else 1
 
             # Wait for the idle time or exit early if stop_event is set
             if self.stop_event.wait(timeout=wait_time):
@@ -49,7 +49,7 @@ class MouseTracker:
                 self.logic.time_tracker.pause()
                 self.pausing = True
             elif self.pausing:
-                self.logic_controller.time_tracker.resume()
+                self.logic.time_tracker.resume()
                 self.pausing = False
 
 

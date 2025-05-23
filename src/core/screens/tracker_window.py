@@ -52,14 +52,14 @@ class TrackerWindow(tk.Frame):
             if self._should_start_tracking():
                 self._start_tracking()
 
-            elif self.logic_controller.file_handler.get_continuing_tracker():
-                self.logic_controller.mouse_tracker.start()
+            elif self.logic.file_handler.get_continuing_tracker():
+                self.logic.mouse_tracker.start()
 
             if self._should_stop_tracking(app_names):
                 self._stop_tracking()
                 break
 
-            if self.logic_controller.time_tracker.is_running():
+            if self.logic.time_tracker.is_running():
                 self._update_display()
             else:
                 self.update_queue.put((self.TIME_UPDATE, "Looking for application..."))
