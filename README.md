@@ -28,7 +28,6 @@ Find them [here](https://github.com/Adam-Color/AppUsageGUI/releases)
 * Optimize everything
 * Add support for tracking more than one executable per session
 * Impliment a better way to filter out non-gui apps on macOS
-* Switch all logic to use pid instead of process names
 
 #### Version 2 ('v2-change-to-pyqt6' branch):
 
