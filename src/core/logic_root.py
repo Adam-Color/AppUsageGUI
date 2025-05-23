@@ -11,3 +11,8 @@ class LogicRoot():
         self.time_tracker = TimeTracker(self.parent, self)
         self.app_tracker = AppTracker(self.parent, self)
         self.mouse_tracker = MouseTracker(self.parent, self)
+    
+    def close(self):
+        self.time_tracker.stop()
+        self.app_tracker.stop()
+        self.mouse_tracker.stop()

@@ -10,8 +10,7 @@ class FileHandler:
     def __init__(self, parent, logic_controller):
         self.parent = parent
         self.controller = logic_controller
-        self.fileName = None
-        self.hashFileName = None
+        self.file_name = ""
         self.directory = get_sessions_directory()
         if not os.path.exists(self.directory):
             os.mkdir(self.directory)
@@ -23,8 +22,8 @@ class FileHandler:
     def save_session_data(self, data):
         """Special function to save and hash session data"""
         self.data = pickle.dumps(data)
-        file_path = os.path.join(self.directory, self.fileName + '.dat')
-        hash_path = os.path.join(self.directory, self.fileName + '.hash')
+        file_path = os.path.join(self.directory, self.file_name + '.dat')
+        hash_path = os.path.join(self.directory, self.file_name + '.hash')
 
         # Save data to file
         write_file(file_path, self.data)
@@ -52,7 +51,7 @@ class FileHandler:
                 else:
                     self.corrupt_sessions.append((filename, "Hash mismatch"))
                     self.data = None
-            except _pickle.UnpicklingError as e:
+            except _pickle.UnpicklingError:
                 self.corrupt_sessions.append((filename, "Data is corrupt"))
                 self.data = None
         else:
@@ -70,7 +69,15 @@ class FileHandler:
             os.remove(hash_path)
 
     def get_data(self):
-        return self.data
+        """Gets session data, and ensures the returned data is always a dictionary."""
+        if isinstance(self.data, bytes):  # If data is bytes, unpickle it
+            try:
+                return pickle.loads(self.data)
+            except _pickle.UnpicklingError:
+                print("Error: Could not unpickle session data.")
+                return {}
+        return self.data if isinstance(self.data, dict) else {}
+
 
     def set_file_name(self, file_name):
         if file_name is not None:
@@ -78,11 +85,13 @@ class FileHandler:
     
     def get_file_name(self):
         return self.fileName
+            self.file_name = file_name
 
     def set_continuing_session(self, continuation=bool):
         self.continuing_session = continuation
         if continuation:
             self.set_continuing_tracker(True)
+            self.controller.time_tracker.update_captures()
 
     def set_continuing_tracker(self, value=bool):
         self.continuing_tracker = value

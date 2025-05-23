@@ -8,7 +8,7 @@ class SessionTotalWindow(tk.Frame):
     def __init__(self, parent, controller, logic_controller):
         tk.Frame.__init__(self, parent)
         self.controller = controller
-        self.logic_controller = logic_controller
+        self.logic = logic_controller
 
         self.update_queue = queue.Queue()
 
@@ -49,9 +49,9 @@ class SessionTotalWindow(tk.Frame):
     def total_time_thread(self):
         while not self.stop_event.is_set():
             try:
-                if self.logic_controller.time_tracker.get_time() > 0 and self.logic_controller.time_tracker.is_running():
+                if self.logic.time_tracker.get_time() > 0 and self.logic.time_tracker.is_running():
                     # Get the total session time from the logic controller
-                    total_time = self.logic_controller.time_tracker.get_total_time()
+                    total_time = self.logic.time_tracker.get_total_time()
 
                     # Put the total time into the queue to update the UI
                     self.update_queue.put(total_time)
