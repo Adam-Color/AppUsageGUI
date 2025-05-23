@@ -57,7 +57,7 @@ class TimeTracker:
             self.resumed_time = time.time()
             self.offset_time += self.resumed_time - self.paused_time
             self.captures['pauses'].append({'start': self.paused_time,
-                                            'how_long': self.self.resumed_time - self.paused_time})
+                                            'how_long': self.resumed_time - self.paused_time})
     
     def reset(self, add_time=0.0):
         self.elapsed_time = 0.0
