@@ -30,6 +30,10 @@ class SaveWindow(tk.Frame):
             session_app_name = self.logic.app_tracker.get_selected_app()
             captures = self.logic.time_tracker.get_time_captures()
             try:
+                sv = self.logic.file_handler.get_data()["session_version"]
+            except KeyError:
+                sv = "1.0"
+            try:
                 self.config = read_file(config_file())
             except FileNotFoundError:
                 self.config = {}
@@ -37,10 +41,11 @@ class SaveWindow(tk.Frame):
             data = {
                     'app_name': session_app_name,
                     'time_spent': session_time,
-                    'session_version': '1.4',
+                    'session_version': sv,
                     'config': self.config,
                     'time_captures': captures # {'starts': [], 'stops': [], 'pauses': [{start: 0, how_long: 0}]}
                     }
+            print(f"Session data: {data}")
 
             self.logic.file_handler.save_session_data(data)
 

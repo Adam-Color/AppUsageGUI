@@ -1,4 +1,6 @@
-"""Handler for all file io operations"""
+"""Handler for all file io operations. Only handles one session at a time, which should
+be set by other classes. 
+The file handler is responsible for saving and loading session data"""
 
 import os
 import pickle
