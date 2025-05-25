@@ -14,7 +14,7 @@ class SessionTotalWindow(tk.Frame):
 
         self.stop_event = threading.Event()
 
-        self.time_readout = "loading..."
+        self.time_readout = "Error"
 
         # Display the page label
         self.page_label = tk.Label(self, text="Total time for this session:")
@@ -31,9 +31,6 @@ class SessionTotalWindow(tk.Frame):
         # Start the total time thread
         threading.Thread(target=self.total_time_thread, daemon=True, name="total_session_time").start()
 
-        # Start the update queue
-        self.update_total_time()
-
     def update_total_time(self):
         try:
             # Fetch the total time from the queue if available
@@ -42,16 +39,13 @@ class SessionTotalWindow(tk.Frame):
             self.total_time_label.config(text=self.time_readout)  # Update the label
         except queue.Empty:
             pass
-        
-        # Call this method again after 1000 ms (1 second) to keep updating the label
-        self.update_total_time_id = self.after(1000, self.update_total_time)
 
     def total_time_thread(self):
         while not self.stop_event.is_set():
             try:
-                if self.logic.time_tracker.get_time() > 0 and self.logic.time_tracker.is_running():
+                if self.logic.file_handler.get_data()['session_version'] == '1.0':
                     # Get the total session time from the logic controller
-                    total_time = self.logic.time_tracker.get_total_time()
+                    total_time = self.logic.file_handler.get_data()['time_spent']
 
                     # Put the total time into the queue to update the UI
                     self.update_queue.put(total_time)

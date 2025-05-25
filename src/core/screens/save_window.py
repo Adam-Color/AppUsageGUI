@@ -50,6 +50,7 @@ class SaveWindow(tk.Frame):
             self.logic.file_handler.save_session_data(data)
 
             # show to session total window
+            self.controller.frames["SessionTotalWindow"].update_total_time()
             self.controller.show_frame("SessionTotalWindow")
         else:
             self.controller.show_frame("CreateSessionWindow")

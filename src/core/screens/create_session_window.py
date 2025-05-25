@@ -4,6 +4,8 @@ import re
 from core.utils.time_utils import format_time
 from core.utils.file_utils import config_file, read_file
 
+from _version import __version__
+
 def validate_name(value):
     """Check if name is valid for saving as a file"""
     if value == "":  # Allow empty string (for backspace)
@@ -56,6 +58,7 @@ class CreateSessionWindow(tk.Frame):
         self.session_save(self.session_name.get())
         self.logic.time_tracker.reset()
         self.logic.app_tracker.reset()
+        self.controller.frames["SessionTotalWindow"].update_total_time()
         self.controller.show_frame("SessionTotalWindow")
 
     def session_save(self, session_name):
@@ -71,7 +74,7 @@ class CreateSessionWindow(tk.Frame):
         data = {
                 'app_name': session_app_name,
                 'time_spent': session_time,
-                'session_version': "1.4",
+                'session_version': __version__.split('.')[0] + '.' + __version__.split('.')[1],
                 'config': self.config,
                 'time_captures': captures # {'starts': [], 'stops': [], 'pauses': [{start: 0, how_long: 0}]}
                 }
