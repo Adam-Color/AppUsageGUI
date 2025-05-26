@@ -21,17 +21,17 @@ class SessionTotalWindow(tk.Frame):
 
         # Display the page label
         self.page_label = tk.Label(self, text="Session Data:")
-        self.page_label.pack(pady=5)
+        self.page_label.pack(pady=10)
 
         # Display the labels
         self.total_time_label = tk.Label(self, text="Total Runtime: " + self.time_readout)
-        self.total_time_label.pack(pady=10)
+        self.total_time_label.pack(pady=5)
 
         self.start_time_label = tk.Label(self, text="Session Started: " + self.start_readout)
-        self.start_time_label.pack(pady=10)
+        self.start_time_label.pack(pady=5)
 
-        self.start_time_label = tk.Label(self, text="Session Last Ended: " + self.stop_readout)
-        self.start_time_label.pack(pady=10)
+        self.stop_time_label = tk.Label(self, text="Session Last Ended: " + self.stop_readout)
+        self.stop_time_label.pack(pady=5)
 
         # back to main window button
         back_button = tk.Button(self, text="Main Menu", command=lambda: (self.controller.reset_frames(), self.controller.show_frame("MainWindow")))
@@ -47,11 +47,11 @@ class SessionTotalWindow(tk.Frame):
             self.time_readout = f"Total Runtime: {format_time(int(item['total_time']))}"
             self.total_time_label.config(text=self.time_readout)
 
-            self.start_readout = "Session Started: " + unix_to_datetime(item['first_run']).strftime("%Y-%m-%d %H:%M:%S")
+            self.start_readout = "Session Started: " + (unix_to_datetime(item['first_run']).strftime("%Y-%m-%d %H:%M:%S") if item['first_run'] != "N/A" else "N/A")
             self.start_time_label.config(text=self.start_readout)
 
-            self.stop_readout = "Session Last Ended: " + unix_to_datetime(item['last_run']).strftime("%Y-%m-%d %H:%M:%S")
-            self.start_time_label.config(text=self.stop_readout)
+            self.stop_readout = "Session Last Ended: " + ((unix_to_datetime(item['last_run']).strftime("%Y-%m-%d %H:%M:%S")) if item['last_run'] != "N/A" else "N/A")
+            self.stop_time_label.config(text=self.stop_readout)
         except queue.Empty:
             pass
 
@@ -70,13 +70,16 @@ class SessionTotalWindow(tk.Frame):
                         'first_run': self.logic.file_handler.get_data()['time_captures']['starts'][0],
                         'last_run': self.logic.file_handler.get_data()['time_captures']['stops'][-1]
                         })
-
-                # Put the total time into the queue to update the UI
-                print(data)
-                self.update_queue.put(data)
-                self.update_total_time()
-            except TypeError:
+                else:
+                    data.update({
+                        'last_run': self.logic.file_handler.get_data()['time_captures']['stops'][-1]
+                        })
+            except (TypeError, KeyError):
                 pass
+            
+            # Put the data into the queue to update the UI
+            self.update_queue.put(data)
+            self.update_total_time()
 
             # Sleep for 1 second before the next update
             self.stop_event.wait(timeout=1)

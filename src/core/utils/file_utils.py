@@ -95,3 +95,19 @@ def write_file(file_path, data):
     with open(file_path, 'wb') as f:
         f.truncate(0)
         pickle.dump(data, f)
+
+def calc_runtime(data, start_pos):
+    """Calculate the runtime of a single run in seconds from time captures.
+    Returns -1 if the data is invalid or start_pos is out of bounds."""
+    try:
+        if not data or start_pos > len(data):
+            return -1
+    
+        captures = data['time_captures']
+    
+        start_time = captures['starts'][start_pos]
+        stop_time = captures['stops'][start_pos]
+
+        # Find the next stop position
+    except KeyError:
+        return -1

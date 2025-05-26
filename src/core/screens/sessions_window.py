@@ -35,6 +35,10 @@ class SessionsWindow(tk.Frame):
         select_button = tk.Button(self, text="Continue from selected session", command=self.select_session)
         select_button.pack(pady=5)
 
+        # button to analyze the session
+        analyze_button = tk.Button(self, text="Analyze selected session", command=self.analyze_session)
+        analyze_button.pack(pady=5)
+
         # button to delete the session
         delete_button = tk.Button(self, text="Delete selected session", command=self.delete_session)
         delete_button.pack(pady=5)
@@ -100,6 +104,18 @@ class SessionsWindow(tk.Frame):
         # show the TrackerWindow
         self.controller.show_frame('TrackerWindow')
 
+    def analyze_session(self):
+        if not self.get_session_text():
+            tk.messagebox.showerror("Error", "No session selected")
+            return 0
+        selected_session_name = self.get_session_text().split(": ")[0]
+        # load the session data
+        self.logic.file_handler.load_session_data(selected_session_name)
+        self.controller.frames['SessionTotalWindow'].total_session_time_thread.start()
+        self.controller.frames['SessionTotalWindow'].update_total_time()
+        # show the SessionTotalWindow
+        self.controller.show_frame('SessionTotalWindow')
+
     def delete_session(self):
         if not self.get_session_text():
             tk.messagebox.showerror("Error", "No session selected")
@@ -107,7 +123,8 @@ class SessionsWindow(tk.Frame):
         else:
             selected_session_name = self.get_session_text().split(": ")[0]
             # ask for confirmation
-            confirm = tk.messagebox.askyesno("Confirm Deletion", f"Are you sure you want to delete the session '{selected_session_name}'? \nThis action cannot be undone.")
+            confirm = tk.messagebox.askyesno("Confirm Deletion",
+                                             f"Are you sure you want to delete the session '{selected_session_name}'? \nThis action cannot be undone.")
             if confirm:
                 self.logic.file_handler.delete_session(selected_session_name)
                 self.session_listbox.delete(self.session_listbox.curselection())
