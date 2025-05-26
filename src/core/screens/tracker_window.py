@@ -67,7 +67,6 @@ class TrackerWindow(tk.Frame):
             self.stop_event.wait(timeout=0.1)
 
         if not self.stop_event.is_set():
-            self.controller.frames["SessionTotalWindow"].stop_threads()
             self.controller.show_frame("SaveWindow")
 
     def _should_start_tracking(self):

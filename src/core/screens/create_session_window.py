@@ -58,7 +58,9 @@ class CreateSessionWindow(tk.Frame):
         self.session_save(self.session_name.get())
         self.logic.time_tracker.reset()
         self.logic.app_tracker.reset()
-        self.controller.frames["SessionTotalWindow"].update_total_time()
+        self.logic.file_handler.load_session_data(self.session_name.get())
+        self.controller.frames['SessionTotalWindow'].total_session_time_thread.start()
+        self.controller.frames['SessionTotalWindow'].update_total_time()
         self.controller.show_frame("SessionTotalWindow")
 
     def session_save(self, session_name):
