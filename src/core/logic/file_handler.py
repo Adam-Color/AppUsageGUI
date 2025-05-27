@@ -36,6 +36,7 @@ class FileHandler:
 
     def load_session_data(self, filename):
         """Loads session data from file and checks hash"""
+        self.file_name = filename
         file_path = os.path.join(self.directory, filename + '.dat')
         hash_path = os.path.join(self.directory, filename + '.hash')
 
