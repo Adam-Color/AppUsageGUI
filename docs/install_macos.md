@@ -5,6 +5,7 @@
 * drag the "AppUsageGUI" folder to the "Applications" folder
 
 ## Running on macOS:
+>[!warning]
 >Due to Apple's restrictions when it comes to open source applications such as ours, workarounds are needed to get AppUsageGUI to run on macOS.
 
 If you encounter the error message saying the app was not opened, click "done", then go into your security settings and allow AppUsageGUI to run on your device
