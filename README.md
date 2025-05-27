@@ -15,10 +15,9 @@ This program tracks the runtime of a specified application, logging the duration
 
 ## Installation
 
-We now have proper installers for Mac OS and Windows!
-
-Find them [here](https://github.com/Adam-Color/AppUsageGUI/releases)
-
+>To install, follow the instructions for your platform found here:
+>
+>[Windows](docs/install_windows.md) | [macOS](docs/install_macos.md)
 
 ## Contributing
 
