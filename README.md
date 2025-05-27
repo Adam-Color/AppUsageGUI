@@ -15,9 +15,9 @@ This program tracks the runtime of a specified application, logging the duration
 
 ## Installation
 
->To install, follow the instructions for your platform found here:
->
->[Windows](docs/install_windows.md) | [macOS](docs/install_macos.md)
+To install, follow the instructions for your platform found here:
+
+[Windows](docs/install_windows.md) | [macOS](docs/install_macos.md)
 
 ## Contributing
 
