@@ -28,7 +28,7 @@ class SessionTotalWindow(tk.Frame):
         self.page_label.pack(pady=10)
 
         # Display the labels
-        self.name_label = tk.Label(self, text="Session: " + self.name_readout)
+        self.name_label = tk.Label(self, text="Session Name: " + self.name_readout)
         self.name_label.pack(pady=5)
 
         self.app_label = tk.Label(self, text="Tracked App Name: " + self.app_readout)
@@ -61,7 +61,7 @@ class SessionTotalWindow(tk.Frame):
             # Fetch the data from the queue if available
             item = self.update_queue.get_nowait()
 
-            self.name_readout = "Session: " + item['session_name']
+            self.name_readout = "Session Name: " + item['session_name']
             self.name_label.config(text=self.name_readout)
 
             self.app_readout = "Tracked App Name: " + item['tracked_app']
