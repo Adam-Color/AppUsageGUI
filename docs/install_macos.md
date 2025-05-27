@@ -5,12 +5,12 @@
 * drag the "AppUsageGUI" folder to the "Applications" folder
 
 ## Running on macOS:
->Due to Apple's restrictions when it comes to open source applications such as ours, a workaround is needed to get AppUsageGUI to run on macOS.
+>Due to Apple's restrictions when it comes to open source applications such as ours, workarounds are needed to get AppUsageGUI to run on macOS.
 
 If you encounter the error message saying the app was not opened, click "done", then go into your security settings and allow AppUsageGUI to run on your device
 
-Enter this in your terminal if AppUsageGUI does not run:
+Enter this in your terminal if AppUsageGUI still does not run:
 
 ```shell
-xattr -dr com.apple.quarantine /Applications/DisplayCAL.app
+xattr -dr com.apple.quarantine /Applications/AppUsageGUI/AppUsageGUI.app
 ```
