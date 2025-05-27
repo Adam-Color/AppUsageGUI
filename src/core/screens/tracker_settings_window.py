@@ -47,7 +47,7 @@ class TrackerSettingsWindow(tk.Frame):
         self.mouse_tracker_time_text.set(str(self.logic.mouse_tracker.get_idle_time_limit()))
         
         # Toggle Button
-        self.mouse_tracker_enable_button = tk.Button(self, textvariable=self.mouse_toggle_text, command=self.toggle_mouse_tracker)
+        self.mouse_tracker_enable_button = tk.Button(self, textvariable=self.mouse_toggle_text, command=self.toggle_mouse_tracker, width=20)
         self.mouse_tracker_enable_button.pack()
 
         mouse_tracker_time_label = tk.Label(self, text="\nMouse idle time limit: ")

@@ -48,7 +48,7 @@ class SelectAppWindow(tk.Frame):
         self.refresh_apps()  # Populate list initially
         
         # Button to make selection
-        select_button = tk.Button(self, text="Select", command=self.select_app)
+        select_button = tk.Button(self, text="Select", command=self.select_app, width=20)
         select_button.pack(pady=10)
 
         back_button = tk.Button(self, text="Main Menu", command=lambda: (self.controller.reset_frames(), self.controller.show_frame("MainWindow")))
