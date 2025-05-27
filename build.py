@@ -28,8 +28,10 @@ def build_executable():
     print("Building the application...")
     if sys.platform == 'darwin':
         run_command('export PYTHONOPTIMIZE=1')
+        windows_only_1 = ""
     else:
         run_command('set PYTHONOPTIMIZE=1')
+        windows_only_1 = '--collect-all pywinauto'
     run_command(
         f'{python_executable} -m PyInstaller -D --clean --name {PROJECT_NAME} '
         f'--noconfirm '
@@ -42,6 +44,7 @@ def build_executable():
         f'--collect-all pynput '
         f'--collect-all requests '
         f'--collect-all PIL '
+        f'{windows_only_1} '
         f'--icon={icon_file} '
         f'--add-data "src/_version.py:." '
         f'--add-data "src/_path.py:." '

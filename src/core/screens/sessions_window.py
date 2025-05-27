@@ -32,15 +32,15 @@ class SessionsWindow(tk.Frame):
         self.load_sessions()
 
         # button to make the selection
-        select_button = tk.Button(self, text="Continue from selected session", command=self.select_session, width=20)
+        select_button = tk.Button(self, text="Continue from selected session", command=self.select_session, width=25)
         select_button.pack(pady=5)
 
         # button to analyze the session
-        analyze_button = tk.Button(self, text="Analyze selected session", command=self.analyze_session, width=20)
+        analyze_button = tk.Button(self, text="Analyze selected session", command=self.analyze_session, width=25)
         analyze_button.pack(pady=5)
 
         # button to delete the session
-        delete_button = tk.Button(self, text="Delete selected session", command=self.delete_session, width=20)
+        delete_button = tk.Button(self, text="Delete selected session", command=self.delete_session, width=25)
         delete_button.pack(pady=5)
 
         back_button = tk.Button(self, text="Main Menu", command=lambda: (self.controller.reset_frames(), self.controller.show_frame("MainWindow")))

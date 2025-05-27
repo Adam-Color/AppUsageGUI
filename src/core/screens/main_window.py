@@ -18,19 +18,19 @@ class MainWindow(tk.Frame):
         label.pack(side="top", fill="x", pady=10)
 
         button1 = tk.Button(self, text="Start new session",
-                            command=lambda: controller.show_frame("SelectAppWindow"), width=20)
+                            command=lambda: controller.show_frame("SelectAppWindow"), width=25)
         button1 = tk.Button(self, text="Start new session",
-                            command=lambda: controller.show_frame("SelectAppWindow"), width=20)
+                            command=lambda: controller.show_frame("SelectAppWindow"), width=25)
         button1.pack(pady=3)
 
         if label_text == "What would you like to do?":
             button2 = tk.Button(self, text="Continue previous session",
-                                command=lambda: controller.show_frame("SessionsWindow"), width=20)
+                                command=lambda: controller.show_frame("SessionsWindow"), width=25)
             button2.pack(pady=3)
 
         button3 = tk.Button(self, text="Configure custom rules",
                             command=lambda: controller.show_frame("TrackerSettingsWindow"),
-                            width=20)
+                            width=25)
         button3.pack(pady=3)
 
         exit_button = tk.Button(self, text=" Exit ", command=lambda: controller.on_close())
