@@ -1,9 +1,10 @@
 import tkinter as tk
 import queue
 import threading
-from datetime import datetime
+import traceback
 
 from core.utils.time_utils import format_time, unix_to_datetime
+from core.utils.file_utils import calc_runtime
 
 class SessionTotalWindow(tk.Frame):
     def __init__(self, parent, controller, logic_controller):
@@ -18,6 +19,7 @@ class SessionTotalWindow(tk.Frame):
         self.time_readout = "Error"
         self.start_readout = "Error"
         self.stop_readout = "Error"
+        self.last_run_readout = "Error"
 
         # Display the page label
         self.page_label = tk.Label(self, text="Session Data:")
@@ -30,8 +32,11 @@ class SessionTotalWindow(tk.Frame):
         self.start_time_label = tk.Label(self, text="Session Started: " + self.start_readout)
         self.start_time_label.pack(pady=5)
 
-        self.stop_time_label = tk.Label(self, text="Session Last Ended: " + self.stop_readout)
+        self.stop_time_label = tk.Label(self, text="Last Ended: " + self.stop_readout)
         self.stop_time_label.pack(pady=5)
+
+        self.last_run_label = tk.Label(self, text="Last Run Length: " + self.last_run_readout)
+        self.last_run_label.pack(pady=5)
 
         # back to main window button
         back_button = tk.Button(self, text="Main Menu", command=lambda: (self.controller.reset_frames(), self.controller.show_frame("MainWindow")))
@@ -50,8 +55,11 @@ class SessionTotalWindow(tk.Frame):
             self.start_readout = "Session Started: " + (unix_to_datetime(item['first_run']).strftime("%Y-%m-%d %H:%M:%S") if item['first_run'] != "N/A" else "N/A")
             self.start_time_label.config(text=self.start_readout)
 
-            self.stop_readout = "Session Last Ended: " + ((unix_to_datetime(item['last_run']).strftime("%Y-%m-%d %H:%M:%S")) if item['last_run'] != "N/A" else "N/A")
+            self.stop_readout = "Last Ended: " + ((unix_to_datetime(item['last_run']).strftime("%Y-%m-%d %H:%M:%S")) if item['last_run'] != "N/A" else "N/A")
             self.stop_time_label.config(text=self.stop_readout)
+
+            self.last_run_readout = "Last Run Length: " + (format_time(int(item['last_run_length'])) if item['last_run_length'] != "N/A" else "N/A")
+            self.last_run_label.config(text=self.last_run_readout)
         except queue.Empty:
             pass
 
@@ -60,7 +68,8 @@ class SessionTotalWindow(tk.Frame):
             data = {
             'total_time': "N/A",
             'first_run': "N/A",
-            'last_run': "N/A"
+            'last_run': "N/A",
+            'last_run_length': "N/A"
             }
             try:
                 # Get the total session time from the logic controller
@@ -68,13 +77,16 @@ class SessionTotalWindow(tk.Frame):
                 if self.logic.file_handler.get_data()['session_version'] != "1.0":
                     data.update({
                         'first_run': self.logic.file_handler.get_data()['time_captures']['starts'][0],
-                        'last_run': self.logic.file_handler.get_data()['time_captures']['stops'][-1]
+                        'last_run': self.logic.file_handler.get_data()['time_captures']['stops'][-1],
+                        'last_run_length': calc_runtime(self.logic.file_handler.get_data(), -1)
                         })
                 else:
                     data.update({
-                        'last_run': self.logic.file_handler.get_data()['time_captures']['stops'][-1]
+                        'last_run': self.logic.file_handler.get_data()['time_captures']['stops'][-1],
+                        'last_run_length': calc_runtime(self.logic.file_handler.get_data(), -1)
                         })
             except (TypeError, KeyError):
+                print(str(traceback.format_exc()))
                 pass
             
             # Put the data into the queue to update the UI
