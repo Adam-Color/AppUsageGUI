@@ -2,11 +2,11 @@
 ; SEE THE DOCUMENTATION FOR DETAILS ON CREATING INNO SETUP SCRIPT FILES!
 
 #define MyAppName "AppUsageGUI"
-#define MyAppVersion "1.3.0"
+#define MyAppVersion "1.4.0"
 #define MyAppPublisher "Adam Blair-Smith"
 #define MyAppURL "https://github.com/Adam-Color/AppUsageGUI"
 #define MyAppExeName "AppUsageGUI.exe"
-#define MyInstallerName "AppUsageGUI_v1.3.0_WINDOWS_setup"
+#define MyInstallerName "AppUsageGUI_v1.4.0_WINDOWS_setup"
 
 [Setup]
 ; NOTE: The value of AppId uniquely identifies this application. Do not use the same AppId value in installers for other applications.
@@ -46,7 +46,8 @@ Name: "english"; MessagesFile: "compiler:Default.isl"
 Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{cm:AdditionalIcons}"; Flags: unchecked
 
 [Files]
-Source: "..\dist\{#MyAppExeName}"; DestDir: "{app}"; Flags: ignoreversion
+Source: "..\dist\{#MyAppName}\{#MyAppExeName}"; DestDir: "{app}"; Flags: ignoreversion
+Source: "..\dist\{#MyAppName}\_internal\*"; DestDir: "{app}\_internal"; Flags: ignoreversion recursesubdirs createallsubdirs
 Source: "..\src\core\resources\icon.ico"; DestDir: "{app}/src/core/resources"; Flags: ignoreversion
 ; NOTE: Don't use "Flags: ignoreversion" on any shared system files
 

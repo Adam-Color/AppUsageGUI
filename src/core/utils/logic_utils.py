@@ -1,5 +1,6 @@
 import threading
 
+# https://gist.github.com/awesomebytes/0483e65e0884f05fb95e314c4f2b3db8
 def threaded(fn):
     def wrapper(*args, **kwargs):
         result = []

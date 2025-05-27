@@ -1,24 +1,21 @@
 import threading
-import time
 import os
 import psutil
+import sys
 
-excluded_apps = {
-    'python', 'AppUsageGUI', 'Adobe Crash Processor', 'AdobeIPCBroker',
-    'AdobeUpdateService', 'BMDStreamingServer', 'DesktopVideoUpdater',
-    'gamingservices', 'gamingservicesnet', 'Registry', 'services',
-    'System', 'system', 'System Idle Process', 'svchost', 'taskhostw',
-    'taskhostex', 'wmi', 'WmiPrvSE', 'Windows Internal Database',
-    'Windows Security Notification Icon', 'Windows Terminal',
-    'wininit', 'winlogon', 'wlanext', 'WmiApSrv','dwm', 'explorer', 
-    'SearchIndexer', 'SearchProtocolHost', 'xrdd', 'conhost', 'csrss',
-    'smss', 'lsass', 'win32k', 'SystemSettings', 'RuntimeBroker',
-    'Taskmgr', 'ApplicationFrameHost', 'ShellExperienceHost',
-    'SearchApp', 'ShellInfrastructureHost', 'amdfendrsr',
-    'CrossDeviceService', 'dwmcore', 'fontdrvhost',
-    'lghub_agent', 'lghub_updater', 'lghub_system_tray',
-    'AggregatorHost', 'sntlkeyssrvr', 'sntlsrvnt'
-}
+if os.name == 'nt':
+    from pywinauto import Desktop
+    from pywinauto.findwindows import ElementNotFoundError
+    windows = Desktop(backend="uia").windows()
+elif sys.platform == 'darwin':
+    from AppKit import NSWorkspace
+
+from core.utils.file_utils import read_file, write_file, apps_file, user_dir_exists
+
+EXCLUDED_APP_PIDS = []
+
+if user_dir_exists() and os.path.exists(apps_file()):
+    EXCLUDED_APP_PIDS = read_file(apps_file())['excluded_app_pids']
 
 class AppTracker:
     def __init__(self, parent, logic_controller):
@@ -27,6 +24,10 @@ class AppTracker:
         self.update_thread = None
         self.stop_event = threading.Event()  # Used to stop the thread gracefully
         self.cached_process_count = 0  # Tracks the last known process count
+
+        # exclude apps that are not relevant to the user
+        self._update_excluded_apps()
+
         self._start_tracking()  # Start the tracking thread
 
     def _start_tracking(self):
@@ -36,19 +37,24 @@ class AppTracker:
 
     def _fetch_app_names(self):
         apps = []
-        seen_names = set()
+        seen_names = ["AppUsageGUI", "Python"]
 
-        # add excluded apps to seen_names
-        seen_names.update(excluded_apps)
-
-        for process in psutil.process_iter(['name']):
+        for process in psutil.process_iter(['pid', 'name']):
             try:
+                pid = process.info['pid']
                 app_name = process.info['name']
                 app_name = app_name.split(".")[0]  # Use the base name of the process
-                if app_name not in seen_names and len(app_name) > 0:
+                if (
+                    app_name not in seen_names
+                    and pid not in EXCLUDED_APP_PIDS
+                    and len(app_name) > 0
+                ):
                     apps.append(app_name)
-                    seen_names.add(app_name)
-                    #print(app_name) #! use to help optimize
+                    seen_names.append(app_name)
+                    if app_name == self.selected_app:
+                        #print(f"Selected app found: {app_name}")  # Debugging line
+                        break
+                    #print(app_name)  # Debugging line to help optimize
             except (psutil.NoSuchProcess, psutil.AccessDenied, psutil.ZombieProcess):
                 # Skip processes that terminate mid-iteration or are inaccessible
                 pass
@@ -64,7 +70,7 @@ class AppTracker:
                 # Process count has changed; update app names
                 self.cached_process_count = current_process_count
                 self.app_names = self._fetch_app_names()
-            time.sleep(1)  # Check periodically to avoid excessive CPU usage
+            self.stop_event.wait(timeout=1)  # Check periodically to avoid excessive CPU usage
 
     def get_app_names(self):
         return self.app_names
@@ -76,7 +82,6 @@ class AppTracker:
         self.selected_app = app
 
     def stop(self):
-        print("Stopping App Tracker")
         self.stop_event.set()
         if self.update_thread is not None:
             try:
@@ -85,10 +90,60 @@ class AppTracker:
                 pass
 
     def start(self):
-        print("Starting App Tracker")
         self.stop_event = threading.Event()
         self._start_tracking()
 
     def reset(self):
         self.selected_app = None
         self.update_thread = None
+
+    def _update_excluded_apps(self):
+        seen_pids = set()
+        i = 0
+        for process in psutil.process_iter(['pid', 'status']):
+            try:
+                pid = process.info['pid']
+                if pid in seen_pids:
+                    continue
+                #print(f"Checking process: (PID: {pid})")  # Debugging line
+                seen_pids.add(pid)
+                if process.info['status'] == psutil.STATUS_RUNNING and pid not in EXCLUDED_APP_PIDS and not self._has_gui(pid):
+                    i += 1
+                    EXCLUDED_APP_PIDS.append(pid)
+                if len(seen_pids) > (400 if os.name == 'nt' else 10000):
+                    # Limit the number of seen processes to avoid long loading times
+                    break
+            except (psutil.NoSuchProcess, psutil.AccessDenied, psutil.ZombieProcess):
+                # Skip processes that terminate mid-iteration or are inaccessible
+                pass
+
+        #print(f"\nExcluded app PIDs: {EXCLUDED_APP_PIDS}")  # Debugging line
+        print(f"New exlusions: {i}")
+        data = {'excluded_app_pids': EXCLUDED_APP_PIDS}
+        write_file(apps_file(), data)
+
+    def _has_gui(self, process_id):
+        if os.name == 'nt':
+            try:
+                # Enumerate all top-level windows
+                for win in windows:
+                    if win.process_id() == process_id:
+                        # Found a visible window for this process
+                        return True
+            except (ElementNotFoundError, RuntimeError):
+                return True  # Handle the case where the process is not found
+            return False
+        elif sys.platform == 'darwin':
+            #TODO: Implement a better GUI check for macOS
+            try:
+                apps = NSWorkspace.sharedWorkspace().runningApplications()
+                for app in apps:
+                    if app.processIdentifier() == process_id:
+                        return True
+                if app.processIdentifier() == None:
+                    # Handle the case where the process is not found
+                    return True
+                return False
+            except Exception as e:
+                print(f"GUI check error: {e}")
+                return True

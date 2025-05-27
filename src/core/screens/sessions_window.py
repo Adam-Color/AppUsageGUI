@@ -8,7 +8,7 @@ class SessionsWindow(tk.Frame):
     def __init__(self, parent, controller, logic_controller):
         tk.Frame.__init__(self, parent)
         self.controller = controller
-        self.logic_controller = logic_controller
+        self.logic = logic_controller
 
         # label for SessionsWindow
         label = tk.Label(self, text="Select a Session to continue from:")
@@ -32,11 +32,15 @@ class SessionsWindow(tk.Frame):
         self.load_sessions()
 
         # button to make the selection
-        select_button = tk.Button(self, text="Continue from selected session", command=self.select_session)
+        select_button = tk.Button(self, text="Continue from selected session", command=self.select_session, width=25)
         select_button.pack(pady=5)
 
+        # button to analyze the session
+        analyze_button = tk.Button(self, text="Analyze selected session", command=self.analyze_session, width=25)
+        analyze_button.pack(pady=5)
+
         # button to delete the session
-        delete_button = tk.Button(self, text="Delete selected session", command=self.delete_session)
+        delete_button = tk.Button(self, text="Delete selected session", command=self.delete_session, width=25)
         delete_button.pack(pady=5)
 
         back_button = tk.Button(self, text="Main Menu", command=lambda: (self.controller.reset_frames(), self.controller.show_frame("MainWindow")))
@@ -50,16 +54,16 @@ class SessionsWindow(tk.Frame):
         for session in sessions:
             session_name = session.split(".")[0]
             # Load data for the current session
-            self.logic_controller.file_handler.load_session_data(session_name)
-            session_data = self.logic_controller.file_handler.get_data()
+            self.logic.file_handler.load_session_data(session_name)
+            session_data = self.logic.file_handler.get_data()
             if session_data is not None:
                 app_name = session_data['app_name']
                 time_spent = session_data['time_spent']
                 # Format the time spent
-                formatted_time = format_time(round(time_spent))
+                formatted_time = format_time(int(time_spent))
                 # Insert into the Listbox
                 self.session_listbox.insert(tk.END, f"{session_name}: {app_name}, {formatted_time} on record")
-        corrupt_sessions = self.logic_controller.file_handler.get_corrupt_sessions()
+        corrupt_sessions = self.logic.file_handler.get_corrupt_sessions()
         if len(corrupt_sessions) > 0:
             error_string = "The following session(s) failed to load:\n\n"
             for session in corrupt_sessions:
@@ -81,24 +85,36 @@ class SessionsWindow(tk.Frame):
         selected_session_name = self.get_session_text().split(": ")[0]
 
         # update the logic session name var
-        self.logic_controller.file_handler.set_file_name(selected_session_name)
+        self.logic.file_handler.set_file_name(selected_session_name)
 
         # tell the controller we are continuing from a session
-        self.logic_controller.file_handler.set_continuing_session(True)
+        self.logic.file_handler.set_continuing_session(True)
 
         # load selected session data into the file handler,
         # so it's ready to be pulled
-        self.logic_controller.file_handler.load_session_data(selected_session_name)
+        self.logic.file_handler.load_session_data(selected_session_name)
 
         # start/reset tracking threads
-        self.logic_controller.app_tracker.reset()
-        self.logic_controller.app_tracker.set_selected_app(selected_app_name)
-        self.logic_controller.time_tracker.reset(add_time=self.logic_controller.file_handler.get_data()['time_spent'])
-        self.logic_controller.time_tracker.start()
-        self.logic_controller.time_tracker.clock()
+        self.logic.app_tracker.reset()
+        self.logic.app_tracker.set_selected_app(selected_app_name)
+        self.logic.time_tracker.reset(add_time=self.logic.file_handler.get_data()['time_spent'])
+        self.logic.time_tracker.start()
+        self.logic.time_tracker.clock()
 
         # show the TrackerWindow
         self.controller.show_frame('TrackerWindow')
+
+    def analyze_session(self):
+        if not self.get_session_text():
+            tk.messagebox.showerror("Error", "No session selected")
+            return 0
+        selected_session_name = self.get_session_text().split(": ")[0]
+        # load the session data
+        self.logic.file_handler.load_session_data(selected_session_name)
+        self.controller.frames['SessionTotalWindow'].total_session_time_thread.start()
+        self.controller.frames['SessionTotalWindow'].update_total_time()
+        # show the SessionTotalWindow
+        self.controller.show_frame('SessionTotalWindow')
 
     def delete_session(self):
         if not self.get_session_text():
@@ -107,7 +123,8 @@ class SessionsWindow(tk.Frame):
         else:
             selected_session_name = self.get_session_text().split(": ")[0]
             # ask for confirmation
-            confirm = tk.messagebox.askyesno("Confirm Deletion", f"Are you sure you want to delete the session '{selected_session_name}'? \nThis action cannot be undone.")
+            confirm = tk.messagebox.askyesno("Confirm Deletion",
+                                             f"Are you sure you want to delete the session '{selected_session_name}'? \nThis action cannot be undone.")
             if confirm:
-                self.logic_controller.file_handler.delete_session(selected_session_name)
+                self.logic.file_handler.delete_session(selected_session_name)
                 self.session_listbox.delete(self.session_listbox.curselection())

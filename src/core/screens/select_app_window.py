@@ -1,6 +1,6 @@
 import tkinter as tk
 from tkinter import messagebox
-import time
+import traceback
 
 from core.utils.logic_utils import threaded
 
@@ -8,17 +8,18 @@ class SelectAppWindow(tk.Frame):
     def __init__(self, parent, controller, logic_controller):
         tk.Frame.__init__(self, parent)
         self.controller = controller
-        self.logic_controller = logic_controller
+        self.logic = logic_controller
 
-        label = tk.Label(self, text="Ensure the desired application is running.\n\nSelect which application you would like to track:")
+        label = tk.Label(self, text="Ensure the desired application is running.\nYou may need to hit \'Refresh List\' if it was not.\n\nSelect which application you would like to track:")
         label.pack(side="top", fill="x", pady=5)
         
         # Search entry
         search_label = tk.Label(self, text="Search:")
         search_label.pack(pady=5)
-        
+
+        # Update list as user types
         self.search_var = tk.StringVar()
-        self.search_var.trace_add("write", lambda *args: self.update_search())  # Update list as user types
+        self.search_var.trace_add("write", lambda *args: self.update_search())
         search_entry = tk.Entry(self, textvariable=self.search_var)
         search_entry.pack(pady=5)
 
@@ -42,7 +43,7 @@ class SelectAppWindow(tk.Frame):
         self.app_listbox.config(yscrollcommand=scrollbar.set)
 
         # Track the apps and filtered apps
-        self.app_tracker = self.logic_controller.app_tracker
+        self.app_tracker = self.logic.app_tracker
         self.all_apps = []  # Store all apps to filter through
         self.refresh_apps()  # Populate list initially
         
@@ -68,7 +69,6 @@ class SelectAppWindow(tk.Frame):
         """Fetch all app names and display them in the listbox."""
         try:
             self.app_listbox.delete(0, tk.END)
-            time.sleep(1)
             self.all_apps = self.app_tracker.get_app_names()
 
             if not self.all_apps:
@@ -76,9 +76,11 @@ class SelectAppWindow(tk.Frame):
             else:
                 for app in self.all_apps:
                     self.app_listbox.insert(tk.END, app)
-            self.update_search()
         except RuntimeError as e:
-            print("AppUsageGUI encountered an error it did not expect: ", e)
+            if str(e) == "main thread is not in main loop":
+                self.refresh_apps()  # Retry if the error is due to unsafe threading
+            else:
+                messagebox.showerror("Error", f"refresh_apps() encountered an error it did not expect: {str(traceback.format_exc())}")
 
     @threaded
     def update_search(self, *args):

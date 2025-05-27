@@ -1,6 +1,4 @@
 import tkinter as tk
-import traceback
-import time
 
 from .logic_root import LogicRoot
 
@@ -12,6 +10,7 @@ from .screens.save_window import SaveWindow
 from .screens.create_session_window import CreateSessionWindow
 from .screens.session_total_window import SessionTotalWindow
 from .screens.tracker_settings_window import TrackerSettingsWindow
+from .screens.analyze_data_window import AnalyzeDataWindow
 
 class GUIRoot(tk.Frame):
     def __init__(self, parent):
@@ -49,40 +48,30 @@ class GUIRoot(tk.Frame):
         frame.tkraise()
 
     def reset_frames(self):
-        try:
-            # Stop trackers
-            if self.logic.app_tracker:
-                self.logic.app_tracker.reset()
+        # Stop trackers
+        if self.logic.app_tracker:
+            self.logic.app_tracker.reset()
+        if self.logic.time_tracker:
+            self.logic.time_tracker.reset()
+        if self.logic.mouse_tracker:
+            self.logic.mouse_tracker.stop()
 
-            if self.logic.time_tracker:
-                self.logic.time_tracker.reset()
+        # Stop GUI threads
+        for frame_name, frame in self.frames.items():
+            if hasattr(frame, "stop_threads"):
+                frame.stop_threads()
 
-            if self.logic.mouse_tracker:
-                self.logic.mouse_tracker.stop()
+        # Destroy frames
+        for frame_name, frame in self.frames.items():
+            frame.destroy()
 
-            # Stop GUI threads
-            self.frames["TrackerWindow"].stop_threads()
-            self.frames["SessionTotalWindow"].stop_threads(wait=False)
+        self.frames = {}
 
-            # Destroy frames
-            for frame_name, frame in self.frames.items():
-                frame.destroy()
-
-            self.frames = {}
-
-            # Reinitialize screens
-            self.init_screens()
-
-        except Exception as e:
-            tk.messagebox.showerror("Error", f"Crash in reset_frames(): {str(traceback.format_exc())}")
+        # Reinitialize screens
+        self.init_screens()
 
     def on_close(self):
         """Handle cleanup and close the application."""
-
-        # Stop GUI threads
-        self.frames["TrackerWindow"].stop_threads()
-        self.frames["SessionTotalWindow"].stop_threads(wait=False)
-        
         # Stop the AppTracker thread
         if self.logic.app_tracker:
             self.logic.app_tracker.stop()

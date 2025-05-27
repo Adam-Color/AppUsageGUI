@@ -18,7 +18,7 @@ class MouseTracker:
             self.idle_time_limit = 300  # Default value
         x = 0
         y = 0
-        self.logic_controller = logic_controller
+        self.logic = logic_controller
         self.mouse_position = x, y
         self.last_mouse_position = x, y
         self.stop_event = threading.Event()  # Used to stop the thread gracefully
@@ -35,7 +35,7 @@ class MouseTracker:
         while not self.stop_event.is_set():
             self.last_mouse_position = self.mouse_position
 
-            wait_time = self.idle_time_limit if not self.logic_controller.time_tracker.get_is_paused() else 1
+            wait_time = self.idle_time_limit if not self.logic.time_tracker.get_is_paused() else 1
 
             # Wait for the idle time or exit early if stop_event is set
             if self.stop_event.wait(timeout=wait_time):
@@ -46,10 +46,10 @@ class MouseTracker:
 
             # Pause the timer if mouse hasn’t moved
             if self.last_mouse_position == self.mouse_position:
-                self.logic_controller.time_tracker.pause()
+                self.logic.time_tracker.pause()
                 self.pausing = True
             elif self.pausing:
-                self.logic_controller.time_tracker.resume()
+                self.logic.time_tracker.resume()
                 self.pausing = False
 
 
@@ -57,12 +57,10 @@ class MouseTracker:
         if self.enabled:
             self.stop_event = threading.Event()  # Reset the stop event to allow the thread to run again
             self.update_thread = threading.Thread(target=self._update_mouse_position, name="mouse_tracker")
-            print("Starting mouse tracker")
             self.update_thread.start()
 
     def stop(self):
         self.stop_event.set()
-        print("Stopping mouse tracker")
         if self.update_thread is not None:
             try:
                 self.update_thread.join()
@@ -86,10 +84,10 @@ class MouseTracker:
         return self.enabled
 
 class ResolveProjectTracker:
-    """Tracks if the user is in a DaVinci Resolve project or not"""
+    """Tracks if the user is in a specified DaVinci Resolve project or not"""
     def __init__(self, parent, logic_controller):
         self.parent = parent
-        self.logic_controller = logic_controller
+        self.logic = logic_controller
         self.paused = False
         self.project_name = None
         self.project_open = False

@@ -18,7 +18,7 @@ class TrackerSettingsWindow(tk.Frame):
     def __init__(self, parent, controller, logic_controller):
         tk.Frame.__init__(self, parent)
         self.controller = controller
-        self.logic_controller = logic_controller
+        self.logic = logic_controller
         self.update_queue = queue.Queue()
 
         vcmd = (self.register(validate_numeric), '%P')
@@ -44,10 +44,10 @@ class TrackerSettingsWindow(tk.Frame):
         self.mouse_toggle_text.set("Disable Mouse Tracker" if self.settings["mouse_tracker_enabled"] else "Enable Mouse Tracker")
 
         self.mouse_tracker_time_text = tk.StringVar()
-        self.mouse_tracker_time_text.set(str(self.logic_controller.mouse_tracker.get_idle_time_limit()))
+        self.mouse_tracker_time_text.set(str(self.logic.mouse_tracker.get_idle_time_limit()))
         
         # Toggle Button
-        self.mouse_tracker_enable_button = tk.Button(self, textvariable=self.mouse_toggle_text, command=self.toggle_mouse_tracker)
+        self.mouse_tracker_enable_button = tk.Button(self, textvariable=self.mouse_toggle_text, command=self.toggle_mouse_tracker, width=25)
         self.mouse_tracker_enable_button.pack()
 
         mouse_tracker_time_label = tk.Label(self, text="\nMouse idle time limit: ")
@@ -91,13 +91,13 @@ class TrackerSettingsWindow(tk.Frame):
     def save_changes(self):
         """Save the settings and apply changes."""
         self.settings["mouse_tracker_enabled"] = self.mouse_tracker_enabled_temp
-        self.logic_controller.mouse_tracker.set_enabled(self.settings["mouse_tracker_enabled"])
-        self.settings["mouse_tracker_enabled"] = self.logic_controller.mouse_tracker.is_enabled()
+        self.logic.mouse_tracker.set_enabled(self.settings["mouse_tracker_enabled"])
+        self.settings["mouse_tracker_enabled"] = self.logic.mouse_tracker.is_enabled()
 
         # Save idle time limit
         try:
             idle_time_limit = int(self.mouse_tracker_time_text.get())
-            self.logic_controller.mouse_tracker.set_idle_time_limit(idle_time_limit)
+            self.logic.mouse_tracker.set_idle_time_limit(idle_time_limit)
             self.settings["mouse_idle_time_limit"] = idle_time_limit
         except ValueError:
             pass  # Ignore invalid input, prevent crash
@@ -111,7 +111,7 @@ class TrackerSettingsWindow(tk.Frame):
 
     def discard_changes(self):
         """Reset fields to original values and return to the main window."""
-        self.mouse_tracker_time_text.set(str(self.logic_controller.mouse_tracker.get_idle_time_limit()))
+        self.mouse_tracker_time_text.set(str(self.logic.mouse_tracker.get_idle_time_limit()))
         self.mouse_tracker_enabled_temp = self.settings["mouse_tracker_enabled"]
         self.mouse_toggle_text.set("Disable Mouse Tracker" if self.settings["mouse_tracker_enabled"] else "Enable Mouse Tracker")
 

@@ -26,6 +26,10 @@ def config_file():
     """Returns the path to the config file"""
     return os.path.join(get_user_directory(), 'config.dat')
 
+def apps_file():
+    """Returns the path to the apps file"""
+    return os.path.join(get_user_directory(), 'apps.dat')
+
 def sessions_exist(p=False):
     """Check if sessions exist, and if not, create the directory.
     Set p=True to print directory path"""
@@ -90,3 +94,25 @@ def write_file(file_path, data):
     with open(file_path, 'wb') as f:
         f.truncate(0)
         pickle.dump(data, f)
+
+def calc_runtime(data, start_pos):
+    """Calculate the runtime of a single run in seconds from time captures.
+    Returns -1 if the data is invalid"""
+    try:
+        captures = data['time_captures']
+    
+        start_time = captures['starts'][start_pos]
+        stop_time = captures['stops'][start_pos]
+
+        run_time = stop_time - start_time
+
+        pauses = captures['pauses']
+        for pause in pauses:
+            if pause['start'] >= start_time and pause['start'] < stop_time:
+                run_time -= pause['how_long']
+        
+        return run_time if run_time >= 0 else -1
+
+        # Find the next stop position
+    except KeyError:
+        return -1
