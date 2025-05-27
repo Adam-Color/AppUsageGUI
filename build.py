@@ -40,8 +40,11 @@ def build_executable():
         f'--collect-all psutil '
         f'--collect-all tkinter '
         f'--collect-all pynput '
+        f'--collect-all requests '
+        f'--collect-all PIL '
         f'--icon={icon_file} '
         f'--add-data "src/_version.py:." '
+        f'--add-data "src/_path.py:." '
         f'--target-architecture {platform.machine()} '
         f'--debug=imports {ENTRY_POINT}'
     )
