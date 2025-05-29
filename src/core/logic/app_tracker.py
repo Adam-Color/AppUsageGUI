@@ -13,6 +13,7 @@ elif sys.platform == 'darwin':
 from core.utils.file_utils import read_file, write_file, apps_file, user_dir_exists
 
 EXCLUDED_APP_PIDS = []
+INCLUDED_APP_PIDS = []
 
 if user_dir_exists() and os.path.exists(apps_file()):
     EXCLUDED_APP_PIDS = read_file(apps_file())['excluded_app_pids']
@@ -96,6 +97,18 @@ class AppTracker:
     def reset(self):
         self.selected_app = None
         self.update_thread = None
+    
+    def start_filter_reset(self, refresh=False, update_pids=False):
+        self.temp_reset_thread = threading.Thread(target=self._reset_excluded_pids(refresh, update_pids), name="reset_filter")
+        self.temp_reset_thread.start()
+
+    def _reset_excluded_pids(self, refresh, update_pids):
+        global EXCLUDED_APP_PIDS
+        EXCLUDED_APP_PIDS = []
+        if refresh:
+            self.app_names = self._fetch_app_names()
+        if update_pids:
+            self._update_excluded_apps()
 
     def _update_excluded_apps(self):
         seen_pids = set()
@@ -110,7 +123,7 @@ class AppTracker:
                 if process.info['status'] == psutil.STATUS_RUNNING and pid not in EXCLUDED_APP_PIDS and not self._has_gui(pid):
                     i += 1
                     EXCLUDED_APP_PIDS.append(pid)
-                if len(seen_pids) > (400 if os.name == 'nt' else 10000):
+                if i > (400 if os.name == 'nt' else 10000):
                     # Limit the number of seen processes to avoid long loading times
                     break
             except (psutil.NoSuchProcess, psutil.AccessDenied, psutil.ZombieProcess):
