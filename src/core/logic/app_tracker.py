@@ -17,6 +17,7 @@ INCLUDED_APP_PIDS = []
 
 if user_dir_exists() and os.path.exists(apps_file()):
     EXCLUDED_APP_PIDS = read_file(apps_file())['excluded_app_pids']
+    INCLUDED_APP_PIDS = read_file(apps_file())['included_app_pids']
 
 class AppTracker:
     def __init__(self, parent, logic_controller):
@@ -104,14 +105,16 @@ class AppTracker:
 
     def _reset_excluded_pids(self, refresh, update_pids):
         global EXCLUDED_APP_PIDS
+        global INCLUDED_APP_PIDS
         EXCLUDED_APP_PIDS = []
+        INCLUDED_APP_PIDS = []
         if refresh:
             self.app_names = self._fetch_app_names()
         if update_pids:
             self._update_excluded_apps()
 
     def _update_excluded_apps(self):
-        seen_pids = set()
+        seen_pids = []
         i = 0
         for process in psutil.process_iter(['pid', 'status']):
             try:
@@ -119,11 +122,14 @@ class AppTracker:
                 if pid in seen_pids:
                     continue
                 #print(f"Checking process: (PID: {pid})")  # Debugging line
-                seen_pids.add(pid)
-                if process.info['status'] == psutil.STATUS_RUNNING and pid not in EXCLUDED_APP_PIDS and not self._has_gui(pid):
-                    i += 1
-                    EXCLUDED_APP_PIDS.append(pid)
-                if i > (400 if os.name == 'nt' else 10000):
+                seen_pids.append(pid)
+                if process.info['status'] == psutil.STATUS_RUNNING and pid not in INCLUDED_APP_PIDS and pid not in EXCLUDED_APP_PIDS:
+                    if self._has_gui(pid):
+                        INCLUDED_APP_PIDS.append(pid)
+                    else:
+                        i += 1
+                        EXCLUDED_APP_PIDS.append(pid)
+                if len(seen_pids) > (400 if os.name == 'nt' else 10000):
                     # Limit the number of seen processes to avoid long loading times
                     break
             except (psutil.NoSuchProcess, psutil.AccessDenied, psutil.ZombieProcess):
@@ -132,7 +138,8 @@ class AppTracker:
 
         #print(f"\nExcluded app PIDs: {EXCLUDED_APP_PIDS}")  # Debugging line
         print(f"New exlusions: {i}")
-        data = {'excluded_app_pids': EXCLUDED_APP_PIDS}
+        data = {'excluded_app_pids': EXCLUDED_APP_PIDS,
+                'included_app_pids': INCLUDED_APP_PIDS}
         write_file(apps_file(), data)
 
     def _has_gui(self, process_id):
