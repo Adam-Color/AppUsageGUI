@@ -3,6 +3,7 @@
 * double-click the .dmg to open it
 * agree to the [license](../LICENSE.txt)
 * drag the "AppUsageGUI" folder to the "Applications" folder
+* if asked to replace another folder, agree to do so
 
 ## Running on macOS:
 >[!warning]
