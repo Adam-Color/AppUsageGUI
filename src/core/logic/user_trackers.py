@@ -14,7 +14,7 @@ class MouseTracker:
         self.parent = parent
         try:
             self.idle_time_limit = read_file(config_file())["mouse_idle_time_limit"]
-        except FileNotFoundError:
+        except (FileNotFoundError, KeyError):
             self.idle_time_limit = 300  # Default value
         x = 0
         y = 0
@@ -24,7 +24,7 @@ class MouseTracker:
         self.stop_event = threading.Event()  # Used to stop the thread gracefully
         try:
             self.enabled = read_file(config_file())["mouse_tracker_enabled"]
-        except FileNotFoundError:
+        except (FileNotFoundError, KeyError):
             self.enabled = False  # Default value
 
         self.pausing = False
