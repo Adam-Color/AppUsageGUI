@@ -24,7 +24,7 @@ class SelectAppWindow(tk.Frame):
         search_entry.pack(pady=5)
 
         # Button to refresh the list
-        refresh_button = tk.Button(self, text="Refresh List", command=self.refresh_apps)
+        refresh_button = tk.Button(self, text="Refresh List", command=lambda: self.refresh_apps(True))
         refresh_button.pack(pady=10)
 
         # Frame for listbox and scrollbar
@@ -65,10 +65,12 @@ class SelectAppWindow(tk.Frame):
             messagebox.showerror("Error", "No application selected")
 
     @threaded
-    def refresh_apps(self):
+    def refresh_apps(self, filter_reset=False):
         """Fetch all app names and display them in the listbox."""
         try:
             self.app_listbox.delete(0, tk.END)
+            #if filter_reset:
+            #    self.logic.app_tracker.start_filter_reset(refresh=True, update_pids=True)
             self.all_apps = self.app_tracker.get_app_names()
 
             if not self.all_apps:
@@ -78,7 +80,7 @@ class SelectAppWindow(tk.Frame):
                     self.app_listbox.insert(tk.END, app)
         except RuntimeError as e:
             if str(e) == "main thread is not in main loop":
-                self.refresh_apps()  # Retry if the error is due to unsafe threading
+                self.refresh_apps(filter_reset)  # Retry if the error is due to unsafe threading
             else:
                 messagebox.showerror("Error", f"refresh_apps() encountered an error it did not expect: {str(traceback.format_exc())}")
 
