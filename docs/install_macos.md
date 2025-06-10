@@ -9,7 +9,7 @@
 >[!warning]
 >Due to Apple's restrictions when it comes to open source applications such as ours, workarounds are needed to get AppUsageGUI to run on macOS.
 
-If you encounter the error message saying the app was not opened, click "done", then go into your security settings and allow AppUsageGUI to run on your device
+If you encounter the error message saying the app was not opened or was damaged, click "done" or "cancel", then go into your security settings and allow AppUsageGUI to run on your device
 
 Enter this in your terminal if AppUsageGUI still does not run:
 
