@@ -102,10 +102,11 @@ class TrackerWindow(tk.Frame):
 
         if self.logic.mouse_tracker.is_pausing():
             self.page_label.config(text="Tracking paused, mouse is idle...")
-            self.toggle_pause_tracker(button=False)
+            self.pause_toggle_text.set("Resume")
         else:
             new_text = f"Tracking the selected app: {self.app}"
             if self.page_label["text"] != new_text:
+                self.pause_toggle_text.set("Pause")
                 self.page_label.config(text=new_text)
 
         self.update_queue.put((self.TIME_UPDATE, time_text))
