@@ -15,7 +15,7 @@ class MouseTracker:
         try:
             self.idle_time_limit = read_file(config_file())["mouse_idle_time_limit"]
         except (FileNotFoundError, KeyError):
-            self.idle_time_limit = 300  # Default value
+            self.idle_time_limit = 90  # Default value
         x = 0
         y = 0
         self.logic = logic_controller

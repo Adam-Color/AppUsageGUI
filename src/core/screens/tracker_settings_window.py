@@ -27,7 +27,7 @@ class TrackerSettingsWindow(tk.Frame):
 
         self.settings = {
             "mouse_tracker_enabled": False,
-            "mouse_idle_time_limit": 300
+            "mouse_idle_time_limit": 90
         }
 
         # Read settings file if it exists
