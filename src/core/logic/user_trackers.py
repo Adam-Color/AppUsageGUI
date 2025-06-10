@@ -45,10 +45,10 @@ class MouseTracker:
             self.mouse_position = x, y
 
             # Pause the timer if mouse hasn’t moved
-            if self.last_mouse_position == self.mouse_position:
+            if self.last_mouse_position == self.mouse_position and not self.logic.time_tracker.get_is_paused():
                 self.logic.time_tracker.pause()
                 self.pausing = True
-            elif self.pausing:
+            elif self.pausing and self.last_mouse_position != self.mouse_position:
                 self.logic.time_tracker.resume()
                 self.pausing = False
 
