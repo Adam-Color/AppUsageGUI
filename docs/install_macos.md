@@ -11,7 +11,7 @@
 
 If you encounter the error message saying the app was not opened or was damaged, click "done" or "cancel", then go into your security settings and allow AppUsageGUI to run on your device
 
-Enter this in your terminal if AppUsageGUI still does not run:
+Enter this in your terminal if AppUsageGUI still does not run or if no option to allow the app to run appears in settings:
 
 ```shell
 xattr -dr com.apple.quarantine /Applications/AppUsageGUI/AppUsageGUI.app
