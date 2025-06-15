@@ -3,7 +3,8 @@ import time
 from core.utils.logic_utils import threaded
 
 class TimeTracker:
-    """A clock that runs in a separate thread to track elapsed time, with pause and resume functionality."""
+    """A clock that runs in a separate thread to track elapsed time, 
+    with pause and resume functionality."""
     def __init__(self, parent, logic_controller):
         self.parent = parent
 
