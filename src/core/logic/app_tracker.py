@@ -100,8 +100,9 @@ class AppTracker:
         self.update_thread = None
     
     def start_filter_reset(self, refresh=False, update_pids=False):
-        self.temp_reset_thread = threading.Thread(target=self._reset_excluded_pids(refresh, update_pids), name="reset_filter")
-        self.temp_reset_thread.start()
+        if os.name == 'nt':
+            self.temp_reset_thread = threading.Thread(target=self._reset_excluded_pids(refresh, update_pids), name="reset_filter")
+            self.temp_reset_thread.start()
 
     def _reset_excluded_pids(self, refresh, update_pids):
         global EXCLUDED_APP_PIDS

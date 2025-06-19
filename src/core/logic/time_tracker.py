@@ -1,9 +1,11 @@
 import time
+import traceback
 
 from core.utils.logic_utils import threaded
 
 class TimeTracker:
-    """A clock that runs in a separate thread to track elapsed time, with pause and resume functionality."""
+    """A clock that runs in a separate thread to track elapsed time, 
+    with pause and resume functionality."""
     def __init__(self, parent, logic_controller):
         self.parent = parent
 
@@ -77,7 +79,8 @@ class TimeTracker:
         except KeyError as e:
             # handle v1 session files
             if str(e) != '\'time_captures\'':
-                print("Error updating time captures from session file: KEYERROR |", str(e))
+                print("Error loading time captures from session file:\n")
+                traceback.print_exc()
 
     def get_is_paused(self):
         return self.is_paused

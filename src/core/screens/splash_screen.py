@@ -174,10 +174,10 @@ def splash_screen(root):
                             break
                     if suffix is None:
                         webbrowser.open_new_tab("https://github.com/adam-color/AppUsageGUI/releases/latest")
-                        tk.showinfo("Update", "Your platform is currently unsupported.")
+                        tk.messagebox.showinfo("Update", "Your platform is currently unsupported.")
                     elif download_url is not None:
                         webbrowser.open_new_tab(download_url)
-                        tk.showinfo("Update", "Please install the latest version after it downloads,\nautomatic updates are not yet available.\n\nThe application will now close.")
+                        tk.messagebox.showinfo("Update", "Please install the latest version after it downloads,\nautomatic updates are not yet available.\n\nThe application will now close.")
                     sys.exit(0)
 
             update_progress(70)

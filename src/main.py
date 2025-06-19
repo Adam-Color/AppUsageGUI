@@ -19,6 +19,7 @@
 
 import tkinter as tk
 import os
+import traceback
 
 from core.screens.splash_screen import splash_screen
 from core.utils.tk_utils import is_dark_mode
@@ -33,21 +34,25 @@ def apply_dark_theme(root):
     root.tk_setPalette(background=dark_bg, foreground=dark_fg)
 
 def main():
-    root = tk.Tk()
-    root.withdraw()
+    try:
+        root = tk.Tk()
+        root.withdraw()
 
-    if is_dark_mode():
-        apply_dark_theme(root)
+        if is_dark_mode():
+            apply_dark_theme(root)
 
-    icon_name = "core\\resources\\icon.ico" if os.name == 'nt' else "core/resources/icon.icns"
-    icon_path = resource_path(icon_name)
+        icon_name = "core\\resources\\icon.ico" if os.name == 'nt' else "core/resources/icon.icns"
+        icon_path = resource_path(icon_name)
 
-    root.iconbitmap(icon_path)
-    root.title(f"AppUsageGUI - v{__version__}")
+        root.iconbitmap(icon_path)
+        root.title(f"AppUsageGUI - v{__version__}")
 
-    splash_screen(root)
-
-    root.mainloop()
+        splash_screen(root)
+        root.mainloop()
+    except Exception as e:
+        error_message = f"An unexpected error occurred:\n{str(e)}\n\n{traceback.format_exc()}"
+        print(error_message)
+        tk.messagebox.showerror("Error", error_message)
 
 if __name__ == "__main__":
     main()
