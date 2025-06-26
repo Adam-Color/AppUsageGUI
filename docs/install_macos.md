@@ -1,7 +1,7 @@
 ## macOS Installation Steps:
 * download the macOS setup .dmg [here](https://github.com/Adam-Color/AppUsageGUI/releases/latest) (under the "assets" section)
 * double-click the .dmg to open it
-* agree to the [license](../LICENSE.txt)
+* agree to the license
 * drag the "AppUsageGUI" folder to the "Applications" folder
 * if asked to replace another folder, agree to do so
 
