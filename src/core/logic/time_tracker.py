@@ -96,6 +96,9 @@ class TimeTracker:
     def get_paused_time(self):
         return self.paused_time
     
+    def get_elapsed_time(self):
+        return self.elapsed_time
+    
     def get_time_captures(self):
         return self.captures
 
