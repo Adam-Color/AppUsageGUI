@@ -43,10 +43,14 @@ class TrackerSettingsWindow(tk.Frame):
         self.mouse_toggle_text = tk.StringVar()
         self.mouse_toggle_text.set("Disable Mouse Tracker" if self.settings["mouse_tracker_enabled"] else "Enable Mouse Tracker")
 
+        # Set app filter text
+        self.app_filter_text = tk.StringVar()
+        self.app_filter_text.set("Disable App Filtering" if self.logic.app_tracker.is_filter_enabled() else "Enable App Filtering")
+
         self.mouse_tracker_time_text = tk.StringVar()
         self.mouse_tracker_time_text.set(str(self.logic.mouse_tracker.get_idle_time_limit()))
         
-        # Toggle Button
+        # Toggle mouse tracker button
         self.mouse_tracker_enable_button = tk.Button(self, textvariable=self.mouse_toggle_text, command=self.toggle_mouse_tracker, width=25)
         self.mouse_tracker_enable_button.pack()
 
@@ -62,6 +66,10 @@ class TrackerSettingsWindow(tk.Frame):
 
         mouse_tracker_time_label_a = tk.Label(self, text="seconds")
         mouse_tracker_time_label_a.pack(side="top", padx=1)
+
+        # Toggle app filtering button
+        self.app_filter_enable_button = tk.Button(self, textvariable=self.app_filter_text, command=self.toggle_app_filter, width=25)
+        self.app_filter_enable_button.pack()
 
         discard_button = tk.Button(self, text="Discard Changes", command=self.discard_changes)
         discard_button.pack(side="bottom", fill="y", padx=1, pady=5)
@@ -110,10 +118,6 @@ class TrackerSettingsWindow(tk.Frame):
         self.controller.show_frame("MainWindow")
 
     def discard_changes(self):
-        """Reset fields to original values and return to the main window."""
-        self.mouse_tracker_time_text.set(str(self.logic.mouse_tracker.get_idle_time_limit()))
-        self.mouse_tracker_enabled_temp = self.settings["mouse_tracker_enabled"]
-        self.mouse_toggle_text.set("Disable Mouse Tracker" if self.settings["mouse_tracker_enabled"] else "Enable Mouse Tracker")
-
+        """Return to the main window."""
         self.controller.reset_frames()
         self.controller.show_frame("MainWindow")
