@@ -1,5 +1,5 @@
 import time
-import traceback
+from traceback import print_exc
 
 from core.utils.logic_utils import threaded
 
@@ -80,7 +80,7 @@ class TimeTracker:
             # handle v1 session files
             if str(e) != '\'time_captures\'':
                 print("Error loading time captures from session file:\n")
-                traceback.print_exc()
+                print_exc()
 
     def get_is_paused(self):
         return self.is_paused

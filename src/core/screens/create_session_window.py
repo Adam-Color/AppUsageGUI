@@ -1,5 +1,5 @@
 import tkinter as tk
-import re
+from re import search as re
 
 from core.utils.time_utils import format_time
 from core.utils.file_utils import config_file, read_file
@@ -13,7 +13,7 @@ def validate_name(value):
 
     # Check for illegal characters
     illegal_chars = r'[<>:"/\\|?*\x00-\x1F.]'
-    if re.search(illegal_chars, value):
+    if re(illegal_chars, value):
         return False
 
     return True
