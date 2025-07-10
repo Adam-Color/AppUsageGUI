@@ -68,9 +68,9 @@ class TrackerWindow(tk.Frame):
 
         if not self.stop_event.is_set():
             if self.logic.time_tracker.get_elapsed_time() < 1:
-                self.controller.reset_frames()
                 tk.messagebox.showinfo("Tracking Not Started",
                                        "The tracked application is not running or has been closed.\nPlease remember to start the application before attempting to track it.")
+                self.controller.reset_frames()
                 self.controller.show_frame("MainWindow")
             else:
                 self.controller.show_frame("SaveWindow")
