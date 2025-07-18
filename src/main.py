@@ -51,7 +51,7 @@ def main():
         root.mainloop()
     except Exception as e:
         error_message = f"An unexpected error occurred:\n{str(e)}\n\n{format_exc()}"
-        print(error_message)
+         
         tk.messagebox.showerror("Error", error_message)
 
 if __name__ == "__main__":

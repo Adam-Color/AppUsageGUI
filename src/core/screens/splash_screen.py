@@ -177,6 +177,7 @@ def splash_screen(root):
                         tk.messagebox.showinfo("Update", "Your platform is currently unsupported.")
                     elif download_url is not None:
                         webbrowser.open_new_tab(download_url)
+                        webbrowser.open_new_tab("https://github.com/adam-color/AppUsageGUI/releases/latest")
                         tk.messagebox.showinfo("Update", "Please install the latest version after it downloads,\nautomatic updates are not yet available.\n\nThe application will now close.")
                     sys.exit(0)
 
@@ -191,7 +192,9 @@ def splash_screen(root):
 
         except Exception:
             splash_window.destroy()
-            tk.messagebox.showerror("Startup Error", str(format_exc()))
+            error = str(format_exc())
+            print(error)
+            tk.messagebox.showerror("Startup Error", error)
             sys.exit(1)
 
     splash_window.after(100, load_app)

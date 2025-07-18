@@ -45,7 +45,7 @@ class TrackerSettingsWindow(tk.Frame):
 
         # Set app filter text
         self.app_filter_text = tk.StringVar()
-        self.app_filter_text.set("Disable App Filtering" if self.logic.app_tracker.is_filter_enabled() else "Enable App Filtering")
+        self.app_filter_text.set("Disable App Filtering" if self.logic.app_tracker.is_filter_enabled else "Enable App Filtering")
 
         self.mouse_tracker_time_text = tk.StringVar()
         self.mouse_tracker_time_text.set(str(self.logic.mouse_tracker.get_idle_time_limit()))
