@@ -20,6 +20,7 @@ class TrackerSettingsWindow(tk.Frame):
         self.controller = controller
         self.logic = logic_controller
         self.update_queue = queue.Queue()
+        self.restart_needed = False
 
         vcmd = (self.register(validate_numeric), '%P')
         label = tk.Label(self, text="Tracker settings:\n")
@@ -27,7 +28,8 @@ class TrackerSettingsWindow(tk.Frame):
 
         self.settings = {
             "mouse_tracker_enabled": False,
-            "mouse_idle_time_limit": 90
+            "mouse_idle_time_limit": 90,
+            "is_filter_enabled": True
         }
 
         # Read settings file if it exists
@@ -36,8 +38,9 @@ class TrackerSettingsWindow(tk.Frame):
             if saved_settings:
                 self.settings.update(saved_settings)  # Ensure settings are properly merged
 
-        # Temporary variable for toggling tracker
+        # Temporary variables for toggles
         self.mouse_tracker_enabled_temp = self.settings["mouse_tracker_enabled"]
+        self.app_filter_enabled_temp = self.settings["is_filter_enabled"]
         
         # Set button text based on tracker status
         self.mouse_toggle_text = tk.StringVar()
@@ -69,7 +72,7 @@ class TrackerSettingsWindow(tk.Frame):
 
         # Toggle app filtering button
         self.app_filter_enable_button = tk.Button(self, textvariable=self.app_filter_text, command=self.toggle_app_filter, width=25)
-        self.app_filter_enable_button.pack()
+        self.app_filter_enable_button.pack(pady=15)
 
         discard_button = tk.Button(self, text="Discard Changes", command=self.discard_changes)
         discard_button.pack(side="bottom", fill="y", padx=1, pady=5)
@@ -84,6 +87,13 @@ class TrackerSettingsWindow(tk.Frame):
         """Update the temp variable when button is toggled and refresh UI."""
         self.mouse_tracker_enabled_temp = not self.mouse_tracker_enabled_temp
         self.mouse_toggle_text.set("Disable Mouse Tracker" if self.mouse_tracker_enabled_temp else "Enable Mouse Tracker")
+    
+    def toggle_app_filter(self):
+        """Toggle the app filter and update the button text."""
+        self.restart_needed = True
+        self.app_filter_enabled_temp = not self.app_filter_enabled_temp
+        self.app_filter_text.set("Disable App Filtering" if self.app_filter_enabled_temp else "Enable App Filtering")
+        self.update_queue.put("app_filter_toggle")
 
     def update_elements(self):
         """Update the GUI elements with the current settings."""
@@ -92,6 +102,8 @@ class TrackerSettingsWindow(tk.Frame):
                 item = self.update_queue.get_nowait()
                 if item == "mouse_tracker_toggle":
                     self.mouse_toggle_text.set("Disable Mouse Tracker" if self.mouse_tracker_enabled_temp else "Enable Mouse Tracker")
+                elif item == "app_filter_toggle":
+                    self.app_filter_text.set("Disable App Filtering" if self.app_filter_enabled_temp else "Enable App Filtering")
         except queue.Empty:
             pass
         self.after(100, self.update_elements)  # Keep checking queue
@@ -99,6 +111,7 @@ class TrackerSettingsWindow(tk.Frame):
     def save_changes(self):
         """Save the settings and apply changes."""
         self.settings["mouse_tracker_enabled"] = self.mouse_tracker_enabled_temp
+        self.settings["is_filter_enabled"] = self.app_filter_enabled_temp
         self.logic.mouse_tracker.set_enabled(self.settings["mouse_tracker_enabled"])
         self.settings["mouse_tracker_enabled"] = self.logic.mouse_tracker.is_enabled()
 
@@ -115,6 +128,8 @@ class TrackerSettingsWindow(tk.Frame):
 
         # Show main window
         self.controller.reset_frames()
+        if self.restart_needed:
+            tk.messagebox.showinfo("Restart Required", "Changes will take effect after a restart.")
         self.controller.show_frame("MainWindow")
 
     def discard_changes(self):

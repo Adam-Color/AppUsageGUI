@@ -32,7 +32,10 @@ class AppTracker:
             self.is_filter_enabled = True
 
         # exclude apps that are not relevant to the user
-        self._update_excluded_apps()
+        if not self.is_filter_enabled:
+            self._reset_excluded_pids(False, False)
+        else:
+            self._update_excluded_apps()
 
         self._start_tracking()  # Start the tracking thread
 
@@ -103,9 +106,6 @@ class AppTracker:
         self.selected_app = None
         self.update_thread = None
     
-    def set_filter_enabled(self, enabled=True):
-        self.is_filter_enabled = enabled 
-    
     def start_filter_reset(self, refresh=False, update_pids=False):
         if os.name == 'nt':
             self.temp_reset_thread = threading.Thread(target=self._reset_excluded_pids(refresh, update_pids), name="reset_filter")
@@ -122,6 +122,10 @@ class AppTracker:
             self._update_excluded_apps()
 
     def _update_excluded_apps(self):
+        if not self.is_filter_enabled:
+            # If filtering is disabled, clear the lists and return
+            self._reset_excluded_pids(False, False)
+            return
         seen_pids = []
         i = 0
         for process in psutil.process_iter(['pid', 'status']):
