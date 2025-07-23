@@ -7,7 +7,7 @@ import tkinter as tk
 import webbrowser
 from PIL import ImageTk, Image
 from tkinter.ttk import *
-import traceback
+from traceback import format_exc
 import platform
 
 from core.utils.tk_utils import center
@@ -70,7 +70,7 @@ def new_updates():
     except (KeyError, ValueError, IndexError) as e:
         print(f"Error checking for updates: Parsing error - {str(e)}")
     except Exception as e:
-        tk.messagebox.showerror("Error", f"An unexpected error occurred while checking for updates: {str(traceback.format_exc())}")
+        tk.messagebox.showerror("Error", f"An unexpected error occurred while checking for updates: {str(format_exc())}")
     return False
 
 def is_running():
@@ -177,6 +177,7 @@ def splash_screen(root):
                         tk.messagebox.showinfo("Update", "Your platform is currently unsupported.")
                     elif download_url is not None:
                         webbrowser.open_new_tab(download_url)
+                        webbrowser.open_new_tab("https://github.com/adam-color/AppUsageGUI/releases/latest")
                         tk.messagebox.showinfo("Update", "Please install the latest version after it downloads,\nautomatic updates are not yet available.\n\nThe application will now close.")
                     sys.exit(0)
 
@@ -191,7 +192,9 @@ def splash_screen(root):
 
         except Exception:
             splash_window.destroy()
-            tk.messagebox.showerror("Startup Error", str(traceback.format_exc()))
+            error = str(format_exc())
+            print(error)
+            tk.messagebox.showerror("Startup Error", error)
             sys.exit(1)
 
     splash_window.after(100, load_app)

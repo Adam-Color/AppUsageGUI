@@ -11,6 +11,6 @@ PyRect==0.2.0
 PyScreeze==1.0.1
 pytweening==1.2.0
 rubicon-objc==0.5.0
-pyinstaller
+pyinstaller==6.12.0
 requests==2.32.4
-pillow==11.2.1
+pillow==11.3.0

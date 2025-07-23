@@ -1,6 +1,5 @@
 import tkinter as tk
-import traceback
-import time
+from traceback import format_exc
 
 from .logic_root import LogicRoot
 
@@ -74,7 +73,7 @@ class GUIRoot(tk.Frame):
             self.init_screens()
 
         except Exception as e:
-            tk.messagebox.showerror("Error", f"Crash in reset_frames(): {str(traceback.format_exc())}")
+            tk.messagebox.showerror("Error", f"Crash in reset_frames(): {str(format_exc())}")
 
     def on_close(self):
         """Handle cleanup and close the application."""

@@ -10,7 +10,7 @@ if os.name == 'nt':
 elif sys.platform == 'darwin':
     from AppKit import NSWorkspace
 
-from core.utils.file_utils import read_file, write_file, apps_file, user_dir_exists
+from core.utils.file_utils import read_file, write_file, apps_file, user_dir_exists, config_file
 
 EXCLUDED_APP_PIDS = []
 INCLUDED_APP_PIDS = []
@@ -26,9 +26,16 @@ class AppTracker:
         self.update_thread = None
         self.stop_event = threading.Event()  # Used to stop the thread gracefully
         self.cached_process_count = 0  # Tracks the last known process count
+        try:
+            self.is_filter_enabled = read_file(config_file())['is_filter_enabled']
+        except (KeyError, FileNotFoundError):
+            self.is_filter_enabled = True
 
         # exclude apps that are not relevant to the user
-        self._update_excluded_apps()
+        if not self.is_filter_enabled:
+            self._reset_excluded_pids(False, False)
+        else:
+            self._update_excluded_apps()
 
         self._start_tracking()  # Start the tracking thread
 
@@ -115,6 +122,10 @@ class AppTracker:
             self._update_excluded_apps()
 
     def _update_excluded_apps(self):
+        if not self.is_filter_enabled:
+            # If filtering is disabled, clear the lists and return
+            self._reset_excluded_pids(False, False)
+            return
         seen_pids = []
         i = 0
         for process in psutil.process_iter(['pid', 'status']):

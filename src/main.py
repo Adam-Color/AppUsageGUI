@@ -19,7 +19,7 @@
 
 import tkinter as tk
 import os
-import traceback
+from traceback import format_exc
 
 from core.screens.splash_screen import splash_screen
 from core.utils.tk_utils import is_dark_mode
@@ -50,8 +50,8 @@ def main():
         splash_screen(root)
         root.mainloop()
     except Exception as e:
-        error_message = f"An unexpected error occurred:\n{str(e)}\n\n{traceback.format_exc()}"
-        print(error_message)
+        error_message = f"An unexpected error occurred:\n{str(e)}\n\n{format_exc()}"
+         
         tk.messagebox.showerror("Error", error_message)
 
 if __name__ == "__main__":
