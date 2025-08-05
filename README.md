@@ -26,7 +26,7 @@ To install, follow the instructions for your platform found here:
 * Add integrations with professional applications
 * Optimize everything
 * Add support for tracking more than one executable per session
-* Impliment a better way to filter out non-gui apps on macOS
+* Add a better way to filter out non-GUI apps on macOS
 
 #### Version 2 ('v2-change-to-pyqt6' branch):
 
