@@ -1,4 +1,4 @@
-![version](https://img.shields.io/badge/Version-1.5.0-white.svg)
+![version](https://img.shields.io/badge/Version-1.5.1-white.svg)
 ![license](https://img.shields.io/badge/License-GPL%20v3-blue.svg)
 ![python](https://img.shields.io/badge/Python-3.12-green.svg)
 
@@ -26,7 +26,7 @@ To install, follow the instructions for your platform found here:
 * Add integrations with professional applications
 * Optimize everything
 * Add support for tracking more than one executable per session
-* Impliment a better way to filter out non-gui apps on macOS
+* Add a better way to filter out non-GUI apps on macOS
 
 #### Version 2 ('v2-change-to-pyqt6' branch):
 

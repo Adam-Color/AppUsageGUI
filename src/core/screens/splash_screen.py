@@ -90,7 +90,6 @@ def splash_screen(root):
     splash_window.geometry("300x340")
     splash_window.title("AppUsageGUI - Loading...")
     splash_window.overrideredirect(True)
-    splash_window.attributes("-topmost", True)
     center(splash_window)
     splash_window.configure(bg="#2E2E2E")
 
@@ -178,8 +177,7 @@ def splash_screen(root):
                     elif download_url is not None:
                         webbrowser.open_new_tab(download_url)
                         webbrowser.open_new_tab("https://github.com/adam-color/AppUsageGUI/releases/latest")
-                        tk.messagebox.showinfo("Update", "Please install the latest version after it downloads,\nautomatic updates are not yet available.\n\nThe application will now close.")
-                    sys.exit(0)
+                        tk.messagebox.showinfo("Update", "Please install the latest version after it downloads,\nautomatic updates are not yet available.\n\nPlease close AppUsageGUI after you download the new installer.")
 
             update_progress(70)
             win = GUIRoot(root)
