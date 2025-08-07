@@ -1,12 +1,18 @@
 """Handler for all file io operations. Only handles one session at a time, which should
-be set by other classes. 
+be set by other classes.
 The file handler is responsible for saving and loading session data"""
 
 import os
 import pickle
 import _pickle
 
-from core.utils.file_utils import compute_hash, read_file, write_file, get_sessions_directory
+from core.utils.file_utils import (
+    compute_hash,
+    read_file,
+    write_file,
+    get_sessions_directory,
+)
+
 
 class FileHandler:
     def __init__(self, parent, logic_controller):
@@ -24,27 +30,27 @@ class FileHandler:
     def save_session_data(self, data):
         """Special function to save and hash session data"""
         self.data = pickle.dumps(data)
-        file_path = os.path.join(self.directory, self.file_name + '.dat')
-        hash_path = os.path.join(self.directory, self.file_name + '.hash')
+        file_path = os.path.join(self.directory, self.file_name + ".dat")
+        hash_path = os.path.join(self.directory, self.file_name + ".hash")
 
         # Save data to file
         write_file(file_path, self.data)
 
         # Compute and save hash
         data_hash = compute_hash(self.data)
-        write_file(hash_path, data_hash.encode('utf-8'))
+        write_file(hash_path, data_hash.encode("utf-8"))
 
     def load_session_data(self, filename):
         """Loads session data from file and checks hash"""
         self.file_name = filename
-        file_path = os.path.join(self.directory, filename + '.dat')
-        hash_path = os.path.join(self.directory, filename + '.hash')
+        file_path = os.path.join(self.directory, filename + ".dat")
+        hash_path = os.path.join(self.directory, filename + ".hash")
 
         if os.path.exists(file_path) and os.path.exists(hash_path):
             try:
                 # Read data and hash
                 data = read_file(file_path)
-                stored_hash = read_file(hash_path).decode('utf-8')
+                stored_hash = read_file(hash_path).decode("utf-8")
 
                 # Compute hash of the loaded data
                 computed_hash = compute_hash(data)
@@ -63,8 +69,8 @@ class FileHandler:
 
     def delete_session(self, filename):
         """Delete data and hash files of a session"""
-        file_path = os.path.join(self.directory, filename + '.dat')
-        hash_path = os.path.join(self.directory, filename + '.hash')
+        file_path = os.path.join(self.directory, filename + ".dat")
+        hash_path = os.path.join(self.directory, filename + ".hash")
 
         if os.path.exists(file_path):
             os.remove(file_path)
@@ -77,11 +83,10 @@ class FileHandler:
             return pickle.loads(self.data)
         return self.data if isinstance(self.data, dict) else {}
 
-
     def set_file_name(self, file_name):
         if file_name is not None:
             self.file_name = file_name
-    
+
     def get_file_name(self):
         return self.file_name
 
@@ -91,7 +96,7 @@ class FileHandler:
             self.set_continuing_tracker(True)
             self.controller.time_tracker.update_captures()
 
-    def set_continuing_tracker(self, value=bool):
+    def set_continuing_tracker(self, value):
         self.continuing_tracker = value
 
     def get_continuing_tracker(self):
