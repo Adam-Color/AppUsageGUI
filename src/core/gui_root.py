@@ -33,7 +33,7 @@ class GUIRoot(tk.Frame):
         self.parent.protocol("WM_DELETE_WINDOW", self.on_close)
 
     def init_screens(self):
-        # Pass the logic_controller when initializing screens
+        """Pass the logic_controller when initializing screens"""
         for F in (MainWindow, SessionsWindow, SelectAppWindow, TrackerWindow, SaveWindow, CreateSessionWindow, SessionTotalWindow, TrackerSettingsWindow):
             page_name = F.__name__
             frame = F(parent=self.container, controller=self, logic_controller=self.logic)
