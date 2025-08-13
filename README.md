@@ -27,13 +27,3 @@ To install, follow the instructions for your platform found here:
 * Optimize everything
 * Add support for tracking more than one executable per session
 * Add a better way to filter out non-GUI apps on macOS
-
-#### Version 2 ('v2-change-to-pyqt6' branch):
-
-> [!WARNING]
-> In **macOS**, PyQt6 conflicts with py-objc, leading to a broken venv.
-> As a result, v2 is not currently being worked on until this issue is fixed.
-
-* Merge and resolve changes from Develop into v2
-* Move to a single QT UI instead of multiple 'screens'
-* Add ways to analyze app usage data in the app
