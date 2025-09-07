@@ -10,7 +10,7 @@ from tkinter.ttk import *
 from traceback import format_exc
 import platform
 
-from core.utils.tk_utils import center, center_relative_to_parent, messagebox
+from core.utils.tk_utils import center, messagebox
 from core.gui_root import GUIRoot
 from core.utils.file_utils import sessions_exist, user_dir_exists, config_file, read_file, write_file
 from _path import resource_path
@@ -90,7 +90,7 @@ def splash_screen(root):
     splash_window.geometry("300x340")
     splash_window.title("AppUsageGUI - Loading...")
     splash_window.overrideredirect(True)
-    center_relative_to_parent(splash_window, root)
+    center(splash_window)
     splash_window.configure(bg="#2E2E2E")
 
     # Setup layout

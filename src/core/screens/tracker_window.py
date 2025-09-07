@@ -63,21 +63,12 @@ class TrackerWindow(tk.Frame):
             self.stop_event.wait(timeout=0.1)
 
         # Handle exit - check if we have recorded time
-        if self.logic.time_tracker.get_elapsed_time() > 0:
-            # Check if we're continuing a session and the app is not found
-            if (self.logic.file_handler.get_continuing_session() and 
-                not self.logic.time_tracker.is_running() and 
-                self.app not in self.logic.app_tracker.get_app_names()):
-                # App not found during session continuation - show error message
-                messagebox.showerror("App Not Found", 
-                    f"The application '{self.app}' is not running and cannot be found.\n"
-                    f"This session cannot be continued because the target application is not available.")
-                self.controller.reset_frames()
-                self.controller.show_frame("MainWindow")
-            else:
-                # Normal case - go to save window
-                self.controller.show_frame("SaveWindow")
+        if round(self.logic.time_tracker.get_elapsed_time()) > 0:
+            self.controller.show_frame("SaveWindow")
         else:
+            messagebox.showerror("App Not Found", 
+                    f"The tracked application is not running and cannot be found.\n"
+                    f"This session cannot be continued because the target application is not available.")
             self.controller.reset_frames()
             self.controller.show_frame("MainWindow")
 
