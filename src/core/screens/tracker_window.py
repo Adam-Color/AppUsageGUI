@@ -1,7 +1,7 @@
 import tkinter as tk
 import threading
 import queue
-from tkinter import messagebox
+from core.utils.tk_utils import messagebox
 
 from core.utils.time_utils import format_time
 
@@ -17,13 +17,11 @@ class TrackerWindow(tk.Frame):
         self.track_time_disp = "Looking for app..."
         self.rec_time = 0
         self.stop_event = threading.Event()
-        self.stop_button_pressed = False
+        self.update_thread = None
 
         self._setup_widgets()
 
         self.update_queue = queue.Queue()
-        self.update_thread = threading.Thread(target=self._update_time_label, name="update_time_label", daemon=True)
-
         self._periodic_update()
 
     def _setup_widgets(self):
@@ -46,12 +44,10 @@ class TrackerWindow(tk.Frame):
     def _update_time_label(self):
         while not self.stop_event.is_set():
             self.app = self.logic.app_tracker.get_selected_app()
-
             app_names = self.logic.app_tracker.get_app_names()
 
             if self._should_start_tracking():
                 self._start_tracking()
-
             elif self.logic.file_handler.get_continuing_tracker():
                 self.logic.mouse_tracker.start()
 
@@ -66,20 +62,30 @@ class TrackerWindow(tk.Frame):
 
             self.stop_event.wait(timeout=0.1)
 
-        if not self.stop_event.is_set():
-            if self.logic.time_tracker.get_elapsed_time() < 1:
-                tk.messagebox.showinfo("Tracking Not Started",
-                                       "The tracked application is not running or has been closed.\nPlease remember to start the application before attempting to track it.")
+        # Handle exit - check if we have recorded time
+        if self.logic.time_tracker.get_elapsed_time() > 0:
+            # Check if we're continuing a session and the app is not found
+            if (self.logic.file_handler.get_continuing_session() and 
+                not self.logic.time_tracker.is_running() and 
+                self.app not in self.logic.app_tracker.get_app_names()):
+                # App not found during session continuation - show error message
+                messagebox.showerror("App Not Found", 
+                    f"The application '{self.app}' is not running and cannot be found.\n"
+                    f"This session cannot be continued because the target application is not available.")
                 self.controller.reset_frames()
                 self.controller.show_frame("MainWindow")
             else:
+                # Normal case - go to save window
                 self.controller.show_frame("SaveWindow")
+        else:
+            self.controller.reset_frames()
+            self.controller.show_frame("MainWindow")
 
     def _should_start_tracking(self):
         return self.app and not self.logic.time_tracker.is_running()
 
     def _should_stop_tracking(self, app_names):
-        return self.stop_button_pressed or (
+        return (
             self.logic.time_tracker.is_running() and
             self.app not in app_names and
             not self.logic.file_handler.get_continuing_tracker()
@@ -133,7 +139,7 @@ class TrackerWindow(tk.Frame):
     def _stop(self):
         confirm = messagebox.askyesno("Confirm Stop Tracking", "Are you sure you want to stop tracking?\nProgress will be saved.")
         if confirm:
-            self.stop_button_pressed = True
+            self.stop_event.set()
 
     def _periodic_update(self):
         try:
@@ -148,6 +154,8 @@ class TrackerWindow(tk.Frame):
         self.after(250, self._periodic_update)
 
     def start_update_thread(self):
+        self.stop_event.clear()
+        self.update_thread = threading.Thread(target=self._update_time_label, name="update_time_label", daemon=True)
         self.update_thread.start()
 
     def stop_threads(self):

@@ -22,7 +22,7 @@ import os
 from traceback import format_exc
 
 from core.screens.splash_screen import splash_screen
-from core.utils.tk_utils import is_dark_mode
+from core.utils.tk_utils import is_dark_mode, set_main_window, messagebox
 from _path import resource_path
 
 from _version import __version__
@@ -47,12 +47,15 @@ def main():
         root.iconbitmap(icon_path)
         root.title(f"AppUsageGUI - v{__version__}")
 
+        # Set the main window reference for centering dialogs
+        set_main_window(root)
+
         splash_screen(root)
         root.mainloop()
     except Exception as e:
         error_message = f"An unexpected error occurred:\n{str(e)}\n\n{format_exc()}"
          
-        tk.messagebox.showerror("Error", error_message)
+        messagebox.showerror("Error", error_message)
 
 if __name__ == "__main__":
     main()
