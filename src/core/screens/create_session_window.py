@@ -2,9 +2,6 @@ import tkinter as tk
 from core.utils.tk_utils import messagebox
 from re import search as re
 
-from core.utils.time_utils import format_time
-from core.utils.file_utils import config_file, read_file
-
 from _version import __version__
 
 def validate_name(value):
@@ -28,13 +25,6 @@ class CreateSessionWindow(tk.Frame):
         # Title label
         title_label = tk.Label(self, text="Create New Session", font=("Arial", 14, "bold"))
         title_label.pack(side="top", fill="x", pady=10)
-
-        # No Project checkbox
-        self.no_project_var = tk.BooleanVar()
-        self.no_project_checkbox = tk.Checkbutton(self, text="No Project (standalone session)", 
-                                                 variable=self.no_project_var,
-                                                 command=self.on_no_project_toggle)
-        self.no_project_checkbox.pack(side="top", fill="x", pady=5, padx=20)
 
         # Project selection frame
         project_frame = tk.Frame(self)
@@ -94,53 +84,31 @@ class CreateSessionWindow(tk.Frame):
     def load_projects(self):
         """Load available projects into the dropdown"""
         projects = self.logic.project_handler.get_projects()
-        
+
+        # Insert "No Project" as the first option
+        projects = ["No Project"] + projects
+
         # Clear existing menu
         menu = self.project_dropdown['menu']
         menu.delete(0, 'end')
-        
         
         # Add projects to menu
         for project in projects:
             menu.add_command(label=project, command=lambda p=project: self.project_var.set(p))
         
-        # Set default selection
-        if projects:
-            self.project_var.set(projects[0])
+        # Default selection
+        self.project_var.set("No Project")
 
     def check_pre_selected_project(self):
         """Check if there's a pre-selected project from the controller and set it"""
         selected_project = self.controller.get_selected_project()
         if selected_project:
-            # Set the project in the dropdown
             self.project_var.set(selected_project)
-            # Disable the "No Project" checkbox since we have a specific project
-            self.no_project_var.set(False)
-            self.on_no_project_toggle()  # This will enable the project dropdown
         else:
-            # No pre-selected project - set "No Project" checkbox as checked by default
-            self.no_project_var.set(True)
-            self.on_no_project_toggle()  # This will disable the project dropdown
-
-    def on_no_project_toggle(self):
-        """Handle No Project checkbox toggle"""
-        if self.no_project_var.get():
-            # Disable project selection
-            self.project_dropdown.config(state="disabled")
-            self.project_label.config(fg="gray")
-            self.create_project_button.config(state="disabled")
-            self.project_var.set("")
-        else:
-            # Enable project selection
-            self.project_dropdown.config(state="normal")
-            self.project_label.config(fg="black")
-            self.create_project_button.config(state="normal")
-            # Reload projects and set default
-            self.load_projects()
+            self.project_var.set("No Project")
 
     def create_new_project(self):
         """Open a dialog to create a new project and associate it with the session"""
-        # Create a simple dialog for project creation
         dialog = tk.Toplevel(self)
         dialog.title("Create New Project")
         dialog.geometry("400x250")
@@ -227,17 +195,10 @@ class CreateSessionWindow(tk.Frame):
             messagebox.showerror("Error", "Please enter a session name.")
             return
         
-        # Check if No Project is selected or if project is required
-        if not self.no_project_var.get() and not project_name:
-            messagebox.showerror("Error", "Please select a project or check 'No Project'.")
-            return
-        
-        # Set the session name and project for this session
-        if self.no_project_var.get():
-            # No project - set to None for standalone session
+        # Handle project choice
+        if project_name == "No Project":
             self.logic.file_handler.set_current_project(None)
         else:
-            # Use selected project
             self.logic.file_handler.set_current_project(project_name)
         
         self.logic.file_handler.set_file_name(session_name)
@@ -252,4 +213,3 @@ class CreateSessionWindow(tk.Frame):
     def cancel(self):
         """Cancel session creation"""
         self.controller.show_frame("MainWindow")
-

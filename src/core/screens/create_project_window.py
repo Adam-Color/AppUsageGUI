@@ -83,6 +83,7 @@ class CreateProjectWindow(tk.Frame):
         if success:
             messagebox.showinfo("Success", message)
             # Return to projects window
+            self.controller.reset_frames()
             self.controller.show_frame("ProjectsWindow")
         else:
             messagebox.showerror("Error", message)
