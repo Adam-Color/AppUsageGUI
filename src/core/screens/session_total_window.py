@@ -103,15 +103,17 @@ class SessionTotalWindow(tk.Frame):
                     'total_time': self.logic.file_handler.get_data()['time_spent']
                     })
                 if self.logic.file_handler.get_data()['session_version'] != "1.0":
+                    time_captures = self.logic.file_handler.get_data()['time_captures']
                     data.update({
-                        'first_run': self.logic.file_handler.get_data()['time_captures']['starts'][0],
-                        'last_run': self.logic.file_handler.get_data()['time_captures']['stops'][-1],
+                        'first_run': time_captures['starts'][0] if time_captures['starts'] else "N/A",
+                        'last_run': time_captures['stops'][-1] if time_captures['stops'] else "N/A",
                         'last_run_length': calc_runtime(self.logic.file_handler.get_data(), -1),
-                        'num_starts': str(len(self.logic.file_handler.get_data()['time_captures']['starts']))
+                        'num_starts': str(len(time_captures['starts']))
                         })
                 else:
+                    time_captures = self.logic.file_handler.get_data()['time_captures']
                     data.update({
-                        'last_run': self.logic.file_handler.get_data()['time_captures']['stops'][-1],
+                        'last_run': time_captures['stops'][-1] if time_captures['stops'] else "N/A",
                         'last_run_length': calc_runtime(self.logic.file_handler.get_data(), -1)
                         })
             except (TypeError, KeyError):

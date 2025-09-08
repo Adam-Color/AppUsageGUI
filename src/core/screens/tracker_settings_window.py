@@ -1,6 +1,7 @@
 import tkinter as tk
 import os
 import queue
+from core.utils.tk_utils import messagebox
 
 from core.utils.file_utils import read_file, write_file, config_file
 
@@ -129,7 +130,7 @@ class TrackerSettingsWindow(tk.Frame):
         # Show main window
         self.controller.reset_frames()
         if self.restart_needed:
-            tk.messagebox.showinfo("Restart Required", "Changes will take effect after a restart.")
+            messagebox.showinfo("Restart Required", "Changes will take effect after a restart.")
         self.controller.show_frame("MainWindow")
 
     def discard_changes(self):

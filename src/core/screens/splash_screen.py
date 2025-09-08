@@ -6,11 +6,11 @@ import socket
 import tkinter as tk
 import webbrowser
 from PIL import ImageTk, Image
-from tkinter.ttk import *
+from tkinter.ttk import *  # noqa: F403
 from traceback import format_exc
 import platform
 
-from core.utils.tk_utils import center
+from core.utils.tk_utils import center, messagebox
 from core.gui_root import GUIRoot
 from core.utils.file_utils import sessions_exist, user_dir_exists, config_file, read_file, write_file
 from _path import resource_path
@@ -69,8 +69,8 @@ def new_updates():
         print(f"Error checking for updates: Network error - {str(e)}")
     except (KeyError, ValueError, IndexError) as e:
         print(f"Error checking for updates: Parsing error - {str(e)}")
-    except Exception as e:
-        tk.messagebox.showerror("Error", f"An unexpected error occurred while checking for updates: {str(format_exc())}")
+    except Exception:
+        messagebox.showerror("Error", f"An unexpected error occurred while checking for updates: {str(format_exc())}")
     return False
 
 def is_running():
@@ -110,7 +110,7 @@ def splash_screen(root):
 
     # Progress bar
     # Apply a modern-looking style to the progress bar
-    style = Style()
+    style = Style()  # noqa: F405
     style.theme_use('alt')
 
     style.configure("custom.Horizontal.TProgressbar",
@@ -121,7 +121,7 @@ def splash_screen(root):
                 darkcolor="#61AFEF",
                 thickness=10)
     
-    progress = Progressbar(frame, orient="horizontal", length=200, mode="determinate", 
+    progress = Progressbar(frame, orient="horizontal", length=200, mode="determinate",  # noqa: F405
                            maximum=100, style="custom.Horizontal.TProgressbar")
     progress.grid(row=1, column=0, pady=(10, 0))
 
@@ -146,13 +146,13 @@ def splash_screen(root):
 
             update_progress(30)
             if is_running():
-                tk.messagebox.showerror("Error", "The application is already running.\n\nExiting.")
+                messagebox.showerror("Error", "The application is already running.\n\nExiting.")
                 splash_window.destroy()
                 sys.exit(0)
 
             update_progress(50)
             if new_updates():
-                ask_update = tk.messagebox.askquestion(
+                ask_update = messagebox.askquestion(
                     'AppUsageGUI Updates',
                     "A new update is available. Would you like to download it from the GitHub page?"
                 )
@@ -173,11 +173,11 @@ def splash_screen(root):
                             break
                     if suffix is None:
                         webbrowser.open_new_tab("https://github.com/adam-color/AppUsageGUI/releases/latest")
-                        tk.messagebox.showinfo("Update", "Your platform is currently unsupported.")
+                        messagebox.showinfo("Update", "Your platform is currently unsupported.")
                     elif download_url is not None:
                         webbrowser.open_new_tab(download_url)
                         webbrowser.open_new_tab("https://github.com/adam-color/AppUsageGUI/releases/latest")
-                        tk.messagebox.showinfo("Update", "Please install the latest version after it downloads,\nautomatic updates are not yet available.\n\nPlease close AppUsageGUI after you download the new installer.")
+                        messagebox.showinfo("Update", "Please install the latest version after it downloads,\nautomatic updates are not yet available.\n\nPlease close AppUsageGUI after you download the new installer.")
 
             update_progress(70)
             win = GUIRoot(root)
@@ -192,7 +192,7 @@ def splash_screen(root):
             splash_window.destroy()
             error = str(format_exc())
             print(error)
-            tk.messagebox.showerror("Startup Error", error)
+            messagebox.showerror("Startup Error", error)
             sys.exit(1)
 
     splash_window.after(100, load_app)
