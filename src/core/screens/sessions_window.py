@@ -299,14 +299,14 @@ class SessionsWindow(tk.Frame):
         main_frame.pack(fill="both", expand=True, padx=20, pady=20)
         
         # Title
-        title_label = tk.Label(main_frame, text=f"Move session '{session_name}' to:", font=("Arial", 12, "bold"))
+        title_label = tk.Label(main_frame, text=f"Move session '{session_name}' to:")
         title_label.pack(pady=(0, 10))
         
         # Current project info
         if current_project:
-            current_info = tk.Label(main_frame, text=f"Current project: {current_project}", fg="blue")
+            current_info = tk.Label(main_frame, text=f"Current project: {current_project}")
         else:
-            current_info = tk.Label(main_frame, text="Current project: No Project", fg="blue")
+            current_info = tk.Label(main_frame, text="Current project: No Project")
         current_info.pack(pady=(0, 10))
         
         # Project selection frame

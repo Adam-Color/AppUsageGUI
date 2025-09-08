@@ -2,7 +2,6 @@ import tkinter as tk
 import time
 from core.utils.tk_utils import messagebox
 
-from core.utils.time_utils import format_time
 from core.utils.file_utils import read_file, config_file
 from _version import __version__
 

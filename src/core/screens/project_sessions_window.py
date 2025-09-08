@@ -17,7 +17,7 @@ class ProjectSessionsWindow(tk.Frame):
         self.title_label.pack(side="top", fill="x", pady=5)
 
         # Current project display
-        self.current_project_label = tk.Label(self, text="", font=("Arial", 10), fg="blue")
+        self.current_project_label = tk.Label(self, text="", font=("Arial", 10))
         self.current_project_label.pack(side="top", fill="x", pady=5)
 
         # Create the frame for the listbox and scrollbar
@@ -110,7 +110,7 @@ class ProjectSessionsWindow(tk.Frame):
                         from datetime import datetime
                         dt = datetime.fromisoformat(created_date)
                         formatted_date = dt.strftime("%Y-%m-%d %H:%M")
-                    except:
+                    except Exception:
                         formatted_date = created_date
                 else:
                     formatted_date = "Unknown date"

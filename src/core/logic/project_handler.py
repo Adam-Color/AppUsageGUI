@@ -2,16 +2,10 @@
 and session organization within projects."""
 
 import os
-import pickle
 import json
 from datetime import datetime
 
-from core.utils.file_utils import (
-    get_projects_directory,
-    write_file,
-    read_file,
-    compute_hash
-)
+from core.utils.file_utils import get_projects_directory
 
 
 class ProjectHandler:

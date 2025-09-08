@@ -137,10 +137,10 @@ def _create_centered_dialog(title, message, dialog_type, buttons):
         icon_color = "orange"
     elif dialog_type == "info":
         icon_text = "ℹ"
-        icon_color = "blue"
+        icon_color = "cyan"
     else:  # question, yesno, okcancel
         icon_text = "?"
-        icon_color = "blue"
+        icon_color = "cyan"
     
     icon_label = tk.Label(icon_frame, text=icon_text, font=("Arial", 24), fg=icon_color)
     icon_label.pack()

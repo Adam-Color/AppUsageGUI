@@ -10,8 +10,8 @@ class MainWindow(tk.Frame):
         self.logic = logic_controller
 
         # Check if we have projects or sessions
-        projects = get_projects()
-        has_sessions = sessions_exist()
+        _ = get_projects()
+        _ = sessions_exist()
         
 
         label_text = "Track app usage in a project or standalone session."
