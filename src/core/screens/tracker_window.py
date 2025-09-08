@@ -67,8 +67,8 @@ class TrackerWindow(tk.Frame):
             self.controller.show_frame("SaveWindow")
         else:
             messagebox.showerror("App Not Found", 
-                    f"The tracked application is not running and cannot be found.\n"
-                    f"This session cannot be continued because the target application is not available.")
+                    "The tracked application is not running and cannot be found.\n"
+                    "This session cannot be continued because the target application is not available.")
             self.controller.reset_frames()
             self.controller.show_frame("MainWindow")
 

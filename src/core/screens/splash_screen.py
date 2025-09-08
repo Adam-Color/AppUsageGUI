@@ -6,7 +6,7 @@ import socket
 import tkinter as tk
 import webbrowser
 from PIL import ImageTk, Image
-from tkinter.ttk import *
+from tkinter.ttk import *  # noqa: F403
 from traceback import format_exc
 import platform
 
@@ -69,7 +69,7 @@ def new_updates():
         print(f"Error checking for updates: Network error - {str(e)}")
     except (KeyError, ValueError, IndexError) as e:
         print(f"Error checking for updates: Parsing error - {str(e)}")
-    except Exception as e:
+    except Exception:
         messagebox.showerror("Error", f"An unexpected error occurred while checking for updates: {str(format_exc())}")
     return False
 
@@ -110,7 +110,7 @@ def splash_screen(root):
 
     # Progress bar
     # Apply a modern-looking style to the progress bar
-    style = Style()
+    style = Style()  # noqa: F405
     style.theme_use('alt')
 
     style.configure("custom.Horizontal.TProgressbar",
@@ -121,7 +121,7 @@ def splash_screen(root):
                 darkcolor="#61AFEF",
                 thickness=10)
     
-    progress = Progressbar(frame, orient="horizontal", length=200, mode="determinate", 
+    progress = Progressbar(frame, orient="horizontal", length=200, mode="determinate",  # noqa: F405
                            maximum=100, style="custom.Horizontal.TProgressbar")
     progress.grid(row=1, column=0, pady=(10, 0))
 

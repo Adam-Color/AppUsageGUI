@@ -99,7 +99,7 @@ class GUIRoot(tk.Frame):
             # Restore selected project after reset
             self.selected_project = preserved_project
 
-        except Exception as e:
+        except Exception:
             messagebox.showerror("Error", f"Crash in reset_frames(): {str(format_exc())}")
 
     def on_close(self):

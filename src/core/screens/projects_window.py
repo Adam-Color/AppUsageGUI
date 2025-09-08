@@ -1,7 +1,6 @@
 import tkinter as tk
 from core.utils.tk_utils import messagebox
 
-from core.utils.file_utils import get_projects
 from core.utils.time_utils import format_time
 
 

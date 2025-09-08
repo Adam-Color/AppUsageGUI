@@ -2,8 +2,6 @@ import tkinter as tk
 from core.utils.tk_utils import messagebox
 from re import search as re
 
-from _version import __version__
-
 def validate_name(value):
     """Check if name is valid for saving as a file"""
     if value == "":  # Allow empty string (for backspace)
