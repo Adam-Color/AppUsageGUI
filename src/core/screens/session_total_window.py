@@ -1,6 +1,7 @@
 import tkinter as tk
 import queue
 import threading
+import traceback
 
 from core.utils.time_utils import format_time, unix_to_datetime
 from core.utils.file_utils import calc_runtime
@@ -39,7 +40,7 @@ class SessionTotalWindow(tk.Frame):
         self.app_label = tk.Label(self, text="Tracked App Name: " + self.app_readout)
         self.app_label.pack(pady=5)
 
-        self.total_time_label = tk.Label(self, text="Total Runtime: " + self.time_readout)
+        self.total_time_label = tk.Label(self, text="Total Session Runtime: " + self.time_readout)
         self.total_time_label.pack(pady=5)
 
         self.ptime_label = tk.Label(self, text="Total Project Runtime: " + self.ptime_readout)
@@ -72,16 +73,24 @@ class SessionTotalWindow(tk.Frame):
             self.name_readout = "Session Name: " + item['session_name']
             self.name_label.config(text=self.name_readout)
 
-            self.project_readout = "Project Name: " + item['project_name']
-            self.project_label.config(text=self.project_readout)
+            if item['project_name'] != "Error":
+                self.project_readout = "Project Name: " + item['project_name']
+                self.project_label.config(text=self.project_readout)
+            else:
+                self.project_readout = "N/A"
+                self.project_label.config(text="Project Name: N/A")
 
             self.app_readout = "Tracked App Name: " + item['tracked_app']
             self.app_label.config(text=self.app_readout)
 
-            self.ptime_readout = f"Total Project Runtime: {format_time(int(item['project_time']))}"
-            self.ptime_label.config(text=self.ptime_readout)
+            if item['project_name'] != "Error":
+                self.ptime_readout = f"Total Project Runtime: {format_time(int(item['project_time']))}"
+                self.ptime_label.config(text=self.ptime_readout)
+            else:
+                self.ptime_readout = "N/A"
+                self.ptime_label.config(text="Total Project Runtime: N/A")
 
-            self.time_readout = f"Total Runtime: {format_time(int(item['total_time']))}"
+            self.time_readout = f"Total Session Runtime: {format_time(int(item['total_time']))}"
             self.total_time_label.config(text=self.time_readout)
 
             self.start_readout = "Session Started: " + (unix_to_datetime(item['first_run']).strftime("%Y-%m-%d %H:%M:%S") if item['first_run'] != "N/A" else "N/A")
@@ -117,9 +126,11 @@ class SessionTotalWindow(tk.Frame):
                     'session_name': self.logic.file_handler.get_file_name(),
                     'tracked_app': self.logic.file_handler.get_data()['app_name'],
                     'total_time': self.logic.file_handler.get_data()['time_spent'],
-                    'project_name': self.logic.file_handler.get_data()['project_name'],
-                    'project_time': self.logic.project_handler.get_project_total_time(self.logic.file_handler.get_data()['project_name'])
                     })
+                if self.logic.file_handler.get_data()['project_name']:
+                    data.update({
+                        'project_name': self.logic.file_handler.get_data()['project_name'],
+                        'project_time': self.logic.project_handler.get_project_total_time(self.logic.file_handler.get_data()['project_name'])})
                 if self.logic.file_handler.get_data()['session_version'] != "1.0":
                     time_captures = self.logic.file_handler.get_data()['time_captures']
                     data.update({
@@ -135,7 +146,8 @@ class SessionTotalWindow(tk.Frame):
                         'last_run_length': calc_runtime(self.logic.file_handler.get_data(), -1)
                         })
             except (TypeError, KeyError):
-                pass
+                print("Error loading session data:\n")
+                print(traceback.format_exc())
             
             # Put the data into the queue to update the UI
             self.update_queue.put(data)
