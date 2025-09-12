@@ -1,6 +1,6 @@
 import tkinter as tk
 
-from core.utils.file_utils import sessions_exist
+from core.utils.file_utils import sessions_exist, get_projects
 
 class MainWindow(tk.Frame):
     def __init__(self, parent, controller, logic_controller):
@@ -9,25 +9,32 @@ class MainWindow(tk.Frame):
         self.logic = logic_controller
         self.logic = logic_controller
 
-        label_text = "To begin app tracking, start a new session:"
+        # Check if we have projects or sessions
+        _ = get_projects()
+        _ = sessions_exist()
+        
 
-        if sessions_exist():
-            label_text = "What would you like to do?"
+        label_text = "Track app usage in a project or standalone session."
 
         label = tk.Label(self, text=label_text)
         label.pack(side="top", fill="x", pady=10)
 
+        # Start new session button
         button1 = tk.Button(self, text="Start new session",
-                            command=lambda: self.controller.show_frame("SelectAppWindow"), width=25)
-        button1 = tk.Button(self, text="Start new session",
-                            command=lambda: self.controller.show_frame("SelectAppWindow"), width=25)
+                            command=lambda: self.controller.show_frame("CreateSessionWindow"), width=25)
         button1.pack(pady=3)
 
-        if label_text == "What would you like to do?":
-            button2 = tk.Button(self, text="Continue previous session",
-                                command=lambda: [self.controller.show_frame("SessionsWindow"), self.logic.app_tracker.start_filter_reset(refresh=True)], width=25)
-            button2.pack(pady=3)
+        # Project management button
+        button_projects = tk.Button(self, text="Projects",
+                                   command=lambda: self.controller.show_frame("ProjectsWindow"), width=25)
+        button_projects.pack(pady=3)
 
+        # Sessions button (always show)
+        button2 = tk.Button(self, text="Sessions",
+                            command=lambda: [self.controller.show_frame("SessionsWindow"), self.logic.app_tracker.start_filter_reset(refresh=True)], width=25)
+        button2.pack(pady=3)
+
+        # Configure custom rules button
         button3 = tk.Button(self, text="Configure custom rules",
                             command=lambda: self.controller.show_frame("TrackerSettingsWindow"),
                             width=25)

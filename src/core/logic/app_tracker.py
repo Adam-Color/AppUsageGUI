@@ -172,7 +172,7 @@ class AppTracker:
                 for app in apps:
                     if app.processIdentifier() == process_id:
                         return True
-                if app.processIdentifier() == None:
+                if app.processIdentifier() is None:
                     # Handle the case where the process is not found
                     return True
                 return False

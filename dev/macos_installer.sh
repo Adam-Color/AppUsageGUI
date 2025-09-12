@@ -1,6 +1,6 @@
 #!/bin/bash
 # This script is used to create the installer for the macOS version of the application
-app_version='1.5.1'
+app_version='1.6.0'
 
 mv dist/AppUsageGUI.app dist/AppUsageGUI/
 

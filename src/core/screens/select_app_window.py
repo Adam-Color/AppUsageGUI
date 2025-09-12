@@ -1,5 +1,5 @@
 import tkinter as tk
-from tkinter import messagebox
+from core.utils.tk_utils import messagebox
 from traceback import format_exc
 
 from core.utils.logic_utils import threaded

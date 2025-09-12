@@ -1,6 +1,7 @@
 import tkinter as tk
 import queue
 import threading
+import traceback
 
 from core.utils.time_utils import format_time, unix_to_datetime
 from core.utils.file_utils import calc_runtime
@@ -16,8 +17,10 @@ class SessionTotalWindow(tk.Frame):
         self.stop_event = threading.Event()
 
         self.name_readout = "Error"
+        self.project_readout = "Error"
         self.app_readout = "Error"
         self.time_readout = "Error"
+        self.ptime_readout = "Error" # total project time
         self.start_readout = "Error"
         self.stop_readout = "Error"
         self.last_run_readout = "Error"
@@ -31,11 +34,17 @@ class SessionTotalWindow(tk.Frame):
         self.name_label = tk.Label(self, text="Session Name: " + self.name_readout)
         self.name_label.pack(pady=5)
 
+        self.project_label = tk.Label(self, text="Project Name: " + self.project_readout)
+        self.project_label.pack(pady=5)
+
         self.app_label = tk.Label(self, text="Tracked App Name: " + self.app_readout)
         self.app_label.pack(pady=5)
 
-        self.total_time_label = tk.Label(self, text="Total Runtime: " + self.time_readout)
+        self.total_time_label = tk.Label(self, text="Total Session Runtime: " + self.time_readout)
         self.total_time_label.pack(pady=5)
+
+        self.ptime_label = tk.Label(self, text="Total Project Runtime: " + self.ptime_readout)
+        self.ptime_label.pack(pady=5)
 
         self.start_time_label = tk.Label(self, text="Session Started: " + self.start_readout)
         self.start_time_label.pack(pady=5)
@@ -64,10 +73,24 @@ class SessionTotalWindow(tk.Frame):
             self.name_readout = "Session Name: " + item['session_name']
             self.name_label.config(text=self.name_readout)
 
+            if item['project_name'] != "Error":
+                self.project_readout = "Project Name: " + item['project_name']
+                self.project_label.config(text=self.project_readout)
+            else:
+                self.project_readout = "N/A"
+                self.project_label.config(text="Project Name: N/A")
+
             self.app_readout = "Tracked App Name: " + item['tracked_app']
             self.app_label.config(text=self.app_readout)
 
-            self.time_readout = f"Total Runtime: {format_time(int(item['total_time']))}"
+            if item['project_name'] != "Error":
+                self.ptime_readout = f"Total Project Runtime: {format_time(int(item['project_time']))}"
+                self.ptime_label.config(text=self.ptime_readout)
+            else:
+                self.ptime_readout = "N/A"
+                self.ptime_label.config(text="Total Project Runtime: N/A")
+
+            self.time_readout = f"Total Session Runtime: {format_time(int(item['total_time']))}"
             self.total_time_label.config(text=self.time_readout)
 
             self.start_readout = "Session Started: " + (unix_to_datetime(item['first_run']).strftime("%Y-%m-%d %H:%M:%S") if item['first_run'] != "N/A" else "N/A")
@@ -88,8 +111,10 @@ class SessionTotalWindow(tk.Frame):
         while not self.stop_event.is_set() and (self.time_readout == "Error" or self.time_readout == "N/A"):
             data = {
             'session_name': "Error",
+            'project_name': "Error",
             'tracked_app': "Error",
             'total_time': "Error",
+            'project_time': "Error",
             'first_run': "N/A",
             'last_run': "N/A",
             'last_run_length': "N/A",
@@ -100,22 +125,29 @@ class SessionTotalWindow(tk.Frame):
                 data.update({
                     'session_name': self.logic.file_handler.get_file_name(),
                     'tracked_app': self.logic.file_handler.get_data()['app_name'],
-                    'total_time': self.logic.file_handler.get_data()['time_spent']
+                    'total_time': self.logic.file_handler.get_data()['time_spent'],
                     })
-                if self.logic.file_handler.get_data()['session_version'] != "1.0":
+                if 'project_name' in self.logic.file_handler.get_data() and self.logic.file_handler.get_data()['project_name']:
                     data.update({
-                        'first_run': self.logic.file_handler.get_data()['time_captures']['starts'][0],
-                        'last_run': self.logic.file_handler.get_data()['time_captures']['stops'][-1],
+                        'project_name': self.logic.file_handler.get_data()['project_name'],
+                        'project_time': self.logic.project_handler.get_project_total_time(self.logic.file_handler.get_data()['project_name'])})
+                if 'session_version' in self.logic.file_handler.get_data() and self.logic.file_handler.get_data()['session_version'] != "1.0":
+                    time_captures = self.logic.file_handler.get_data()['time_captures']
+                    data.update({
+                        'first_run': time_captures['starts'][0] if time_captures['starts'] else "N/A",
+                        'last_run': time_captures['stops'][-1] if time_captures['stops'] else "N/A",
                         'last_run_length': calc_runtime(self.logic.file_handler.get_data(), -1),
-                        'num_starts': str(len(self.logic.file_handler.get_data()['time_captures']['starts']))
+                        'num_starts': str(len(time_captures['starts']))
                         })
                 else:
+                    time_captures = self.logic.file_handler.get_data()['time_captures']
                     data.update({
-                        'last_run': self.logic.file_handler.get_data()['time_captures']['stops'][-1],
+                        'last_run': time_captures['stops'][-1] if time_captures['stops'] else "N/A",
                         'last_run_length': calc_runtime(self.logic.file_handler.get_data(), -1)
                         })
             except (TypeError, KeyError):
-                pass
+                print("Error loading session data:\n")
+                print(traceback.format_exc())
             
             # Put the data into the queue to update the UI
             self.update_queue.put(data)

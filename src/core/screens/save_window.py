@@ -1,8 +1,9 @@
 import tkinter as tk
 import time
+from core.utils.tk_utils import messagebox
 
-from core.utils.time_utils import format_time
 from core.utils.file_utils import read_file, config_file
+from _version import __version__
 
 class SaveWindow(tk.Frame):
     def __init__(self, parent, controller, logic_controller):
@@ -25,7 +26,13 @@ class SaveWindow(tk.Frame):
 
     def save(self):
         time.sleep(0.3)
+        
+        # Stop the time tracker before saving to ensure we have proper stop times
+        if self.logic.time_tracker.is_running():
+            self.logic.time_tracker.stop()
+        
         if self.logic.file_handler.get_continuing_session():
+            # Continuing an existing session - update it
             session_time = self.logic.time_tracker.get_total_time()
             session_app_name = self.logic.app_tracker.get_selected_app()
             captures = self.logic.time_tracker.get_time_captures()
@@ -45,7 +52,6 @@ class SaveWindow(tk.Frame):
                     'config': self.config,
                     'time_captures': captures # {'starts': [], 'stops': [], 'pauses': [{start: 0, how_long: 0}]}
                     }
-            print(f"Session data: {data}")
 
             self.logic.file_handler.save_session_data(data)
 
@@ -54,11 +60,37 @@ class SaveWindow(tk.Frame):
             self.controller.frames['SessionTotalWindow'].update_total_time()
             self.controller.show_frame("SessionTotalWindow")
         else:
-            self.controller.show_frame("CreateSessionWindow")
+            # New session - save it for the first time
+            session_time = self.logic.time_tracker.get_time(saved=True)
+            session_app_name = self.logic.app_tracker.get_selected_app()
+            captures = self.logic.time_tracker.get_time_captures()
+            try:
+                self.config = read_file(config_file())
+            except FileNotFoundError:
+                self.config = {}
+
+            data = {
+                    'app_name': session_app_name,
+                    'time_spent': session_time,
+                    'session_version': __version__.split('.')[0] + '.' + __version__.split('.')[1],
+                    'config': self.config,
+                    'time_captures': captures # {'starts': [], 'stops': [], 'pauses': [{start: 0, how_long: 0}]}
+                    }
+            print(f"Session data: {data}")
+
+            self.logic.file_handler.save_session_data(data)
+            
+            # Load the saved session data and show session total window
+            session_name = self.logic.file_handler.get_file_name()
+            project_name = self.logic.file_handler.get_current_project()
+            self.logic.file_handler.load_session_data(session_name, project_name)
+            self.controller.frames['SessionTotalWindow'].total_session_time_thread.start()
+            self.controller.frames['SessionTotalWindow'].update_total_time()
+            self.controller.show_frame("SessionTotalWindow")
     
     def dont_save(self):
         """confirm data deletion"""
-        ans = tk.messagebox.askyesno("AppUsageGUI", "Are you sure you don't want to save?")
+        ans = messagebox.askyesno("AppUsageGUI", "Are you sure you don't want to save?")
         if ans:
             time.sleep(0.3)
             self.logic.time_tracker.reset()
