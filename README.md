@@ -7,6 +7,22 @@
 
 This program tracks the runtime of specified applications, organizing sessions into projects for better management. Users can create multiple projects, each containing multiple tracking sessions, providing comprehensive time tracking and organization capabilities.
 
+## Installation
+
+To install, follow the instructions for your platform found here:
+
+[Windows](docs/install_windows.md) | [macOS](docs/install_macos.md)
+
+## Contributing
+
+### Contributions are welcome and needed! Here is a TODO list:
+
+* Add integrations with professional applications
+* Optimize everything
+* Add support for tracking more than one executable per session
+* Add a better way to filter out non-GUI apps on macOS
+* Full linux support with packages
+
 ## How It Works
 
 AppUsageGUI is a cross-platform desktop application built with Python and Tkinter that monitors application usage time with project-based organization. The application works by:
@@ -155,22 +171,6 @@ The application now uses a streamlined workflow where users select their project
 ### Continuing Existing Sessions
 - **Main Menu** → "Continue previous session" → Navigate through projects to find and resume sessions
 - Sessions can be continued across application restarts with full state preservation
-
-## Installation
-
-To install, follow the instructions for your platform found here:
-
-[Windows](docs/install_windows.md) | [macOS](docs/install_macos.md)
-
-## Contributing
-
-### Contributions are welcome and needed! Here is a TODO list:
-
-* Add integrations with professional applications
-* Optimize everything
-* Add support for tracking more than one executable per session
-* Add a better way to filter out non-GUI apps on macOS
-* Full linux support with packages
 
 ## Code Structure
 
