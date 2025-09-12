@@ -127,11 +127,11 @@ class SessionTotalWindow(tk.Frame):
                     'tracked_app': self.logic.file_handler.get_data()['app_name'],
                     'total_time': self.logic.file_handler.get_data()['time_spent'],
                     })
-                if self.logic.file_handler.get_data()['project_name']:
+                if 'project_name' in self.logic.file_handler.get_data() and self.logic.file_handler.get_data()['project_name']:
                     data.update({
                         'project_name': self.logic.file_handler.get_data()['project_name'],
                         'project_time': self.logic.project_handler.get_project_total_time(self.logic.file_handler.get_data()['project_name'])})
-                if self.logic.file_handler.get_data()['session_version'] != "1.0":
+                if 'session_version' in self.logic.file_handler.get_data() and self.logic.file_handler.get_data()['session_version'] != "1.0":
                     time_captures = self.logic.file_handler.get_data()['time_captures']
                     data.update({
                         'first_run': time_captures['starts'][0] if time_captures['starts'] else "N/A",
