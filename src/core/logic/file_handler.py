@@ -37,6 +37,8 @@ class FileHandler:
             data['project_name'] = self.current_project
         data['created_date'] = datetime.now().isoformat()
         data['last_modified'] = datetime.now().isoformat()
+
+        print(f"Saving session data: {data}")
         
         self.data = pickle.dumps(data)
         
