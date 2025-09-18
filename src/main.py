@@ -19,6 +19,7 @@
 
 import tkinter as tk
 import os
+import sys
 from traceback import format_exc
 
 from core.screens.splash_screen import splash_screen
@@ -41,7 +42,13 @@ def main():
         if is_dark_mode():
             apply_dark_theme(root)
 
-        icon_name = "core\\resources\\icon.ico" if os.name == 'nt' else "core/resources/icon.icns"
+        if os.name == 'nt':
+            icon_name = "core\\resources\\icon.ico"
+        elif sys.platform == 'darwin':  # macOS
+            icon_name = "core/resources/icon.icns"
+        else:  # Linux or other Unix-like systems
+            icon_name = "core/resources/icon.png"
+
         icon_path = resource_path(icon_name)
 
         root.iconbitmap(icon_path)
@@ -54,6 +61,7 @@ def main():
         root.mainloop()
     except Exception as e:
         error_message = f"An unexpected error occurred:\n{str(e)}\n\n{format_exc()}"
+        print(error_message)
          
         messagebox.showerror("Error", error_message)
 
