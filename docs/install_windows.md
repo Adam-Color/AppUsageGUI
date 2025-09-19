@@ -1,6 +1,6 @@
 ## Windows Installation Steps:
 * download the windows setup .exe [here](https://github.com/Adam-Color/AppUsageGUI/releases/latest) (under the "assets" section)
-* ensure that the old version of AppUsageGUI is closed
+* ensure that the old version of AppUsageGUI is closed if you are updating
 * double-click the setup .exe to open it
 * click "More info"
 * click "Run anyway"
