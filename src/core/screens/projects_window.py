@@ -59,6 +59,11 @@ class ProjectsWindow(tk.Frame):
                                              self.controller.show_frame("MainWindow")))
         back_button.pack(pady=10, side='bottom')
 
+        # keybinds
+        self.project_listbox.bind("<Delete>", lambda e: self.delete_project())
+        self.project_listbox.bind("<Return>", lambda e: self.view_sessions())
+
+
     def load_projects(self):
         """Load projects into the listbox"""
         self.project_listbox.delete(0, tk.END)
@@ -68,7 +73,9 @@ class ProjectsWindow(tk.Frame):
         
         if not projects:
             self.project_listbox.insert(tk.END, "No projects found. Create a new project to get started.")
+            self.project_listbox.config(state=tk.DISABLED)
         else:
+            self.project_listbox.config(state=tk.NORMAL)
             for project in projects:
                 # Get project info
                 project_info = self.logic.project_handler.get_project_info(project)
@@ -89,9 +96,14 @@ class ProjectsWindow(tk.Frame):
         if selected_index:
             selected_text = self.project_listbox.get(selected_index)
             # Extract project name (remove session count and time info)
-            project_name = selected_text.split(' (')[0]
+            project_name = self.extract_project_name(selected_text)
             return project_name
         return None
+    
+    def extract_project_name(self, listbox_text: str) -> str:
+        """Extract project name from listbox entry text"""
+        return listbox_text.split(' (')[0]
+
 
     def create_project(self):
         """Navigate to create project window"""
@@ -119,7 +131,7 @@ class ProjectsWindow(tk.Frame):
         selected_text = self.project_listbox.get(selected_index)
         
         # Extract project name (remove session count and time info)
-        project_name = selected_text.split(' (')[0]
+        project_name = self.extract_project_name(selected_text)
         
         # Set the selected project in the controller and navigate to sessions
         self.controller.set_selected_project(project_name)
@@ -132,6 +144,10 @@ class ProjectsWindow(tk.Frame):
             messagebox.showerror("Error", "No project selected")
             return
         
+        if selected_project.startswith("No projects found"):
+            messagebox.showerror("Error", "No projects available")
+            return
+
         # Confirm deletion
         session_count = self.logic.project_handler.get_project_session_count(selected_project)
         confirm_message = f"Are you sure you want to delete project '{selected_project}'?"
