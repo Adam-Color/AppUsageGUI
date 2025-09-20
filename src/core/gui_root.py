@@ -45,6 +45,7 @@ class GUIRoot(tk.Frame):
         self.frames = {}
         self.selected_project = None  # Store the selected project for navigation
         self.init_screens()
+        self.show_frame("MainWindow")
 
         # Bind the close event to ensure cleanup
         self.parent.protocol("WM_DELETE_WINDOW", self.on_close)
@@ -59,7 +60,6 @@ class GUIRoot(tk.Frame):
 
             frame.grid(row=0, column=0, sticky="nsew")
 
-        self.show_frame("MainWindow")
 
     def show_frame(self, page_name):
         frame = self.frames[page_name]
@@ -89,18 +89,25 @@ class GUIRoot(tk.Frame):
 
         # Ensure navigation buttons are updated after any special handling
         self.update_nav_buttons()
+
+        if page_name in ["TrackerWindow", "SessionTotalWindow", "SaveWindow"]:
+            self.disable_nav_buttons()
     
     def go_back(self):
         """Navigate to the previous screen."""
-        if self.history_index > 0:
+        if (self.history_index > 0
+            and self.history[self.history_index] not in ["TrackerWindow", "SessionTotalWindow", "SaveWindow"]):
             self.history_index -= 1
+            self.reset_frames()
             self.show_frame(self.history[self.history_index])
             self.update_nav_buttons()
 
     def go_forward(self):
         """Navigate to the next screen."""
-        if self.history_index < len(self.history) - 1:
+        if (self.history_index < len(self.history) - 1
+            and self.history[self.history_index] not in ["TrackerWindow", "SessionTotalWindow", "SaveWindow"]):
             self.history_index += 1
+            self.reset_frames()
             self.show_frame(self.history[self.history_index])
             self.update_nav_buttons()
 
@@ -108,6 +115,11 @@ class GUIRoot(tk.Frame):
         """Enable or disable navigation buttons based on history."""
         self.back_button.config(state="normal" if self.history_index > 0 else "disabled")
         self.forward_button.config(state="normal" if self.history_index < len(self.history) - 1 else "disabled")
+
+    def disable_nav_buttons(self):
+        """Disable both navigation buttons."""
+        self.back_button.config(state="disabled")
+        self.forward_button.config(state="disabled")
 
     def reset_frames(self):
         try:
