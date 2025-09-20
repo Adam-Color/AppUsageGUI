@@ -101,7 +101,7 @@ def splash_screen(root):
     frame.grid_columnconfigure(0, weight=1)
 
     # App icon
-    icon_img_path = "core/resources/icon-resources/icon.png"
+    icon_img_path = "core/resources/icon.png"
     icon_img = Image.open(resource_path(icon_img_path)).resize((256, 256), Image.Resampling.LANCZOS)
     icon_img = ImageTk.PhotoImage(icon_img)
     icon_label = tk.Label(frame, image=icon_img, bg="#2E2E2E")
