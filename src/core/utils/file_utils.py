@@ -183,26 +183,26 @@ def write_file(file_path, data):
 
 def calc_runtime(data, start_pos):
     """Calculate the runtime of a single run in seconds from time captures.
-    Returns -1 if the data is invalid"""
+    Returns None if the data is invalid"""
     try:
         captures = data['time_captures']
-    
-        # Check if we have enough starts and stops
+
         if len(captures['starts']) <= abs(start_pos) or len(captures['stops']) <= abs(start_pos):
-            return -1
-            
+            return None
+
         start_time = captures['starts'][start_pos]
         stop_time = captures['stops'][start_pos]
 
         run_time = stop_time - start_time
 
-        pauses = captures['pauses']
+        pauses = captures.get('pauses', [])
         for pause in pauses:
             if pause['start'] >= start_time and pause['start'] < stop_time:
                 run_time -= pause['how_long']
-        
-        return run_time if run_time >= 0 else -1
 
-        # Find the next stop position
-    except (KeyError, IndexError):
-        return -1
+        if run_time < 0:
+            return None
+
+        return run_time
+    except (KeyError, IndexError, TypeError):
+        return None
