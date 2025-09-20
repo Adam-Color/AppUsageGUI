@@ -56,6 +56,6 @@ class MainWindow(tk.Frame):
         # Exit Button at Bottom
         exit_button = tk.Button(
             self, text="Exit", command=self.controller.on_close,
-            width=10, height=1, bg="#d9534f", fg="white"
+            width=10, height=1
         )
         exit_button.pack(side="bottom", pady=15)
