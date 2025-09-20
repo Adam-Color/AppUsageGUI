@@ -72,7 +72,7 @@ class ProjectSessionsWindow(tk.Frame):
         self.session_listbox.delete(0, tk.END)
         
         # Get selected project from controller
-        selected_project = self.controller.get_selected_project()
+        selected_project = self.logic.project_handler.get_selected_project()
         
         if selected_project:
             self.title_label.config(text=f'"{selected_project}" sessions')
@@ -138,14 +138,14 @@ class ProjectSessionsWindow(tk.Frame):
 
     def create_new_session(self):
         """Create a new session for the current project"""
-        selected_project = self.controller.get_selected_project()
+        selected_project = self.logic.project_handler.get_selected_project()
         
         if not selected_project:
             messagebox.showerror("Error", "No project selected")
             return
         
         # Set the project context for the CreateSessionWindow
-        self.controller.set_selected_project(selected_project)
+        self.logic.project_handler.set_selected_project(selected_project)
         
         # Navigate to CreateSessionWindow with project pre-selected
         self.controller.show_frame("CreateSessionWindow")
@@ -168,7 +168,7 @@ class ProjectSessionsWindow(tk.Frame):
         self.logic.file_handler.set_continuing_session(True)
 
         # Load selected session data into the file handler
-        selected_project = self.controller.get_selected_project()
+        selected_project = self.logic.project_handler.get_selected_project()
         self.logic.file_handler.load_session_data(selected_session_name, selected_project)
 
         # Start/reset tracking threads
@@ -195,7 +195,7 @@ class ProjectSessionsWindow(tk.Frame):
         selected_session_name = session_text.split(": ")[0]
         
         # Load the session data
-        selected_project = self.controller.get_selected_project()
+        selected_project = self.logic.project_handler.get_selected_project()
         self.logic.file_handler.load_session_data(selected_session_name, selected_project)
         
         # Start session total window
@@ -220,7 +220,7 @@ class ProjectSessionsWindow(tk.Frame):
                                      f"Are you sure you want to delete the session '{selected_session_name}'?\n"
                                      f"This action cannot be undone.")
         if confirm:
-            selected_project = self.controller.get_selected_project()
+            selected_project = self.logic.project_handler.get_selected_project()
             self.logic.file_handler.delete_session(selected_session_name, selected_project)
             
             # Remove from listbox

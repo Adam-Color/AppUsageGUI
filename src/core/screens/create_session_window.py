@@ -99,7 +99,7 @@ class CreateSessionWindow(tk.Frame):
 
     def check_pre_selected_project(self):
         """Check if there's a pre-selected project from the controller and set it"""
-        selected_project = self.controller.get_selected_project()
+        selected_project = self.logic.project_handler.get_selected_project()
         if selected_project:
             self.project_var.set(selected_project)
         else:

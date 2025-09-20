@@ -24,11 +24,23 @@ class GUIRoot(tk.Frame):
         # Initialize LogicRoot
         self.logic = LogicRoot(self)
 
+        # Navigation history
+        self.history = []  # Stack to store visited pages
+        self.history_index = -1  # Pointer to the current page in history
+
+        # Create container for screens
         self.container = tk.Frame(self)
         self.container.pack(side="top", fill="both", expand=True)
 
-        self.container.grid_rowconfigure(0, weight=1)
-        self.container.grid_columnconfigure(0, weight=1)
+        # Create navigation buttons
+        self.nav_frame = tk.Frame(self)
+        self.nav_frame.pack(side="top", fill="x")
+
+        self.back_button = tk.Button(self.nav_frame, text="←", command=self.go_back, state="disabled")
+        self.back_button.pack(side="left")
+
+        self.forward_button = tk.Button(self.nav_frame, text="→", command=self.go_forward, state="disabled")
+        self.forward_button.pack(side="left")
 
         self.frames = {}
         self.selected_project = None  # Store the selected project for navigation
@@ -52,21 +64,50 @@ class GUIRoot(tk.Frame):
     def show_frame(self, page_name):
         frame = self.frames[page_name]
         frame.tkraise()
-        
+
+        # Check if the page is already the current page
+        if self.history and self.history[self.history_index] == page_name:
+            return  # Do nothing if the page is already the current page
+
+        # If navigating to a new screen, clear forward history
+        if self.history_index < len(self.history) - 1:
+            self.history = self.history[:self.history_index + 1]
+
+        # Add the new screen to history
+        self.history.append(page_name)
+        self.history_index += 1
+
+        # Update navigation buttons
+        self.update_nav_buttons()
+
         # Special handling for ProjectSessionsWindow - load sessions when shown
         if page_name == "ProjectSessionsWindow":
             frame.load_sessions()
         # Special handling for CreateSessionWindow - check for pre-selected project
         elif page_name == "CreateSessionWindow":
             frame.check_pre_selected_project()
+
+        # Ensure navigation buttons are updated after any special handling
+        self.update_nav_buttons()
     
-    def set_selected_project(self, project_name):
-        """Set the selected project for navigation between windows"""
-        self.selected_project = project_name
-    
-    def get_selected_project(self):
-        """Get the currently selected project"""
-        return self.selected_project
+    def go_back(self):
+        """Navigate to the previous screen."""
+        if self.history_index > 0:
+            self.history_index -= 1
+            self.show_frame(self.history[self.history_index])
+            self.update_nav_buttons()
+
+    def go_forward(self):
+        """Navigate to the next screen."""
+        if self.history_index < len(self.history) - 1:
+            self.history_index += 1
+            self.show_frame(self.history[self.history_index])
+            self.update_nav_buttons()
+
+    def update_nav_buttons(self):
+        """Enable or disable navigation buttons based on history."""
+        self.back_button.config(state="normal" if self.history_index > 0 else "disabled")
+        self.forward_button.config(state="normal" if self.history_index < len(self.history) - 1 else "disabled")
 
     def reset_frames(self):
         try:

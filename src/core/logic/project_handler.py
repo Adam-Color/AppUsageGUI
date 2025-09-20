@@ -12,6 +12,7 @@ class ProjectHandler:
     def __init__(self, parent, logic_controller):
         self.parent = parent
         self.controller = logic_controller
+        self.selected_project = None  # For navigation between windows
         self.current_project = None
         self.projects_directory = get_projects_directory()
         self.projects_metadata_file = os.path.join(self.projects_directory, "projects_metadata.json")
@@ -145,6 +146,14 @@ class ProjectHandler:
                 metadata["projects"][project_name]["session_count"] = session_count
             self._save_metadata(metadata)
 
+    def set_selected_project(self, project_name):
+        """Set the selected project for navigation between windows"""
+        self.selected_project = project_name
+    
+    def get_selected_project(self):
+        """Get the currently selected project"""
+        return self.selected_project
+    
     def get_project_info(self, project_name):
         """Get detailed information about a project"""
         metadata = self._load_metadata()

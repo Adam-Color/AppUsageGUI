@@ -134,7 +134,7 @@ class ProjectsWindow(tk.Frame):
         project_name = self.extract_project_name(selected_text)
         
         # Set the selected project in the controller and navigate to sessions
-        self.controller.set_selected_project(project_name)
+        self.logic.project_handler.set_selected_project(project_name)
         self.controller.show_frame("ProjectSessionsWindow")
 
     def delete_project(self):
