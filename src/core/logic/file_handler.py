@@ -179,7 +179,7 @@ class FileHandler:
             else:
                 source_dir = get_sessions_directory()
             
-            if target_project:
+            if target_project and target_project != "No Project":
                 target_dir = os.path.join(get_projects_directory(), target_project)
                 # Ensure target directory exists
                 if not os.path.exists(target_dir):
@@ -209,7 +209,7 @@ class FileHandler:
             session_data['last_modified'] = datetime.now().isoformat()
             
             # Save the updated session data to the new location
-            self.current_project = target_project
+            self.current_project = target_project if target_project != "No Project" else None
             self.file_name = session_name
             self.save_session_data(session_data)
             

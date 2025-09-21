@@ -397,7 +397,7 @@ class SessionsWindow(tk.Frame):
         if messagebox.askyesno("Confirm Move", confirm_message):
             # Execute the move
             success = self.logic.file_handler.move_session_to_project(
-                session_name, current_project, target_project if target_project != "No Project" else None
+                session_name, current_project, target_project
             )
             
             if success:
