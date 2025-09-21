@@ -28,13 +28,13 @@ class GUIRoot(tk.Frame):
         self.history = []  # Stack to store visited pages
         self.history_index = -1  # Pointer to the current page in history
 
-        # Create container for screens
-        self.container = tk.Frame(self)
-        self.container.pack(side="top", fill="both", expand=True)
-
         # Create navigation buttons
         self.nav_frame = tk.Frame(self)
         self.nav_frame.pack(side="top", fill="x")
+
+        # Create container for screens
+        self.container = tk.Frame(self)
+        self.container.pack(side="top", fill="both", expand=True)
 
         self.back_button = tk.Button(self.nav_frame, text="←", command=self.go_back, state="disabled")
         self.back_button.pack(side="left")
@@ -59,7 +59,6 @@ class GUIRoot(tk.Frame):
             self.frames[page_name] = frame
 
             frame.grid(row=0, column=0, sticky="nsew")
-
 
     def show_frame(self, page_name):
         frame = self.frames[page_name]
