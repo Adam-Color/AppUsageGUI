@@ -96,7 +96,7 @@ class GUIRoot(tk.Frame):
     def go_back(self):
         """Navigate to the previous screen."""
         if (self.history_index > 0
-            and self.history[self.history_index] not in ["TrackerWindow", "SessionTotalWindow", "SaveWindow"]):
+            and self.history[self.history_index - 1] not in ["TrackerWindow", "SessionTotalWindow", "SaveWindow"]):
             self.history_index -= 1
             self.reset_frames()
             self.show_frame(self.history[self.history_index])
@@ -105,7 +105,7 @@ class GUIRoot(tk.Frame):
     def go_forward(self):
         """Navigate to the next screen."""
         if (self.history_index < len(self.history) - 1
-            and self.history[self.history_index] not in ["TrackerWindow", "SessionTotalWindow", "SaveWindow"]):
+            and self.history[self.history_index + 1] not in ["TrackerWindow", "SessionTotalWindow", "SaveWindow"]):
             self.history_index += 1
             self.reset_frames()
             self.show_frame(self.history[self.history_index])
