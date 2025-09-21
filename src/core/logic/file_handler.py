@@ -207,6 +207,9 @@ class FileHandler:
             # Update session data with new project information
             session_data['project_name'] = target_project
             session_data['last_modified'] = datetime.now().isoformat()
+
+            if target_project == "No Project":
+                session_data.pop('project_name')
             
             # Save the updated session data to the new location
             self.current_project = target_project if target_project != "No Project" else None
