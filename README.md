@@ -19,7 +19,6 @@ To install, follow the instructions for your platform found here:
 
 * Add integrations with professional applications
 * Optimize everything
-* Add support for tracking more than one executable per session
 * Add a better way to filter out non-GUI apps on macOS
 * Full linux support with packages
 
