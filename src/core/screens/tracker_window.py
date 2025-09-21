@@ -44,7 +44,7 @@ class TrackerWindow(tk.Frame):
         self.time_label = tk.Label(
             self,
             text=self.track_time_disp,
-            font=("TkDefaultFont", 28, "bold")
+            font=("TkDefaultFont", 32, "bold")
         )
         self.time_label.pack(pady=20)
 
@@ -52,7 +52,7 @@ class TrackerWindow(tk.Frame):
         controls_frame = tk.Frame(self)
         controls_frame.pack(pady=15)
 
-        btn_font = ("Segoe UI", 24, "bold")
+        btn_font = ("Segoe UI", 16, "bold")
 
         # Pause/Resume button → "⏸" or "▶"
         self.pause_toggle_text = tk.StringVar(value="⏸")  # starts as pause symbol
