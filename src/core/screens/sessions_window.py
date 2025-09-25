@@ -392,8 +392,6 @@ class SessionsWindow(tk.Frame):
         else:
             confirm_message = f"Move session '{session_name}' from project '{current_project}' to project '{target_project}'?"
         
-        confirm_message += "\n\nThis action cannot be undone."
-        
         if messagebox.askyesno("Confirm Move", confirm_message):
             # Execute the move
             success = self.logic.file_handler.move_session_to_project(
