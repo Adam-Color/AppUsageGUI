@@ -40,6 +40,10 @@ def apps_file():
     """Returns the path to the apps file"""
     return os.path.join(get_user_directory(), 'apps.dat')
 
+def lock_file():
+    """Returns the path to the lock file"""
+    return os.path.join(get_user_directory(), 'AppUsageGui.lock')
+
 def sessions_exist(p=False):
     """Check if sessions exist in either old sessions directory or any project directory.
     Set p=True to print directory paths"""
