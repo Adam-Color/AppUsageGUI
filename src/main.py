@@ -18,8 +18,10 @@
 """
 
 import tkinter as tk
+import tkinter.font as tkfont
 import os
 import sys
+import platform
 from traceback import format_exc
 
 from core.screens.splash_screen import splash_screen
@@ -34,6 +36,21 @@ def apply_dark_theme(root):
 
     root.tk_setPalette(background=dark_bg, foreground=dark_fg)
 
+def set_default_font(root):
+    system = platform.system()
+
+    if system == "Windows":
+        family = "Segoe UI Semibold"
+    elif system == "Darwin":  # macOS
+        family = "Helvetica"
+    else:  # Linux/Other
+        family = "DejaVu Sans"
+
+    default_font = tkfont.nametofont("TkDefaultFont")
+    default_font.configure(family=family, size=12)
+    root.option_add("*Font", default_font)
+
+
 def main():
     try:
         root = tk.Tk()
@@ -41,6 +58,8 @@ def main():
 
         if is_dark_mode():
             apply_dark_theme(root)
+
+        set_default_font(root)
 
         if os.name == 'nt':
             icon_name = "core\\resources\\icon.ico"
