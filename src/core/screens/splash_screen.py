@@ -69,9 +69,9 @@ def new_updates():
         return False
 
     except requests.RequestException as e:
-        print(f"Error checking for updates: Network error - {str(e)}")
+        print(f"Error checking for updates: Network error - {str(e) + ' - ' + str(format_exc())}")
     except (KeyError, ValueError, IndexError) as e:
-        print(f"Error checking for updates: Parsing error - {str(e)}")
+        print(f"Error checking for updates: Parsing error - {str(e) + ' - ' + str(format_exc())}")
     except Exception:
         messagebox.showerror("Error", f"An unexpected error occurred while checking for updates: {str(format_exc())}")
     return False
