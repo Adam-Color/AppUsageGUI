@@ -38,6 +38,7 @@ def build_executable():
         f'--windowed --clean '
         f'--add-data "src/core:core" '
         f'--add-data "{icon_file}:." '
+        f'--add-data "LICENSE.txt:." '
         f'--collect-submodules core '
         f'--collect-all psutil '
         f'--collect-all tkinter '

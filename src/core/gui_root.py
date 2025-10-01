@@ -4,6 +4,7 @@ from core.utils.tk_utils import messagebox
 import platform
 
 from _version import __version__ as version
+from _path import resource_path
 
 from .logic_root import LogicRoot
 from .screens.main_window import MainWindow
@@ -66,10 +67,10 @@ class GUIRoot(tk.Frame):
 
         def show_license(_=None):
             try:
-                with open("license.txt", "r", encoding="utf-8") as f:
+                with open("_internal/LICENSE.txt", "r", encoding="utf-8") as f:
                     text = f.read()
             except FileNotFoundError:
-                messagebox.showerror("License", "license.txt not found.")
+                messagebox.showerror("License", "license not found.")
                 return
 
             # Create a scrollable text window for the license
