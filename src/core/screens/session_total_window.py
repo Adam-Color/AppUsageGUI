@@ -54,31 +54,31 @@ class SessionTotalWindow(tk.Frame):
         card.pack(fill="both", expand=True, padx=20, pady=15)
 
         # Each line: label with dynamic text
-        self.name_label = tk.Label(card, text="Session Name: " + self.name_readout, anchor="w", font=("Arial", 11))
+        self.name_label = tk.Label(card, text="Session Name: " + self.name_readout, anchor="w")
         self.name_label.pack(fill="x", pady=4)
 
-        self.project_label = tk.Label(card, text="Project Name: " + self.project_readout, anchor="w", font=("Arial", 11))
+        self.project_label = tk.Label(card, text="Project Name: " + self.project_readout, anchor="w")
         self.project_label.pack(fill="x", pady=4)
 
-        self.app_label = tk.Label(card, text="Tracked App Name: " + self.app_readout, anchor="w", font=("Arial", 11))
+        self.app_label = tk.Label(card, text="Tracked App Name: " + self.app_readout, anchor="w")
         self.app_label.pack(fill="x", pady=4)
 
-        self.total_time_label = tk.Label(card, text="Total Session Runtime: " + self.time_readout, anchor="w", font=("Arial", 11))
+        self.total_time_label = tk.Label(card, text="Total Session Runtime: " + self.time_readout, anchor="w")
         self.total_time_label.pack(fill="x", pady=4)
 
-        self.ptime_label = tk.Label(card, text="Total Project Runtime: " + self.ptime_readout, anchor="w", font=("Arial", 11))
+        self.ptime_label = tk.Label(card, text="Total Project Runtime: " + self.ptime_readout, anchor="w")
         self.ptime_label.pack(fill="x", pady=4)
 
-        self.start_time_label = tk.Label(card, text="Session Started: " + self.start_readout, anchor="w", font=("Arial", 11))
+        self.start_time_label = tk.Label(card, text="Session Started: " + self.start_readout, anchor="w")
         self.start_time_label.pack(fill="x", pady=4)
 
-        self.stop_time_label = tk.Label(card, text="Last Ended: " + self.stop_readout, anchor="w", font=("Arial", 11))
+        self.stop_time_label = tk.Label(card, text="Last Ended: " + self.stop_readout, anchor="w")
         self.stop_time_label.pack(fill="x", pady=4)
 
-        self.last_run_label = tk.Label(card, text="Last Run Length: " + self.last_run_readout, anchor="w", font=("Arial", 11))
+        self.last_run_label = tk.Label(card, text="Last Run Length: " + self.last_run_readout, anchor="w")
         self.last_run_label.pack(fill="x", pady=4)
 
-        self.num_starts_label = tk.Label(card, text="Number of Runs: " + self.num_starts_readout, anchor="w", font=("Arial", 11))
+        self.num_starts_label = tk.Label(card, text="Number of Runs: " + self.num_starts_readout, anchor="w")
         self.num_starts_label.pack(fill="x", pady=4)
 
         # ===== Back Button =====

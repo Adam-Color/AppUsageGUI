@@ -94,8 +94,8 @@ class GUIRoot(tk.Frame):
 
         if platform.system() == "Darwin":
             try:
-                import objc
-                from AppKit import NSApp, NSMenuItem
+                import objc # type: ignore
+                from AppKit import NSApp, NSMenuItem # type: ignore
 
                 main_menu = NSApp.mainMenu()
                 app_menu = main_menu.itemAtIndex_(0).submenu()
