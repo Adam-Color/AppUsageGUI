@@ -4,7 +4,6 @@ from core.utils.tk_utils import messagebox
 import platform
 
 from _version import __version__ as version
-from _path import resource_path
 
 from .logic_root import LogicRoot
 from .screens.main_window import MainWindow
