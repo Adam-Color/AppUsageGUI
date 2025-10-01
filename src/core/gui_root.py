@@ -1,9 +1,11 @@
 import tkinter as tk
 from traceback import format_exc
 from core.utils.tk_utils import messagebox
+import platform
+
+from _version import __version__ as version
 
 from .logic_root import LogicRoot
-
 from .screens.main_window import MainWindow
 from .screens.select_app_window import SelectAppWindow
 from .screens.sessions_window import SessionsWindow
@@ -16,6 +18,7 @@ from .screens.create_session_window import CreateSessionWindow
 from .screens.session_total_window import SessionTotalWindow
 from .screens.tracker_settings_window import TrackerSettingsWindow
 
+
 class GUIRoot(tk.Frame):
     def __init__(self, parent):
         tk.Frame.__init__(self, parent)
@@ -25,30 +28,63 @@ class GUIRoot(tk.Frame):
         self.logic = LogicRoot(self)
 
         # Navigation history
-        self.history = []  # Stack to store visited pages
-        self.history_index = -1  # Pointer to the current page in history
+        self.history = []
+        self.history_index = -1
 
-        # Create navigation buttons
+        # Create navigation bar
         self.nav_frame = tk.Frame(self)
         self.nav_frame.pack(side="top", fill="x")
+
+        # Add About option depending on OS
+        self.setup_about_option()
 
         # Create container for screens
         self.container = tk.Frame(self)
         self.container.pack(side="top", fill="both", expand=True)
 
-        self.back_button = tk.Button(self.nav_frame, text="←", command=self.go_back, state="disabled")
-        self.back_button.pack(side="left")
-
         self.forward_button = tk.Button(self.nav_frame, text="→", command=self.go_forward, state="disabled")
-        self.forward_button.pack(side="left")
+        self.forward_button.pack(side="right")
+
+        self.back_button = tk.Button(self.nav_frame, text="←", command=self.go_back, state="disabled")
+        self.back_button.pack(side="right")
 
         self.frames = {}
-        self.selected_project = None  # Store the selected project for navigation
+        self.selected_project = None
         self.init_screens()
         self.show_frame("MainWindow")
 
-        # Bind the close event to ensure cleanup
         self.parent.protocol("WM_DELETE_WINDOW", self.on_close)
+
+    def setup_about_option(self):
+        """Configure About menu/button depending on OS."""
+        def show_about(_=None):
+            messagebox.showinfo(
+                "About",
+                f"AppUsageGUI v{version}\nOpen Source Tracker\n(c) 2025 Adam Blair-Smith"
+            )
+
+        if platform.system() == "Darwin":
+            try:
+                import objc
+                from AppKit import NSApp, NSMenuItem
+
+                main_menu = NSApp.mainMenu()
+                app_menu = main_menu.itemAtIndex_(0).submenu()
+
+                about_item = NSMenuItem.alloc().initWithTitle_action_keyEquivalent_(
+                    "About MyApp",
+                    objc.selector(show_about, signature=b"v@:@"),
+                    ""
+                )
+                app_menu.insertItem_atIndex_(about_item, 1)
+                return
+            except ImportError:
+                # Fall back if PyObjC not installed
+                pass
+
+        # Non-macOS → add About button to nav frame
+        about_btn = tk.Button(self.nav_frame, text="About", command=show_about)
+        about_btn.pack(side="left", padx=5)
 
     def init_screens(self):
         """Pass the logic_controller when initializing screens"""
