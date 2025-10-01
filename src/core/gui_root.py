@@ -35,8 +35,8 @@ class GUIRoot(tk.Frame):
         self.nav_frame = tk.Frame(self)
         self.nav_frame.pack(side="top", fill="x")
 
-        # Add About option depending on OS
-        self.setup_about_option()
+        # Add options depending on OS
+        self.setup_options()
 
         # Create container for screens
         self.container = tk.Frame(self)
@@ -55,7 +55,7 @@ class GUIRoot(tk.Frame):
 
         self.parent.protocol("WM_DELETE_WINDOW", self.on_close)
 
-    def setup_about_option(self):
+    def setup_options(self):
         """Configure About menu/button depending on OS."""
         def show_about(_=None):
             messagebox.showinfo(
@@ -72,7 +72,7 @@ class GUIRoot(tk.Frame):
                 app_menu = main_menu.itemAtIndex_(0).submenu()
 
                 about_item = NSMenuItem.alloc().initWithTitle_action_keyEquivalent_(
-                    "About MyApp",
+                    "About AppUsageGUI",
                     objc.selector(show_about, signature=b"v@:@"),
                     ""
                 )
