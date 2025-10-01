@@ -56,12 +56,41 @@ class GUIRoot(tk.Frame):
         self.parent.protocol("WM_DELETE_WINDOW", self.on_close)
 
     def setup_options(self):
-        """Configure About menu/button depending on OS."""
+        """Configure Options (About, License, etc.) depending on OS."""
+
         def show_about(_=None):
             messagebox.showinfo(
                 "About",
                 f"AppUsageGUI v{version}\nOpen Source Tracker\n(c) 2025 Adam Blair-Smith"
             )
+
+        def show_license(_=None):
+            try:
+                with open("license.txt", "r", encoding="utf-8") as f:
+                    text = f.read()
+            except FileNotFoundError:
+                messagebox.showerror("License", "license.txt not found.")
+                return
+
+            # Create a scrollable text window for the license
+            win = tk.Toplevel(self)
+            win.title("License")
+            win.geometry("600x400")
+
+            text_box = tk.Text(win, wrap="word")
+            text_box.insert("1.0", text)
+            text_box.config(state="disabled")  # make read-only
+            text_box.pack(fill="both", expand=True)
+
+            scrollbar = tk.Scrollbar(win, command=text_box.yview)
+            text_box.config(yscrollcommand=scrollbar.set)
+            scrollbar.pack(side="right", fill="y")
+
+        # Define available options
+        options = [
+            {"label": "License", "callback": show_license},
+            {"label": "About", "callback": show_about},
+        ]
 
         if platform.system() == "Darwin":
             try:
@@ -71,20 +100,22 @@ class GUIRoot(tk.Frame):
                 main_menu = NSApp.mainMenu()
                 app_menu = main_menu.itemAtIndex_(0).submenu()
 
-                about_item = NSMenuItem.alloc().initWithTitle_action_keyEquivalent_(
-                    "About AppUsageGUI",
-                    objc.selector(show_about, signature=b"v@:@"),
-                    ""
-                )
-                app_menu.insertItem_atIndex_(about_item, 1)
+                for opt in options:
+                    item = NSMenuItem.alloc().initWithTitle_action_keyEquivalent_(
+                        f"{opt['label']}",
+                        objc.selector(opt["callback"], signature=b"v@:@"),
+                        ""
+                    )
+                    app_menu.addItem_(item)
                 return
             except ImportError:
-                # Fall back if PyObjC not installed
                 pass
 
-        # Non-macOS → add About button to nav frame
-        about_btn = tk.Button(self.nav_frame, text="About", command=show_about)
-        about_btn.pack(side="left", padx=5)
+        # Non-macOS → create buttons in nav bar
+        for opt in options:
+            btn = tk.Button(self.nav_frame, text=opt["label"], command=opt["callback"])
+            btn.pack(side="left", pady=1)
+
 
     def init_screens(self):
         """Pass the logic_controller when initializing screens"""
