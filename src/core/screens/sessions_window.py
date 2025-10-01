@@ -97,7 +97,9 @@ class SessionsWindow(tk.Frame):
         self.project_filter_var.set("All")
         
         # Bind the dropdown change event
-        self.project_filter_var.trace_add('write', lambda: self.on_filter_change(self.project_filter_var.get()))
+        self.project_filter_var.trace_add(
+            'write', lambda *args: self.on_filter_change(self.project_filter_var.get())
+        )
 
     def on_filter_change(self, selected_filter):
         """Handle project filter dropdown change"""
