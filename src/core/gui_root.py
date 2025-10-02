@@ -72,16 +72,16 @@ class GUIRoot(tk.Frame):
             self.parent.createcommand("tk::mac::ShowAbout", self.show_about)
             self.parent.createcommand("tk::mac::ShowPreferences", self.show_license)
             self.parent.createcommand("tk::mac::Quit", self.on_close)
-        menubar = tk.Menu(self.parent)
-        app_menu = tk.Menu(menubar, tearoff=0)
+            menubar = tk.Menu(self.parent)
+            app_menu = tk.Menu(menubar, tearoff=0)
 
-        # Add commands to the app menu from the single source of truth (self.options)
-        for opt in self.options:
-            # use lambda with default arg to avoid late-binding loop closure
-            app_menu.add_command(label=opt["label"], command=opt["callback"])
+            # Add commands to the app menu from the single source of truth (self.options)
+            for opt in self.options:
+                # use lambda with default arg to avoid late-binding loop closure
+                app_menu.add_command(label=opt["label"], command=opt["callback"])
 
-        menubar.add_cascade(label="?", menu=app_menu)
-        self.parent.config(menu=menubar)
+            menubar.add_cascade(label="?", menu=app_menu)
+            self.parent.config(menu=menubar)
 
         def fallback_buttons():
             """Create fallback buttons in the nav bar for non-macOS platforms."""
