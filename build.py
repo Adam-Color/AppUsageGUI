@@ -3,7 +3,6 @@ import sys
 import shutil
 import subprocess
 import platform
-from src._version import __version__
 
 # Project details
 PROJECT_NAME = "AppUsageGUI"

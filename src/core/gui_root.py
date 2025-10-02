@@ -1,9 +1,12 @@
+import os
 import tkinter as tk
+from tkinter import ttk
 from traceback import format_exc
 from core.utils.tk_utils import messagebox
 import platform
 
 from _version import __version__ as version
+from _path import resource_path
 
 from .logic_root import LogicRoot
 from .screens.main_window import MainWindow
@@ -35,6 +38,12 @@ class GUIRoot(tk.Frame):
         self.nav_frame = tk.Frame(self)
         self.nav_frame.pack(side="top", fill="x")
 
+        # Options list
+        self.options = [
+            {"label": "License", "callback": self.show_license},
+            {"label": "About", "callback": self.show_about},
+        ]
+
         # Add options depending on OS
         self.setup_options()
 
@@ -56,66 +65,106 @@ class GUIRoot(tk.Frame):
         self.parent.protocol("WM_DELETE_WINDOW", self.on_close)
 
     def setup_options(self):
-        """Configure Options (About, License, etc.) depending on OS."""
+        """Configure Options (About, License, etc.). Uses a Tk Menu for cross-platform behaviour.
+           On macOS we also register the platform hooks so items appear in the native App menu."""
+        
+        if self.parent.tk.call("tk", "windowingsystem") == "aqua":
+            self.parent.createcommand("tk::mac::ShowAbout", self.show_about)
+            self.parent.createcommand("tk::mac::ShowPreferences", self.show_license)
+            self.parent.createcommand("tk::mac::Quit", self.on_close)
+        menubar = tk.Menu(self.parent)
+        app_menu = tk.Menu(menubar, tearoff=0)
 
-        def show_about(_=None):
-            messagebox.showinfo(
-                "About",
-                f"AppUsageGUI v{version}\nOpen Source Tracker\n(c) 2025 Adam Blair-Smith"
-            )
+        # Add commands to the app menu from the single source of truth (self.options)
+        for opt in self.options:
+            # use lambda with default arg to avoid late-binding loop closure
+            app_menu.add_command(label=opt["label"], command=opt["callback"])
 
-        def show_license(_=None):
-            try:
-                with open("_internal/LICENSE.txt", "r", encoding="utf-8") as f:
-                    text = f.read()
-            except FileNotFoundError:
-                messagebox.showerror("License", "license not found.")
-                return
+        menubar.add_cascade(label="?", menu=app_menu)
+        self.parent.config(menu=menubar)
 
-            # Create a scrollable text window for the license
-            win = tk.Toplevel(self)
-            win.title("License")
-            win.geometry("600x400")
+        def fallback_buttons():
+            """Create fallback buttons in the nav bar for non-macOS platforms."""
+            for opt in self.options:
+                btn = tk.Button(self.nav_frame, text=opt["label"], command=opt["callback"])
+                btn.pack(side="left", pady=1)
 
-            text_box = tk.Text(win, wrap="word")
-            text_box.insert("1.0", text)
-            text_box.config(state="disabled")  # make read-only
-            text_box.pack(fill="both", expand=True)
-
-            scrollbar = tk.Scrollbar(win, command=text_box.yview)
-            text_box.config(yscrollcommand=scrollbar.set)
-            scrollbar.pack(side="right", fill="y")
-
-        # Define available options
-        options = [
-            {"label": "License", "callback": show_license},
-            {"label": "About", "callback": show_about},
-        ]
-
+        # macOS: register the conventional app hooks so About/Preferences show in the native Apple menu
         if platform.system() == "Darwin":
             try:
-                import objc # type: ignore
-                from AppKit import NSApp, NSMenuItem # type: ignore
+                # Map standard mac menu actions to our callbacks
+                # "tk::mac::ShowAbout" -> About
+                # "tk::mac::ShowPreferences" -> Preferences (we map to License here)
+                self.parent.createcommand("tk::mac::ShowAbout", self.show_about)
+                self.parent.createcommand("tk::mac::ShowPreferences", self.show_license)
+            except Exception:
+                # If anything goes wrong, fall back to having the menu (it's already set above)
+                fallback_buttons()
+                pass
+        else:
+            # Non-macOS: add buttons to nav bar
+            fallback_buttons()
 
-                main_menu = NSApp.mainMenu()
-                app_menu = main_menu.itemAtIndex_(0).submenu()
 
-                for opt in options:
-                    item = NSMenuItem.alloc().initWithTitle_action_keyEquivalent_(
-                        f"{opt['label']}",
-                        objc.selector(opt["callback"], signature=b"v@:@"),
-                        ""
-                    )
-                    app_menu.addItem_(item)
-                return
-            except ImportError:
+    def show_about(self, _=None):
+        """Show app info popup"""
+        messagebox.showinfo(
+            "About",
+            f"AppUsageGUI v{version}\n\nOpen Source Application Tracker\n\n(c) 2025 Adam Blair-Smith\n\nContributors (github):\n- Adam-Color\n- Grippando",
+        )
+
+    def show_license(self, _=None):
+        """Open license file in a scrollable popup window (reusable)."""
+        license_paths_to_try = [
+            "_internal/LICENSE.txt",
+            "LICENSE.txt",
+            os.path.join(os.path.dirname(__file__), "_internal", "LICENSE.txt"),
+            resource_path("LICENSE.txt")
+        ]
+
+        text = None
+        for p in license_paths_to_try:
+            try:
+                if os.path.exists(p):
+                    with open(p, "r", encoding="utf-8") as f:
+                        text = f.read()
+                        break
+            except Exception:
+                # ignore and try next
                 pass
 
-        # Non-macOS → create buttons in nav bar
-        for opt in options:
-            btn = tk.Button(self.nav_frame, text=opt["label"], command=opt["callback"])
-            btn.pack(side="left", pady=1)
+        if text is None:
+            error_txt = "License file not found.\n\nPaths tried:\n" + "\n".join(license_paths_to_try)
+            print(error_txt)
+            messagebox.showerror("License", error_txt)
+            return
 
+        # Reusable Toplevel license window
+        win = tk.Toplevel(self.parent)
+        win.title("License")
+        win.geometry("700x450")
+        win.transient(self.parent)
+        win.resizable(True, True)
+
+        # Use a frame for padding and layout
+        frame = ttk.Frame(win, padding=(8, 8, 8, 8))
+        frame.pack(fill="both", expand=True)
+
+        # Text widget + scrollbar
+        text_box = tk.Text(frame, wrap="word", borderwidth=0)
+        text_box.insert("1.0", text)
+        text_box.config(state="disabled")  # read-only
+        text_box.pack(side="left", fill="both", expand=True)
+
+        scrollbar = ttk.Scrollbar(frame, orient="vertical", command=text_box.yview)
+        scrollbar.pack(side="right", fill="y")
+        text_box.config(yscrollcommand=scrollbar.set)
+
+        # Close button
+        btn_frame = ttk.Frame(win)
+        btn_frame.pack(fill="x", pady=(6, 8))
+        close_btn = ttk.Button(btn_frame, text="Close", command=win.destroy)
+        close_btn.pack(side="right", padx=(0, 8))
 
     def init_screens(self):
         """Pass the logic_controller when initializing screens"""
