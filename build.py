@@ -30,26 +30,28 @@ def build_executable():
         windows_only_1 = ""
     else:
         run_command('set PYTHONOPTIMIZE=1')
-        windows_only_1 = '--collect-all pywinauto'
+        windows_only_1 = '--collect-submodules pywinauto'
     run_command(
         f'{python_executable} -m PyInstaller -D --clean --name {PROJECT_NAME} '
         f'--noconfirm '
-        f'--windowed --clean '
+        f'--windowed '
         f'--add-data "src/core:core" '
         f'--add-data "{icon_file}:." '
         f'--add-data "LICENSE.txt:." '
-        f'--collect-submodules core '
-        f'--collect-all psutil '
-        f'--collect-all tkinter '
-        f'--collect-all pynput '
-        f'--collect-all requests '
-        f'--collect-all PIL '
         f'{windows_only_1} '
+        f'--collect-submodules core '
+        f'--collect-submodules psutil '
+        f'--collect-submodules tkinter '
+        f'--collect-submodules pynput '
+        f'--collect-submodules requests '
+        f'--collect-submodules PIL '
+        f'--exclude-module PIL.tests '
+        f'--exclude-module tkinter.test '
         f'--icon={icon_file} '
         f'--add-data "src/_version.py:." '
         f'--add-data "src/_path.py:." '
         f'--target-architecture {platform.machine()} '
-        f'--debug=imports {ENTRY_POINT}'
+        f'{ENTRY_POINT}'
     )
 
 def clean_up():
