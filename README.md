@@ -1,4 +1,4 @@
-![version](https://img.shields.io/badge/Version-1.6.0-white.svg)
+![version](https://img.shields.io/badge/Version-1.7.0-white.svg)
 ![license](https://img.shields.io/badge/License-GPL%20v3-blue.svg)
 ![python](https://img.shields.io/badge/Python-3.13-green.svg)
 
@@ -18,9 +18,11 @@ To install, follow the instructions for your platform found here:
 ### Contributions are welcome and needed! Here is a TODO list:
 
 * Add integrations with professional applications
-* Detach the GIL
+* Detach the GIL for windows version
 * Add a better way to filter out non-GUI apps on macOS
 * Full linux support with packages
+
+NOTE: GIL is detached for the macOS build; use Python 3.13.7t
 
 ## How It Works
 
