@@ -91,8 +91,12 @@ class FileHandler:
                 if computed_hash == stored_hash:
                     self.data = pickle.loads(data)
                     # Set current project from loaded data if not specified
-                    if not project_name and isinstance(self.data, dict) and 'project_name' in self.data:
-                        self.current_project = self.data['project_name']
+                    if not project_name:
+                        saved_project = self.data.get('project_name') if isinstance(self.data, dict) else None
+                        if saved_project:
+                            self.current_project = saved_project # Set to saved project
+                        else:
+                            self.current_project = None # No project
                 else:
                     self.corrupt_sessions.append((filename, "Hash mismatch"))
                     self.data = None

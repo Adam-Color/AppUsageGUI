@@ -203,9 +203,11 @@ class SessionsWindow(tk.Frame):
         # tell the controller we are continuing from a session
         self.logic.file_handler.set_continuing_session(True)
 
-        # load selected session data into the file handler,
-        # so it's ready to be pulled
-        self.logic.file_handler.load_session_data(selected_session_name, project_name)
+        # Only load project info if it's part of a project
+        if project_name:
+            self.logic.file_handler.load_session_data(selected_session_name, project_name)
+        else:
+            self.logic.file_handler.load_session_data(selected_session_name, None)
 
         # start/reset tracking threads
         self.logic.app_tracker.reset()

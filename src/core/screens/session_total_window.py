@@ -123,13 +123,21 @@ class SessionTotalWindow(tk.Frame):
             stop_text = unix_to_datetime(item['last_run']).strftime("%Y-%m-%d %H:%M:%S") if item['last_run'] != "N/A" else "N/A"
             self.stop_time_label.config(text="Last Ended: " + stop_text)
 
-            last_run_time_formatted = format_time(int(item['last_run_length'])) if item['last_run_length'] is not None else "N/A"
+            last_run_length = item.get('last_run_length')
+            try:
+                last_run_time_formatted = format_time(int(last_run_length))
+            except (TypeError, ValueError):
+                last_run_time_formatted = "N/A"
             last_run_text = last_run_time_formatted if item['last_run_length'] != "N/A" else "N/A"
             self.last_run_label.config(text="Last Run Length: " + last_run_text)
 
             self.num_starts_label.config(text="Number of Runs: " + (item['num_starts'] if item['num_starts'] != "N/A" else "N/A"))
         except queue.Empty:
             pass
+        except Exception:
+            error = "Error updating session total time display:\n" + traceback.format_exc()
+            print(error)
+            tk.messagebox.showerror("Error", error)
 
     def total_time_thread(self):
         while not self.stop_event.is_set() and (self.time_readout == "Error" or self.time_readout == "N/A"):
