@@ -5,7 +5,7 @@
 # AppUsageGUI
 ### Application Runtime Tracker
 
-This program tracks the runtime of specified applications, organizing sessions into projects for better management. Users can create multiple projects, each containing multiple tracking sessions, providing comprehensive time tracking and organization capabilities.
+This program tracks the runtime of specified applications, organizing sessions into projects. Users can create multiple projects, each containing multiple tracking sessions, providing comprehensive time tracking and data analysis.
 
 ## Installation
 
@@ -18,7 +18,7 @@ To install, follow the instructions for your platform found here:
 ### Contributions are welcome and needed! Here is a TODO list:
 
 * Add integrations with professional applications
-* Optimize everything
+* Detach the GIL
 * Add a better way to filter out non-GUI apps on macOS
 * Full linux support with packages
 
@@ -27,14 +27,14 @@ To install, follow the instructions for your platform found here:
 AppUsageGUI is a cross-platform desktop application built with Python and Tkinter that monitors application usage time with project-based organization. The application works by:
 
 1. **Project Organization**: Users create projects to organize related tracking sessions, with each project containing multiple sessions
-2. **Session Creation**: Before tracking begins, users select a project and name their session, establishing clear organization upfront
+2. **Session Creation**: Before tracking begins, users select a project and name their session
 3. **Process Monitoring**: Uses the `psutil` library to detect running applications and monitor their process status
 4. **Time Tracking**: Implements a precise time tracker that runs in a separate thread, capable of pausing and resuming
 5. **Session Management**: Creates named sessions within projects that can be saved, loaded, and continued across application restarts
 6. **Data Persistence**: Saves session data with integrity checking using hash verification, organized by project directories
 7. **Cross-Platform Support**: Handles Windows and macOS differences in process detection and GUI application filtering
 
-The application follows a Model-View-Controller (MVC) architecture with separate logic and GUI components, ensuring clean separation of concerns and maintainable code.
+The application follows a Model-View-Controller (MVC) architecture with separate logic and GUI components.
 
 ## Project and Session Structure
 
@@ -127,18 +127,9 @@ Each session file contains comprehensive tracking information:
 }
 ```
 
-### Benefits of Project Organization
-
-1. **Better Organization**: Group related work sessions together
-2. **Easier Management**: Quickly find and manage sessions by project
-3. **Project Analytics**: View total time spent on specific projects
-4. **Scalability**: Handle many sessions without interface clutter
-5. **Backup & Restore**: Backup entire projects or migrate between systems
-6. **Future Extensibility**: Foundation for project-specific settings and reporting
-
 ## Features
 
-- **Project Management**: Organize sessions into projects for better organization and management
+- **Project Management**: Organize sessions into projects for organization and management
 - **Session Tracking**: Track the total runtime of any executable with named sessions
 - **Session Continuation**: Continue from previous sessions within any project
 - **User Customizable Rules**: Configure custom tracking rules and application filtering
