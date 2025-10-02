@@ -1,4 +1,5 @@
 import os
+import sys
 import tkinter as tk
 from tkinter import ttk
 from traceback import format_exc
@@ -110,7 +111,7 @@ class GUIRoot(tk.Frame):
         """Show app info popup"""
         messagebox.showinfo(
             "About",
-            f"AppUsageGUI v{version}\n\nOpen Source Application Tracker\n\n(c) 2025 Adam Blair-Smith\n\nContributors (github):\n- Adam-Color\n- Grippando",
+            f"AppUsageGUI v{version}\n\nOpen Source Application Tracker\n\n(c) 2025 Adam Blair-Smith\n\nContributors (github):\n\n- Adam-Color\n- Grippando\n\nPython Version:\n\n{sys.version}",
         )
 
     def show_license(self, _=None):
