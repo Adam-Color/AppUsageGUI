@@ -91,8 +91,12 @@ class FileHandler:
                 if computed_hash == stored_hash:
                     self.data = pickle.loads(data)
                     # Set current project from loaded data if not specified
-                    if not project_name and isinstance(self.data, dict) and 'project_name' in self.data:
-                        self.current_project = self.data['project_name']
+                    if not project_name:
+                        saved_project = self.data.get('project_name') if isinstance(self.data, dict) else None
+                        if saved_project:
+                            self.current_project = saved_project # Set to saved project
+                        else:
+                            self.current_project = None # No project
                 else:
                     self.corrupt_sessions.append((filename, "Hash mismatch"))
                     self.data = None
@@ -179,7 +183,7 @@ class FileHandler:
             else:
                 source_dir = get_sessions_directory()
             
-            if target_project:
+            if target_project and target_project != "No Project":
                 target_dir = os.path.join(get_projects_directory(), target_project)
                 # Ensure target directory exists
                 if not os.path.exists(target_dir):
@@ -207,9 +211,12 @@ class FileHandler:
             # Update session data with new project information
             session_data['project_name'] = target_project
             session_data['last_modified'] = datetime.now().isoformat()
+
+            if target_project == "No Project":
+                session_data.pop('project_name')
             
             # Save the updated session data to the new location
-            self.current_project = target_project
+            self.current_project = target_project if target_project != "No Project" else None
             self.file_name = session_name
             self.save_session_data(session_data)
             

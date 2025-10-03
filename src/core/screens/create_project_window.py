@@ -77,6 +77,14 @@ class CreateProjectWindow(tk.Frame):
             messagebox.showerror("Error", "Project name must be 50 characters or less.")
             return
         
+        if self.logic.project_handler.get_project_sessions(project_name) != []:
+            messagebox.showerror("Error", "A project with this name already exists. Please choose a different name.")
+            return
+        
+        if project_name.lower() == "no project":
+            messagebox.showerror("Error", "The project name 'No Project' is reserved. Please choose a different name.")
+            return
+        
         # Create the project
         success, message = self.logic.project_handler.create_project(project_name)
         

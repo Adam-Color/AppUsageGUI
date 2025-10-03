@@ -1,59 +1,98 @@
 import tkinter as tk
 from core.utils.tk_utils import messagebox
 from traceback import format_exc
-
 from core.utils.logic_utils import threaded
+
 
 class SelectAppWindow(tk.Frame):
     def __init__(self, parent, controller, logic_controller):
-        tk.Frame.__init__(self, parent)
+        super().__init__(parent)
         self.controller = controller
         self.logic = logic_controller
 
-        label = tk.Label(self, text="Ensure the desired application is running.\nYou may need to hit \'Refresh List\' if it was not.\n\nSelect which application you would like to track:")
-        label.pack(side="top", fill="x", pady=5)
-        
-        # Search entry
-        search_label = tk.Label(self, text="Search:")
-        search_label.pack(pady=5)
+        # Title Section
+        title_frame = tk.Frame(self, pady=10)
+        title_frame.pack(fill="x")
 
-        # Update list as user types
+        label = tk.Label(
+            title_frame,
+            text="Select an Application to Track",
+            font=("Arial", 16, "bold")
+        )
+        label.pack(pady=(5, 0))
+
+        subtitle = tk.Label(
+            title_frame,
+            text="Ensure the application is running. Use 'Refresh List' if it does not appear.",
+            font=("Arial", 11)
+        )
+        subtitle.pack(pady=(0, 15))
+
+        # Search Section
+        search_frame = tk.Frame(self)
+        search_frame.pack(fill="x", padx=20, pady=5)
+
+        search_label = tk.Label(search_frame, text="Search:", font=("Arial", 10))
+        search_label.pack(side="left")
+
         self.search_var = tk.StringVar()
         self.search_var.trace_add("write", lambda *args: self.update_search())
-        search_entry = tk.Entry(self, textvariable=self.search_var)
-        search_entry.pack(pady=5)
+        search_entry = tk.Entry(search_frame, textvariable=self.search_var, width=30)
+        search_entry.pack(side="left", padx=8)
 
-        # Button to refresh the list
-        refresh_button = tk.Button(self, text="Refresh List", command=lambda: self.refresh_apps(True))
-        refresh_button.pack(pady=10)
+        refresh_button = tk.Button(
+            search_frame,
+            text="Refresh List",
+            command=lambda: self.refresh_apps(True),
+            width=12
+        )
+        refresh_button.pack(side="right")
 
-        # Frame for listbox and scrollbar
-        list_frame = tk.Frame(self)
+        # App List Section
+        card = tk.Frame(
+            self,
+            bd=2, relief="groove",
+            padx=15, pady=15
+        )
+        card.pack(fill="both", expand=True, padx=20, pady=15)
+
+        list_frame = tk.Frame(card)
         list_frame.pack(fill="both", expand=True)
 
-        # Create the listbox
-        self.app_listbox = tk.Listbox(list_frame, selectmode=tk.SINGLE)
+        self.app_listbox = tk.Listbox(list_frame, selectmode=tk.SINGLE, font=("Arial", 11))
         self.app_listbox.pack(side="left", fill="both", expand=True)
 
-        # Scrollbar for listbox
         scrollbar = tk.Scrollbar(list_frame, orient="vertical", command=self.app_listbox.yview)
         scrollbar.pack(side="right", fill="y")
-
-        # Configure listbox to use scrollbar
         self.app_listbox.config(yscrollcommand=scrollbar.set)
 
-        # Track the apps and filtered apps
-        self.app_tracker = self.logic.app_tracker
-        self.all_apps = []  # Store all apps to filter through
-        self.refresh_apps()  # Populate list initially
-        
-        # Button to make selection
-        select_button = tk.Button(self, text="Select", command=self.select_app)
-        select_button.pack(pady=10)
+        # Bottom Buttons
+        bottom_frame = tk.Frame(self, pady=15)
+        bottom_frame.pack(fill="x")
 
-        back_button = tk.Button(self, text="Main Menu", command=lambda: (self.controller.reset_frames(), self.controller.show_frame("MainWindow")))
-        back_button.pack(pady=5, side='bottom')
-    
+        select_button = tk.Button(
+            bottom_frame,
+            text="Select",
+            command=self.select_app,
+            width=15, height=2,
+            font=("Arial", 10, "bold")
+        )
+        select_button.pack(side="left", padx=20)
+
+        back_button = tk.Button(
+            bottom_frame,
+            text="Main Menu",
+            command=lambda: (self.controller.reset_frames(),
+                             self.controller.show_frame("MainWindow")),
+            width=15, height=2
+        )
+        back_button.pack(side="right", padx=20)
+
+        # ===== Logic =====
+        self.app_tracker = self.logic.app_tracker
+        self.all_apps = []
+        self.refresh_apps()  # Populate list initially
+
     def select_app(self):
         selected_index = self.app_listbox.curselection()
         if selected_index:
@@ -69,8 +108,6 @@ class SelectAppWindow(tk.Frame):
         """Fetch all app names and display them in the listbox."""
         try:
             self.app_listbox.delete(0, tk.END)
-            #if filter_reset:
-            #    self.logic.app_tracker.start_filter_reset(refresh=True, update_pids=True)
             self.all_apps = self.app_tracker.get_app_names()
 
             if not self.all_apps:
@@ -80,9 +117,9 @@ class SelectAppWindow(tk.Frame):
                     self.app_listbox.insert(tk.END, app)
         except RuntimeError as e:
             if str(e) == "main thread is not in main loop":
-                self.refresh_apps(filter_reset)  # Retry if the error is due to unsafe threading
+                self.refresh_apps(filter_reset)
             else:
-                messagebox.showerror("Error", f"refresh_apps() encountered an error it did not expect: {str(format_exc())}")
+                messagebox.showerror("Error", f"refresh_apps() unexpected error: {str(format_exc())}")
 
     @threaded
     def update_search(self, *args):
@@ -90,6 +127,6 @@ class SelectAppWindow(tk.Frame):
         search_text = self.search_var.get().lower()
         filtered_apps = [app for app in self.all_apps if search_text in app.lower()]
 
-        self.app_listbox.delete(0, tk.END)  # Clear the listbox
+        self.app_listbox.delete(0, tk.END)
         for app in filtered_apps:
             self.app_listbox.insert(tk.END, app)

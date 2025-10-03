@@ -18,7 +18,10 @@
 """
 
 import tkinter as tk
+import tkinter.font as tkfont
 import os
+import sys
+import platform
 from traceback import format_exc
 
 from core.screens.splash_screen import splash_screen
@@ -33,6 +36,21 @@ def apply_dark_theme(root):
 
     root.tk_setPalette(background=dark_bg, foreground=dark_fg)
 
+def set_default_font(root):
+    system = platform.system()
+
+    if system == "Windows":
+        family = "Segoe UI Semibold"
+    elif system == "Darwin":  # macOS
+        family = "Helvetica"
+    else:  # Linux/Other
+        family = "DejaVu Sans"
+
+    default_font = tkfont.nametofont("TkDefaultFont")
+    default_font.configure(family=family, size=12)
+    root.option_add("*Font", default_font)
+
+
 def main():
     try:
         root = tk.Tk()
@@ -41,7 +59,15 @@ def main():
         if is_dark_mode():
             apply_dark_theme(root)
 
-        icon_name = "core\\resources\\icon.ico" if os.name == 'nt' else "core/resources/icon.icns"
+        set_default_font(root)
+
+        if os.name == 'nt':
+            icon_name = "core\\resources\\icon.ico"
+        elif sys.platform == 'darwin':  # macOS
+            icon_name = "core/resources/icon.icns"
+        else:  # Linux or other Unix-like systems
+            icon_name = "core/resources/icon.png"
+
         icon_path = resource_path(icon_name)
 
         root.iconbitmap(icon_path)
@@ -54,6 +80,7 @@ def main():
         root.mainloop()
     except Exception as e:
         error_message = f"An unexpected error occurred:\n{str(e)}\n\n{format_exc()}"
+        print(error_message)
          
         messagebox.showerror("Error", error_message)
 

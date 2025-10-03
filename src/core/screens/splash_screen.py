@@ -2,17 +2,20 @@ import os
 import sys
 import time
 import requests
-import socket
 import tkinter as tk
 import webbrowser
 from PIL import ImageTk, Image
 from tkinter.ttk import *  # noqa: F403
 from traceback import format_exc
 import platform
+if os.name == "nt":
+    import msvcrt
+else:
+    import fcntl
 
 from core.utils.tk_utils import center, messagebox
 from core.gui_root import GUIRoot
-from core.utils.file_utils import sessions_exist, user_dir_exists, config_file, read_file, write_file
+from core.utils.file_utils import sessions_exist, user_dir_exists, config_file, read_file, write_file, lock_file
 from _path import resource_path
 
 from _version import __version__
@@ -66,23 +69,27 @@ def new_updates():
         return False
 
     except requests.RequestException as e:
-        print(f"Error checking for updates: Network error - {str(e)}")
+        print(f"Error checking for updates: Network error - {str(e) + ' - ' + str(format_exc())}")
     except (KeyError, ValueError, IndexError) as e:
-        print(f"Error checking for updates: Parsing error - {str(e)}")
+        print(f"Error checking for updates: Parsing error - {str(e) + ' - ' + str(format_exc())}")
     except Exception:
         messagebox.showerror("Error", f"An unexpected error occurred while checking for updates: {str(format_exc())}")
     return False
 
-def is_running():
-    """Check if the application is already running"""
+def is_running(lock_path=lock_file()):
+    """Return True if another instance of this app is already running."""
+    global lock_file
+    lock_file = open(lock_path, "w")
+
     try:
-        # Try to create a socket to check if the port is available
-        sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        sock.bind(('localhost', 0))  # Bind to an available port
-        sock.close()
-        return False  # If we can bind, the app is not running
-    except OSError:
-        return True  # If we can't bind, the app is likely running
+        if os.name == "nt":
+            msvcrt.locking(lock_file.fileno(), msvcrt.LK_NBLCK, 1)
+        else:
+            fcntl.flock(lock_file, fcntl.LOCK_EX | fcntl.LOCK_NB)
+        return False  # Lock acquired → no other instance
+    except (OSError, IOError):
+        return True  # Lock failed → already running
+
 
 def splash_screen(root):
     """Display a splash screen while the application loads."""
@@ -101,7 +108,7 @@ def splash_screen(root):
     frame.grid_columnconfigure(0, weight=1)
 
     # App icon
-    icon_img_path = "core/resources/icon-resources/icon.png"
+    icon_img_path = "core/resources/icon.png"
     icon_img = Image.open(resource_path(icon_img_path)).resize((256, 256), Image.Resampling.LANCZOS)
     icon_img = ImageTk.PhotoImage(icon_img)
     icon_label = tk.Label(frame, image=icon_img, bg="#2E2E2E")

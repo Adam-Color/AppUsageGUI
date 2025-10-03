@@ -1,9 +1,33 @@
 import tkinter as tk
+import os
 import threading
 import queue
-from core.utils.tk_utils import messagebox
+from PIL import Image, ImageTk
 
+from core.utils.tk_utils import messagebox
 from core.utils.time_utils import format_time
+
+from _path import resource_path
+
+def load_white_icon(path, size=(50,50)):
+    # Load image
+    img = Image.open(path).convert("RGBA")
+
+    # Replace non-transparent pixels with white
+    datas = img.getdata()
+    new_data = []
+    for item in datas:
+        if item[3] > 0:  # keep transparency
+            new_data.append((255, 255, 255, item[3]))  # white
+        else:
+            new_data.append(item)
+    img.putdata(new_data)
+
+    # Resize if needed
+    if size:
+        img = img.resize(size, Image.LANCZOS)
+
+    return ImageTk.PhotoImage(img)
 
 class TrackerWindow(tk.Frame):
     TIME_UPDATE = "time"
@@ -18,6 +42,13 @@ class TrackerWindow(tk.Frame):
         self.rec_time = 0
         self.stop_event = threading.Event()
         self.update_thread = None
+        
+        # images
+        self.pause_photo = load_white_icon(os.path.join(resource_path("core"), "resources", "button-resources", "pause_button.png"))
+
+        self.play_photo = load_white_icon(os.path.join(resource_path("core"), "resources", "button-resources", "play_button.png"))
+
+        self.stop_photo = load_white_icon(os.path.join(resource_path("core"), "resources", "button-resources", "stop_button.png"))
 
         self._setup_widgets()
 
@@ -25,21 +56,60 @@ class TrackerWindow(tk.Frame):
         self._periodic_update()
 
     def _setup_widgets(self):
-        self.note_label = tk.Label(self, text="Tracking stops automatically when tracked app is fully closed")
-        self.note_label.pack(pady=5)
+        # Info note
+        self.note_label = tk.Label(
+            self,
+            text="Tracking stops automatically when the tracked app is closed",
+            font=("TkDefaultFont", 10)
+        )
+        self.note_label.pack(pady=(10, 5))
 
-        self.page_label = tk.Label(self, text="Tracking the selected app:")
+        # Current app being tracked
+        self.page_label = tk.Label(
+            self,
+            text="Tracking the selected app:",
+            font=("TkDefaultFont", 11, "italic")
+        )
         self.page_label.pack(pady=5)
 
-        self.time_label = tk.Label(self, text=self.track_time_disp)
-        self.time_label.pack(pady=10)
+        # Large time display
+        self.time_label = tk.Label(
+            self,
+            text=self.track_time_disp,
+            font=("TkDefaultFont", 32, "bold")
+        )
+        self.time_label.pack(pady=20)
 
+        # Controls (Pause/Resume + Stop) side by side
+        controls_frame = tk.Frame(self)
+        controls_frame.pack(pady=15)
+
+        # Pause/Resume button
         self.pause_toggle_text = tk.StringVar(value="Pause")
-        pause_button = tk.Button(self, textvariable=self.pause_toggle_text, command=self.toggle_pause_tracker, width=10)
-        pause_button.pack(pady=5)
+        self.pause_button = tk.Button(
+            controls_frame,
+            textvariable=self.pause_toggle_text,
+            image=self.pause_photo,
+            compound="top",
+            command=self.toggle_pause_tracker,
+            bd=0,                # remove border
+            padx=10,             # horizontal padding
+            pady=10              # vertical padding
+        )
+        self.pause_button.pack(side="left", padx=1)
 
-        self.stop_button = tk.Button(self, text="Stop", command=self._stop, width=10)
-        self.stop_button.pack(pady=5)
+        # Stop button
+        self.stop_button = tk.Button(
+            controls_frame,
+            text="Stop",
+            image=self.stop_photo,
+            command=self._stop,
+            compound="top",
+            bd=0,                # remove border
+            padx=10,             # horizontal padding
+            pady=10              # vertical padding
+        )
+        self.stop_button.pack(side="left", padx=1)
 
     def _update_time_label(self):
         while not self.stop_event.is_set():
@@ -62,13 +132,14 @@ class TrackerWindow(tk.Frame):
 
             self.stop_event.wait(timeout=0.1)
 
-        # Handle exit - check if we have recorded time
         if round(self.logic.time_tracker.get_elapsed_time()) > 0:
             self.controller.show_frame("SaveWindow")
         else:
-            messagebox.showerror("App Not Found", 
-                    "The tracked application is not running and cannot be found.\n"
-                    "This session cannot be continued because the target application is not available.")
+            messagebox.showerror(
+                "App Not Found",
+                "The tracked application is not running and cannot be found.\n"
+                "This session cannot be continued because the target application is not available."
+            )
             self.controller.reset_frames()
             self.controller.show_frame("MainWindow")
 
@@ -99,26 +170,34 @@ class TrackerWindow(tk.Frame):
     def _update_display(self):
         secs = self.logic.time_tracker.get_time()
         if secs is not None:
-            time_text = f"{format_time(int(secs))} recorded."
+            time_text = format_time(int(secs))
         else:
             time_text = "No time data available"
 
         if self.logic.mouse_tracker.is_pausing():
             self.page_label.config(text="Tracking paused, mouse is idle...")
+            self.pause_toggle_photo = self.play_photo
+            self.pause_button["state"] = "disabled"
+            self.stop_button["state"] = "disabled"
             self.pause_toggle_text.set("Resume")
         else:
             new_text = f"Tracking the selected app: {self.app}"
             if self.page_label["text"] != new_text:
-                self.pause_toggle_text.set("Pause")
+                self.pause_toggle_photo = self.pause_photo
                 self.page_label.config(text=new_text)
+                self.pause_button["state"] = "normal"
+                self.stop_button["state"] = "normal"
+                self.pause_toggle_text.set("Pause")
 
         self.update_queue.put((self.TIME_UPDATE, time_text))
         self.logic.file_handler.set_continuing_tracker(False)
 
     def toggle_pause_tracker(self, button=True):
         if self.pause_toggle_text.get() == "Pause":
+            self.pause_button.config(image=self.play_photo)
             self.pause_toggle_text.set("Resume")
         else:
+            self.pause_button.config(image=self.pause_photo)
             self.pause_toggle_text.set("Pause")
 
         if button:
@@ -128,7 +207,10 @@ class TrackerWindow(tk.Frame):
                 self.logic.time_tracker.pause()
 
     def _stop(self):
-        confirm = messagebox.askyesno("Confirm Stop Tracking", "Are you sure you want to stop tracking?\nProgress will be saved.")
+        confirm = messagebox.askyesno(
+            "Confirm Stop Tracking",
+            "Are you sure you want to stop tracking?\nProgress will be saved."
+        )
         if confirm:
             self.stop_event.set()
 
@@ -146,7 +228,10 @@ class TrackerWindow(tk.Frame):
 
     def start_update_thread(self):
         self.stop_event.clear()
-        self.update_thread = threading.Thread(target=self._update_time_label, name="update_time_label", daemon=True)
+        self.update_thread = threading.Thread(
+            target=self._update_time_label,
+            name="update_time_label", daemon=True
+        )
         self.update_thread.start()
 
     def stop_threads(self):

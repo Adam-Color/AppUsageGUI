@@ -1,8 +1,8 @@
 import tkinter as tk
 from core.utils.tk_utils import messagebox
-
 from core.utils.file_utils import get_sessions, get_sessions_directory, get_session_project, get_projects
 from core.utils.time_utils import format_time
+
 
 class SessionsWindow(tk.Frame):
     def __init__(self, parent, controller, logic_controller):
@@ -10,59 +10,71 @@ class SessionsWindow(tk.Frame):
         self.controller = controller
         self.logic = logic_controller
 
-        # label for SessionsWindow
-        label = tk.Label(self, text="Continue, Analyze, or Modify a session:")
-        label.pack(side="top", fill="x", pady=5)
+        # Title label
+        title_label = tk.Label(self, text="Session Management", font=("Arial", 14, "bold"))
+        title_label.pack(side="top", fill="x", pady=10)
 
-        # Project filter dropdown
+        # Project filter frame
         filter_frame = tk.Frame(self)
-        filter_frame.pack(side="top", fill="x", pady=5, padx=20)
-        
+        filter_frame.pack(side="top", fill="x", padx=20, pady=5)
+
         filter_label = tk.Label(filter_frame, text="Filter by Project:")
         filter_label.pack(side="left", padx=(0, 5))
-        
+
         self.project_filter_var = tk.StringVar()
         self.project_filter_dropdown = tk.OptionMenu(filter_frame, self.project_filter_var, "")
         self.project_filter_dropdown.pack(side="left")
-        
+
         # Load project filter options
         self.load_project_filter_options()
 
-        # create the frame for the listbox and scrollbar
+        # Create the frame for the listbox and scrollbar
         list_frame = tk.Frame(self)
-        list_frame.pack(fill="both", expand=True)
+        list_frame.pack(fill="both", expand=True, padx=20, pady=10)
 
-        # create the listbox
+        # Create the listbox
         self.session_listbox = tk.Listbox(list_frame, selectmode=tk.SINGLE)
         self.session_listbox.pack(side="left", fill="both", expand=True)
 
-        # create the scrollbar
+        # Create the scrollbar
         scrollbar = tk.Scrollbar(list_frame, orient="vertical", command=self.session_listbox.yview)
         scrollbar.pack(side="right", fill="y")
 
-        # configure the listbox to use the scrollbar
+        # Configure the listbox to use the scrollbar
         self.session_listbox.config(yscrollcommand=scrollbar.set)
 
+        # Load sessions
         self.load_sessions()
 
-        # button to make the selection
-        select_button = tk.Button(self, text="Continue from selected session", command=self.select_session, width=25)
-        select_button.pack(pady=5)
+        # Button frame
+        button_frame = tk.Frame(self)
+        button_frame.pack(fill="x", padx=20, pady=10)
 
-        # button to analyze the session
-        analyze_button = tk.Button(self, text="Analyze selected session", command=self.analyze_session, width=25)
-        analyze_button.pack(pady=5)
+        # Continue button
+        select_button = tk.Button(button_frame, text="Continue Session",
+                                  command=self.select_session, width=20)
+        select_button.pack(side="left", padx=5)
 
-        # button to delete the session
-        delete_button = tk.Button(self, text="Delete selected session", command=self.delete_session, width=25)
-        delete_button.pack(pady=5)
+        # Analyze button
+        analyze_button = tk.Button(button_frame, text="Analyze Session",
+                                   command=self.analyze_session, width=20)
+        analyze_button.pack(side="left", padx=5)
 
-        # button to move session to project
-        move_button = tk.Button(self, text="Move session to project", command=self.move_session_to_project, width=25)
-        move_button.pack(pady=5)
+        # Delete button
+        delete_button = tk.Button(button_frame, text="Delete Session",
+                                  command=self.delete_session, width=20)
+        delete_button.pack(side="left", padx=5)
 
-        back_button = tk.Button(self, text="Main Menu", command=lambda: (self.controller.reset_frames(), self.controller.show_frame("MainWindow")))
-        back_button.pack(pady=5, side='bottom')
+        # Move button
+        move_button = tk.Button(button_frame, text="Change Session's Project",
+                                command=self.move_session_to_project, width=20)
+        move_button.pack(side="left", padx=5)
+
+        # Back button
+        back_button = tk.Button(self, text="Main Menu",
+                                command=lambda: (self.controller.reset_frames(),
+                                                 self.controller.show_frame("MainWindow")))
+        back_button.pack(pady=10, side="bottom")
 
     def load_project_filter_options(self):
         """Load available project filter options into the dropdown"""
@@ -85,7 +97,9 @@ class SessionsWindow(tk.Frame):
         self.project_filter_var.set("All")
         
         # Bind the dropdown change event
-        self.project_filter_var.trace_add('write', lambda: self.on_filter_change(self.project_filter_var.get()))
+        self.project_filter_var.trace_add(
+            'write', lambda *args: self.on_filter_change(self.project_filter_var.get())
+        )
 
     def on_filter_change(self, selected_filter):
         """Handle project filter dropdown change"""
@@ -189,9 +203,11 @@ class SessionsWindow(tk.Frame):
         # tell the controller we are continuing from a session
         self.logic.file_handler.set_continuing_session(True)
 
-        # load selected session data into the file handler,
-        # so it's ready to be pulled
-        self.logic.file_handler.load_session_data(selected_session_name, project_name)
+        # Only load project info if it's part of a project
+        if project_name:
+            self.logic.file_handler.load_session_data(selected_session_name, project_name)
+        else:
+            self.logic.file_handler.load_session_data(selected_session_name, None)
 
         # start/reset tracking threads
         self.logic.app_tracker.reset()
@@ -380,12 +396,10 @@ class SessionsWindow(tk.Frame):
         else:
             confirm_message = f"Move session '{session_name}' from project '{current_project}' to project '{target_project}'?"
         
-        confirm_message += "\n\nThis action cannot be undone."
-        
         if messagebox.askyesno("Confirm Move", confirm_message):
             # Execute the move
             success = self.logic.file_handler.move_session_to_project(
-                session_name, current_project, target_project if target_project != "No Project" else None
+                session_name, current_project, target_project
             )
             
             if success:
