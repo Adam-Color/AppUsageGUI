@@ -1,7 +1,6 @@
 import os
 import sys
 import time
-import requests
 import tkinter as tk
 import webbrowser
 from PIL import ImageTk, Image
@@ -14,7 +13,6 @@ else:
     import fcntl
 
 from core.utils.tk_utils import center, messagebox
-from core.gui_root import GUIRoot
 from core.utils.file_utils import sessions_exist, user_dir_exists, config_file, read_file, write_file, lock_file
 from _path import resource_path
 
@@ -44,6 +42,7 @@ def new_updates():
     
     settings.update({"last_update_check": time.time()})
     write_file(config_file(), settings)
+    import requests
     try:
         print("Checking for updates...")
         response = requests.get("https://api.github.com/repos/adam-color/AppUsageGUI/releases/latest", timeout=10)
@@ -187,6 +186,7 @@ def splash_screen(root):
                         messagebox.showinfo("Update", "Please install the latest version after it downloads,\nautomatic updates are not yet available.\n\nPlease close AppUsageGUI after you download the new installer.")
 
             update_progress(70)
+            from core.gui_root import GUIRoot
             win = GUIRoot(root)
 
             update_progress(100)
