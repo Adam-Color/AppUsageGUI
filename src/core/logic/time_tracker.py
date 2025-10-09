@@ -1,5 +1,4 @@
 import time
-from traceback import print_exc
 
 from core.utils.logic_utils import threaded
 
@@ -77,6 +76,7 @@ class TimeTracker:
         try:
             self.captures = self.controller.file_handler.get_data()['time_captures']
         except KeyError as e:
+            from traceback import print_exc
             # handle v1 session files
             if str(e) != '\'time_captures\'':
                 print("Error loading time captures from session file:\n")

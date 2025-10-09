@@ -2,7 +2,6 @@ import os
 import sys
 import tkinter as tk
 from tkinter import ttk
-from traceback import format_exc
 from core.utils.tk_utils import messagebox
 import platform
 
@@ -271,6 +270,7 @@ class GUIRoot(tk.Frame):
             self.selected_project = preserved_project
 
         except Exception:
+            from traceback import format_exc
             error = "Crash in reset_frames():\n\n" + format_exc()
             messagebox.showerror("Error", error)
             print(error)

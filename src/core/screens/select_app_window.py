@@ -1,6 +1,5 @@
 import tkinter as tk
 from core.utils.tk_utils import messagebox
-from traceback import format_exc
 from core.utils.logic_utils import threaded
 
 
@@ -119,6 +118,7 @@ class SelectAppWindow(tk.Frame):
             if str(e) == "main thread is not in main loop":
                 self.refresh_apps(filter_reset)
             else:
+                from traceback import format_exc
                 error = f"refresh_apps() runtime error:\n\n{str(e)} - {str(format_exc())}"
                 messagebox.showerror("Error", error)
                 print(error)

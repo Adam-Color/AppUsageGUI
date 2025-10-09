@@ -22,7 +22,6 @@ import tkinter.font as tkfont
 import os
 import sys
 import platform
-from traceback import format_exc
 
 from core.screens.splash_screen import splash_screen
 from core.utils.tk_utils import is_dark_mode, set_main_window, messagebox
@@ -79,6 +78,7 @@ def main():
         splash_screen(root)
         root.mainloop()
     except Exception as e:
+        from traceback import format_exc
         error_message = f"An unexpected error occurred:\n{str(e)}\n\n{format_exc()}"
         print(error_message)
          

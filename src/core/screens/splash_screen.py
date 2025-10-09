@@ -2,10 +2,7 @@ import os
 import sys
 import time
 import tkinter as tk
-import webbrowser
-from PIL import ImageTk, Image
 from tkinter.ttk import *  # noqa: F403
-from traceback import format_exc
 import platform
 if os.name == "nt":
     import msvcrt
@@ -68,10 +65,13 @@ def new_updates():
         return False
 
     except requests.RequestException as e:
+        from traceback import format_exc
         print(f"Error checking for updates: Network error - {str(e) + ' - ' + str(format_exc())}")
     except (KeyError, ValueError, IndexError) as e:
+        from traceback import format_exc
         print(f"Error checking for updates: Parsing error - {str(e) + ' - ' + str(format_exc())}")
     except Exception:
+        from traceback import format_exc
         error = f"An unexpected error occurred while checking for updates:\n{str(format_exc())}"
         messagebox.showerror("Error", error)
         print(error)
@@ -101,6 +101,9 @@ def splash_screen(root):
     center(splash_window)
     splash_window.configure(bg="#2E2E2E")
 
+    # for debugging import times (python -X importtime src/main.py | sort):
+    sys.exit(0)
+
     # Setup layout
     frame = tk.Frame(splash_window, bg="#2E2E2E")
     frame.pack(expand=True, fill="both")
@@ -109,6 +112,7 @@ def splash_screen(root):
     frame.grid_columnconfigure(0, weight=1)
 
     # App icon
+    from PIL import ImageTk, Image
     icon_img_path = "core/resources/icon.png"
     icon_img = Image.open(resource_path(icon_img_path)).resize((256, 256), Image.Resampling.LANCZOS)
     icon_img = ImageTk.PhotoImage(icon_img)
@@ -179,6 +183,7 @@ def splash_screen(root):
                         if asset['name'].endswith(suffix):
                             download_url = asset['browser_download_url']
                             break
+                    import webbrowser
                     if suffix is None:
                         webbrowser.open_new_tab("https://github.com/adam-color/AppUsageGUI/releases/latest")
                         messagebox.showinfo("Update", "Your platform is currently unsupported.")
@@ -198,6 +203,7 @@ def splash_screen(root):
             root.after(300, lambda: win.pack(side="top", fill="both", expand=True))
 
         except Exception:
+            from traceback import format_exc
             splash_window.destroy()
             error = str(format_exc())
             print(error)
