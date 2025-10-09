@@ -101,8 +101,8 @@ def splash_screen(root):
     center(splash_window)
     splash_window.configure(bg="#2E2E2E")
 
-    # for debugging import times (python -X importtime src/main.py | sort):
-    sys.exit(0)
+    #HACK for debugging import times (python -X importtime src/main.py | sort):
+    #sys.exit(0)
 
     # Setup layout
     frame = tk.Frame(splash_window, bg="#2E2E2E")
