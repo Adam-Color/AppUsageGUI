@@ -269,7 +269,9 @@ class GUIRoot(tk.Frame):
             self.selected_project = preserved_project
 
         except Exception:
-            messagebox.showerror("Error", f"Crash in reset_frames(): {str(format_exc())}")
+            error = "Crash in reset_frames():\n\n" + format_exc()
+            messagebox.showerror("Error", error)
+            print(error)
 
     def on_close(self):
         """Handle cleanup and close the application."""

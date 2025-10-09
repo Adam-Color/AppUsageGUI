@@ -119,7 +119,9 @@ class SelectAppWindow(tk.Frame):
             if str(e) == "main thread is not in main loop":
                 self.refresh_apps(filter_reset)
             else:
-                messagebox.showerror("Error", f"refresh_apps() unexpected error: {str(format_exc())}")
+                error = f"refresh_apps() runtime error:\n\n{str(e)} - {str(format_exc())}"
+                messagebox.showerror("Error", error)
+                print(error)
 
     @threaded
     def update_search(self, *args):

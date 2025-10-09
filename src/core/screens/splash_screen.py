@@ -72,7 +72,9 @@ def new_updates():
     except (KeyError, ValueError, IndexError) as e:
         print(f"Error checking for updates: Parsing error - {str(e) + ' - ' + str(format_exc())}")
     except Exception:
-        messagebox.showerror("Error", f"An unexpected error occurred while checking for updates: {str(format_exc())}")
+        error = f"An unexpected error occurred while checking for updates:\n{str(format_exc())}"
+        messagebox.showerror("Error", error)
+        print(error)
     return False
 
 def is_running(lock_path=lock_file()):
