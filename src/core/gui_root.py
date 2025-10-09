@@ -8,6 +8,7 @@ import platform
 
 from _version import __version__ as version
 from _path import resource_path
+from core.utils.tk_utils import center_relative_to_parent
 
 from .screens.main_window import MainWindow
 from .screens.select_app_window import SelectAppWindow
@@ -143,9 +144,10 @@ class GUIRoot(tk.Frame):
         # Reusable Toplevel license window
         win = tk.Toplevel(self.parent)
         win.title("License")
-        win.geometry("700x700")
+        win.geometry("600x600")
         win.transient(self.parent)
         win.resizable(True, True)
+        center_relative_to_parent(win, self.parent)
 
         # Use a frame for padding and layout
         frame = ttk.Frame(win, padding=(8, 8, 8, 8))
