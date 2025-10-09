@@ -7,7 +7,7 @@ import platform
 
 from _version import __version__ as version
 from _path import resource_path
-from core.utils.tk_utils import center_relative_to_parent
+from core.utils.tk_utils import center_relative_to_parent, center
 
 from .screens.main_window import MainWindow
 from .screens.select_app_window import SelectAppWindow
@@ -62,6 +62,8 @@ class GUIRoot(tk.Frame):
         self.selected_project = None
         self.init_screens()
         self.show_frame("MainWindow")
+
+        center(self.parent, -13, -15)
 
         self.parent.protocol("WM_DELETE_WINDOW", self.on_close)
 

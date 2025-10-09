@@ -3,23 +3,34 @@ import tkinter.messagebox as messagebox
 import os
 import sys
 
-# https://stackoverflow.com/questions/3352918/how-to-center-a-window-on-the-screen-in-tkinter
-def center(win):
+def center(win, offset_x=0, offset_y_percent=0):
     """
-    centers a tkinter window
-    :param win: the main window or Toplevel window to center
+    Center a Tkinter window on the screen with optional percentage offsets.
+
+    Args:
+        win (tk.Tk or tk.Toplevel): The window to center.
+        offset_x (float): Horizontal offset as a percentage of the screen width.
+                                  Positive = move right, negative = move left.
+        offset_y_percent (float): Vertical offset as a percentage of the screen height.
+                                  Positive = move down, negative = move up.
     """
     win.update_idletasks()
+
+    # Get actual window and screen sizes
     width = win.winfo_width()
-    frm_width = win.winfo_rootx() - win.winfo_x()
-    win_width = width + 2 * frm_width
     height = win.winfo_height()
-    titlebar_height = win.winfo_rooty() - win.winfo_y()
-    win_height = height + titlebar_height + frm_width
-    x = win.winfo_screenwidth() // 2 - win_width // 2
-    y = win.winfo_screenheight() // 2 - win_height // 2
-    win.geometry('{}x{}+{}+{}'.format(width, height, x, y))
-    win.deiconify()
+    screen_width = win.winfo_screenwidth()
+    screen_height = win.winfo_screenheight()
+
+    # Convert percentage offsets to pixels
+    offset_x = int(screen_width * (offset_x / 100))
+    offset_y = int(screen_height * (offset_y_percent / 100))
+
+    # Compute center position
+    x = int((screen_width / 2) - (width / 2) + offset_x)
+    y = int((screen_height / 2) - (height / 2) + offset_y)
+
+    win.geometry(f"+{x}+{y}")
 
 def center_relative_to_parent(win, parent):
     """

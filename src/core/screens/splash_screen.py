@@ -194,6 +194,7 @@ def splash_screen(root):
 
             update_progress(70)
             from core.gui_root import GUIRoot
+            update_progress(80)
             win = GUIRoot(root)
 
             update_progress(100)
