@@ -143,7 +143,7 @@ class GUIRoot(tk.Frame):
         # Reusable Toplevel license window
         win = tk.Toplevel(self.parent)
         win.title("License")
-        win.geometry("700x450")
+        win.geometry("700x700")
         win.transient(self.parent)
         win.resizable(True, True)
 
