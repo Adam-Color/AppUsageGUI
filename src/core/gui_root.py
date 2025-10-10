@@ -131,7 +131,7 @@ class GUIRoot(tk.Frame):
 
     def show_license(self, _=None):
         """Open license file in a scrollable popup window (resizable, with fixed footer)."""
-        # --- Prevent duplicate windows ---
+        # Prevent duplicate windows
         if hasattr(self, "license_window") and self.license_window and self.license_window.winfo_exists():
             self.license_window.lift()
             self.license_window.focus_force()
@@ -200,7 +200,14 @@ class GUIRoot(tk.Frame):
 
     def show_logs(self, _=None):
         """Display live-updating logs in a scrollable window with fixed footer buttons."""
+        # Prevent duplicate windows
+        if hasattr(self, "log_window") and self.log_window and self.log_window.winfo_exists():
+            self.log_window.lift()
+            self.log_window.focus_force()
+            return
+
         win = tk.Toplevel(self.parent)
+        self.log_window = win  # keep reference
         win.title("Application Logs")
         win.geometry("600x600")
         win.transient(self.parent)
@@ -215,7 +222,7 @@ class GUIRoot(tk.Frame):
         frame.rowconfigure(0, weight=1)
         frame.columnconfigure(0, weight=1)
 
-        # --- Header and text setup ---
+        # Header and text setup
         header = (
             f"=== {self.parent.title()} ===\n"
             f"Logging Started: {datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}\n"
@@ -236,7 +243,7 @@ class GUIRoot(tk.Frame):
         scrollbar.grid(row=0, column=1, sticky="ns")
         text_box.config(yscrollcommand=scrollbar.set)
 
-        # --- Buttons at bottom (separate frame) ---
+        # Buttons at bottom (separate frame)
         btn_frame = ttk.Frame(win)
         btn_frame.grid(row=1, column=0, sticky="ew", pady=(6, 8))
         btn_frame.columnconfigure(0, weight=1)
@@ -251,7 +258,7 @@ class GUIRoot(tk.Frame):
         ttk.Button(btn_frame, text="Copy Logs", command=copy_logs).grid(row=0, column=0, sticky="w", padx=(8, 0))
         ttk.Button(btn_frame, text="Close", command=win.destroy).grid(row=0, column=1, sticky="e", padx=(0, 8))
 
-        # --- Live Updating ---
+        # Live Updating
         def refresh_logs():
             """Refresh text with new log output every second."""
             current_text = text_box.get("1.0", "end-1c")
