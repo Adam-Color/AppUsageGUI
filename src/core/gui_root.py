@@ -52,7 +52,7 @@ class GUIRoot(tk.Frame):
 
         # Options list
         self.options = [
-            {"label": "Update", "callback": self.update_and_check},
+            {"label": "Update Check", "callback": self.update_and_check},
             {"label": "Logs", "callback": self.show_logs},
             {"label": "License", "callback": self.show_license},
             {"label": "About", "callback": self.show_about},
@@ -130,12 +130,18 @@ class GUIRoot(tk.Frame):
         )
 
     def show_license(self, _=None):
-        """Open license file in a scrollable popup window (reusable)."""
+        """Open license file in a scrollable popup window (resizable, with fixed footer)."""
+        # --- Prevent duplicate windows ---
+        if hasattr(self, "license_window") and self.license_window and self.license_window.winfo_exists():
+            self.license_window.lift()
+            self.license_window.focus_force()
+            return
+
         license_paths_to_try = [
             "_internal/LICENSE.txt",
             "LICENSE.txt",
             os.path.join(os.path.dirname(__file__), "_internal", "LICENSE.txt"),
-            resource_path("LICENSE.txt")
+            resource_path("LICENSE.txt"),
         ]
 
         text = None
@@ -146,7 +152,6 @@ class GUIRoot(tk.Frame):
                         text = f.read()
                         break
             except Exception:
-                # ignore and try next
                 pass
 
         if text is None:
@@ -155,85 +160,96 @@ class GUIRoot(tk.Frame):
             messagebox.showerror("License", error_txt)
             return
 
-        # Reusable Toplevel license window
         win = tk.Toplevel(self.parent)
+        self.license_window = win  # keep reference
         win.title("License")
         win.geometry("600x600")
         win.transient(self.parent)
         win.resizable(True, True)
         center_relative_to_parent(win, self.parent)
+        win.protocol("WM_DELETE_WINDOW", lambda: (win.destroy(), setattr(self, "license_window", None)))
 
-        # Use a frame for padding and layout
+        win.rowconfigure(0, weight=1)
+        win.columnconfigure(0, weight=1)
+
         frame = ttk.Frame(win, padding=(8, 8, 8, 8))
-        frame.pack(fill="both", expand=True)
+        frame.grid(row=0, column=0, sticky="nsew")
+        frame.rowconfigure(0, weight=1)
+        frame.columnconfigure(0, weight=1)
 
-        # Text widget + scrollbar
         text_box = tk.Text(frame, wrap="word", borderwidth=0)
         text_box.insert("1.0", text)
-        text_box.config(state="disabled")  # read-only
-        text_box.pack(side="left", fill="both", expand=True)
+        text_box.config(state="disabled")
+        text_box.grid(row=0, column=0, sticky="nsew")
 
         scrollbar = ttk.Scrollbar(frame, orient="vertical", command=text_box.yview)
-        scrollbar.pack(side="right", fill="y")
+        scrollbar.grid(row=0, column=1, sticky="ns")
         text_box.config(yscrollcommand=scrollbar.set)
 
-        # Close button
         btn_frame = ttk.Frame(win)
-        btn_frame.pack(fill="x", pady=(6, 8))
-        close_btn = ttk.Button(btn_frame, text="Close", command=win.destroy)
-        close_btn.pack(side="right", padx=(0, 8))
+        btn_frame.grid(row=1, column=0, sticky="ew", pady=(6, 8))
+        btn_frame.columnconfigure(0, weight=1)
+        ttk.Button(btn_frame, text="Close", command=win.destroy).grid(row=0, column=0, sticky="e", padx=(0, 8))
+
     
     def update_and_check(self, _=None):
-        if new_updates():
+        if new_updates(manual_check=True):
             update()
         else:
             messagebox.showinfo("Update", "No new updates available.")
 
     def show_logs(self, _=None):
-        """Display live-updating logs in a scrollable window with timestamped header and copy button."""
+        """Display live-updating logs in a scrollable window with fixed footer buttons."""
         win = tk.Toplevel(self.parent)
         win.title("Application Logs")
-        win.geometry("400x500")
+        win.geometry("600x600")
         win.transient(self.parent)
         center_relative_to_parent(win, self.parent)
 
-        frame = ttk.Frame(win, padding=(8, 8, 8, 8))
-        frame.pack(fill="both", expand=True)
+        # Use grid instead of pack for better control
+        win.rowconfigure(0, weight=1)
+        win.columnconfigure(0, weight=1)
 
-        # Prepare header (once)
+        frame = ttk.Frame(win, padding=(8, 8, 8, 8))
+        frame.grid(row=0, column=0, sticky="nsew")
+        frame.rowconfigure(0, weight=1)
+        frame.columnconfigure(0, weight=1)
+
+        # --- Header and text setup ---
         header = (
             f"=== {self.parent.title()} ===\n"
-            f"Session started: {datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}\n"
-            f"Python: {sys.version.split("(")[0]}\n"
+            f"Logging Started: {datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}\n"
+            f"Python: {sys.version.split()[0]}\n"
             f"Platform: {platform.system()} ({platform.machine()})\n"
             f"Config: {read_file(config_file())}\n"
             f"{'=' * 30}\n\n"
         )
 
-        # Combine header and current log contents
         initial_text = header + (self.log_stream.getvalue() or "(No logs yet)\n")
 
         text_box = tk.Text(frame, wrap="word")
         text_box.insert("1.0", initial_text)
         text_box.config(state="disabled")
-        text_box.pack(side="left", fill="both", expand=True)
+        text_box.grid(row=0, column=0, sticky="nsew")
 
         scrollbar = ttk.Scrollbar(frame, orient="vertical", command=text_box.yview)
-        scrollbar.pack(side="right", fill="y")
+        scrollbar.grid(row=0, column=1, sticky="ns")
         text_box.config(yscrollcommand=scrollbar.set)
 
+        # --- Buttons at bottom (separate frame) ---
         btn_frame = ttk.Frame(win)
-        btn_frame.pack(fill="x", pady=(6, 8))
+        btn_frame.grid(row=1, column=0, sticky="ew", pady=(6, 8))
+        btn_frame.columnconfigure(0, weight=1)
+        btn_frame.columnconfigure(1, weight=1)
 
         def copy_logs():
-            """Copy full logs (with header) to clipboard."""
             full_text = header + self.log_stream.getvalue()
             win.clipboard_clear()
             win.clipboard_append(full_text)
             messagebox.showinfo("Logs", "Logs copied to clipboard.")
 
-        ttk.Button(btn_frame, text="Copy Logs", command=copy_logs).pack(side="left", padx=(8, 0))
-        ttk.Button(btn_frame, text="Close", command=win.destroy).pack(side="right", padx=(0, 8))
+        ttk.Button(btn_frame, text="Copy Logs", command=copy_logs).grid(row=0, column=0, sticky="w", padx=(8, 0))
+        ttk.Button(btn_frame, text="Close", command=win.destroy).grid(row=0, column=1, sticky="e", padx=(0, 8))
 
         # --- Live Updating ---
         def refresh_logs():

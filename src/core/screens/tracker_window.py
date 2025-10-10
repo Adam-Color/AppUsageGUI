@@ -141,10 +141,11 @@ class TrackerWindow(tk.Frame):
         if round(self.logic.time_tracker.get_elapsed_time()) > 0:
             self.controller.show_frame("SaveWindow")
         else:
+            error_msg = "The tracked application is not running and cannot be found.\nThis session cannot be continued because the target application is not available."
+            print(error_msg)
             messagebox.showerror(
                 "App Not Found",
-                "The tracked application is not running and cannot be found.\n"
-                "This session cannot be continued because the target application is not available."
+                error_msg
             )
             self.controller.reset_frames()
             self.controller.show_frame("MainWindow")

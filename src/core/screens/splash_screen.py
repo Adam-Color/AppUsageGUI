@@ -100,6 +100,7 @@ def splash_screen(root):
             from core.utils.app_utils import new_updates
             if new_updates():
                 from core.utils.app_utils import update
+                update()
             update_progress(70)
             from core.gui_root import GUIRoot
             update_progress(80)

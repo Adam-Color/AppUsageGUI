@@ -1,6 +1,6 @@
 from core.utils.tk_utils import messagebox
 
-def new_updates():
+def new_updates(manual_check=False):
     """Check for new updates on GitHub. Returns a boolean"""
     import os
     from core.utils.file_utils import read_file, write_file, config_file
@@ -24,7 +24,7 @@ def new_updates():
         settings.update({"last_update_check": last_update_check})
         write_file(config_file(), settings)
     
-    if time.time() - last_update_check < 43200:
+    if time.time() - last_update_check < 43200 and not manual_check:
         return False  # Check for updates only once every 12 hours
     
     settings.update({"last_update_check": time.time()})
