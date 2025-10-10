@@ -1,5 +1,7 @@
 import os
+import io
 import sys
+import datetime
 import tkinter as tk
 from tkinter import ttk
 from core.utils.tk_utils import messagebox
@@ -9,6 +11,7 @@ from _version import __version__ as version
 from _path import resource_path
 from core.utils.tk_utils import center_relative_to_parent, center
 from core.utils.app_utils import new_updates, update
+from core.utils.file_utils import read_file, config_file
 
 from .screens.main_window import MainWindow
 from .screens.select_app_window import SelectAppWindow
@@ -32,6 +35,13 @@ class GUIRoot(tk.Frame):
         from .logic_root import LogicRoot
         self.logic = LogicRoot(self)
 
+        # Capture stdout and stderr in memory so they can be viewed later
+        self.log_stream = io.StringIO()
+        self._stdout = sys.stdout
+        self._stderr = sys.stderr
+        sys.stdout = self.log_stream
+        sys.stderr = self.log_stream
+
         # Navigation history
         self.history = []
         self.history_index = -1
@@ -42,9 +52,10 @@ class GUIRoot(tk.Frame):
 
         # Options list
         self.options = [
+            {"label": "Update", "callback": self.update_and_check},
+            {"label": "Logs", "callback": self.show_logs},
             {"label": "License", "callback": self.show_license},
             {"label": "About", "callback": self.show_about},
-            {"label": "Update", "callback": self.update_and_check}
         ]
 
         # Add options depending on OS
@@ -178,6 +189,68 @@ class GUIRoot(tk.Frame):
         else:
             messagebox.showinfo("Update", "No new updates available.")
 
+    def show_logs(self, _=None):
+        """Display live-updating logs in a scrollable window with timestamped header and copy button."""
+        win = tk.Toplevel(self.parent)
+        win.title("Application Logs")
+        win.geometry("400x500")
+        win.transient(self.parent)
+        center_relative_to_parent(win, self.parent)
+
+        frame = ttk.Frame(win, padding=(8, 8, 8, 8))
+        frame.pack(fill="both", expand=True)
+
+        # Prepare header (once)
+        header = (
+            f"=== {self.parent.title()} ===\n"
+            f"Session started: {datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}\n"
+            f"Python: {sys.version.split("(")[0]}\n"
+            f"Platform: {platform.system()} ({platform.machine()})\n"
+            f"Config: {read_file(config_file())}\n"
+            f"{'=' * 30}\n\n"
+        )
+
+        # Combine header and current log contents
+        initial_text = header + (self.log_stream.getvalue() or "(No logs yet)\n")
+
+        text_box = tk.Text(frame, wrap="word")
+        text_box.insert("1.0", initial_text)
+        text_box.config(state="disabled")
+        text_box.pack(side="left", fill="both", expand=True)
+
+        scrollbar = ttk.Scrollbar(frame, orient="vertical", command=text_box.yview)
+        scrollbar.pack(side="right", fill="y")
+        text_box.config(yscrollcommand=scrollbar.set)
+
+        btn_frame = ttk.Frame(win)
+        btn_frame.pack(fill="x", pady=(6, 8))
+
+        def copy_logs():
+            """Copy full logs (with header) to clipboard."""
+            full_text = header + self.log_stream.getvalue()
+            win.clipboard_clear()
+            win.clipboard_append(full_text)
+            messagebox.showinfo("Logs", "Logs copied to clipboard.")
+
+        ttk.Button(btn_frame, text="Copy Logs", command=copy_logs).pack(side="left", padx=(8, 0))
+        ttk.Button(btn_frame, text="Close", command=win.destroy).pack(side="right", padx=(0, 8))
+
+        # --- Live Updating ---
+        def refresh_logs():
+            """Refresh text with new log output every second."""
+            current_text = text_box.get("1.0", "end-1c")
+            new_text = header + self.log_stream.getvalue()
+            if new_text != current_text:
+                text_box.config(state="normal")
+                text_box.delete("1.0", "end")
+                text_box.insert("1.0", new_text)
+                text_box.config(state="disabled")
+                text_box.see("end")
+            if win.winfo_exists():
+                win.after(1000, refresh_logs)
+
+        refresh_logs()
+
     def init_screens(self):
         """Pass the logic_controller when initializing screens"""
         for F in (MainWindow, SessionsWindow, ProjectSessionsWindow, ProjectsWindow, CreateProjectWindow, 
@@ -303,6 +376,10 @@ class GUIRoot(tk.Frame):
         # stop the MouseTracker thread
         if self.logic.mouse_tracker:
             self.logic.mouse_tracker.stop()
+
+        # Restore stdout/stderr
+        sys.stdout = self._stdout
+        sys.stderr = self._stderr
 
         # Destroy the root window
         self.parent.destroy()
