@@ -8,6 +8,7 @@ import platform
 from _version import __version__ as version
 from _path import resource_path
 from core.utils.tk_utils import center_relative_to_parent, center
+from core.utils.app_utils import new_updates, update
 
 from .screens.main_window import MainWindow
 from .screens.select_app_window import SelectAppWindow
@@ -43,6 +44,7 @@ class GUIRoot(tk.Frame):
         self.options = [
             {"label": "License", "callback": self.show_license},
             {"label": "About", "callback": self.show_about},
+            {"label": "Update", "callback": self.update_and_check}
         ]
 
         # Add options depending on OS
@@ -169,6 +171,12 @@ class GUIRoot(tk.Frame):
         btn_frame.pack(fill="x", pady=(6, 8))
         close_btn = ttk.Button(btn_frame, text="Close", command=win.destroy)
         close_btn.pack(side="right", padx=(0, 8))
+    
+    def update_and_check(self, _=None):
+        if new_updates():
+            update()
+        else:
+            messagebox.showinfo("Update", "No new updates available.")
 
     def init_screens(self):
         """Pass the logic_controller when initializing screens"""
