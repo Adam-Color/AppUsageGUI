@@ -397,5 +397,14 @@ class GUIRoot(tk.Frame):
         sys.stdout = self._stdout
         sys.stderr = self._stderr
 
+        # Print final logs to console
+        try:
+            if hasattr(self, "log_stream"):
+                print("\n[AppUsageGUI] --- Final Logs ---\n")
+                print(self.log_stream.getvalue() or "(No logs captured)")
+                print("\n[AppUsageGUI] --- End of Logs ---\n")
+        except Exception as e:
+            print(f"Failed to print logs: {e}")
+
         # Destroy the root window
         self.parent.destroy()
