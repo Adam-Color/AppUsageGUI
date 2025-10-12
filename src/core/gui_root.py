@@ -35,13 +35,6 @@ class GUIRoot(tk.Frame):
         from .logic_root import LogicRoot
         self.logic = LogicRoot(self)
 
-        # Capture stdout and stderr in memory so they can be viewed later
-        self.log_stream = io.StringIO()
-        self._stdout = sys.stdout
-        self._stderr = sys.stderr
-        sys.stdout = self.log_stream
-        sys.stderr = self.log_stream
-
         # Navigation history
         self.history = []
         self.history_index = -1
@@ -75,6 +68,13 @@ class GUIRoot(tk.Frame):
         self.selected_project = None
         self.init_screens()
         self.show_frame("MainWindow")
+
+        # Capture stdout and stderr in memory so they can be viewed later
+        self.log_stream = io.StringIO()
+        self._stdout = sys.stdout
+        self._stderr = sys.stderr
+        sys.stdout = self.log_stream
+        sys.stderr = self.log_stream
 
         center(self.parent, -13, -15)
 

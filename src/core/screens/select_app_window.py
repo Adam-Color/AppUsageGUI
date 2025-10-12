@@ -87,7 +87,6 @@ class SelectAppWindow(tk.Frame):
         )
         back_button.pack(side="right", padx=20)
 
-        # ===== Logic =====
         self.app_tracker = self.logic.app_tracker
         self.all_apps = []
         self.refresh_apps()  # Populate list initially
