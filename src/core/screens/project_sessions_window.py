@@ -128,6 +128,7 @@ class ProjectSessionsWindow(tk.Frame):
                 error_string += f"{name}: {error}\n"
             error_string += f"\nTo fix or delete session files, go to the {get_projects_directory()} directory"
             messagebox.showerror("Session Error", error_string)
+            print(error_string)
 
     def get_session_text(self):
         """Get the selected session text from the listbox"""

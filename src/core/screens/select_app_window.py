@@ -110,7 +110,7 @@ class SelectAppWindow(tk.Frame):
             self.all_apps = self.app_tracker.get_app_names()
 
             if not self.all_apps:
-                messagebox.showerror("Error", "No applications found.")
+                print("No applications found in refresh_apps()")
             else:
                 for app in self.all_apps:
                     self.app_listbox.insert(tk.END, app)

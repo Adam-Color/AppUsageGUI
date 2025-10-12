@@ -169,6 +169,7 @@ class SessionsWindow(tk.Frame):
                 name, error = session
                 error_string += "\n" + name + ": " + error
             messagebox.showerror("Session Error", error_string + f"\n\nTo fix or delete session files, go to the {get_sessions_directory()} directory\n")
+            print(error_string)
 
     def get_session_text(self):
         selected_index = self.session_listbox.curselection()
@@ -407,6 +408,7 @@ class SessionsWindow(tk.Frame):
                 # Refresh the sessions list
                 self.load_sessions()
             else:
+                print("Error moving session")
                 messagebox.showerror("Error", "Failed to move session. Please try again.")
         
         dialog.destroy()

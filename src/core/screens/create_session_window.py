@@ -166,6 +166,7 @@ class CreateSessionWindow(tk.Frame):
                 self.project_var.set(project_name)
                 dialog.destroy()
             else:
+                print(message)
                 messagebox.showerror("Error", message, parent=dialog)
         
         # Create button

@@ -94,6 +94,7 @@ class CreateProjectWindow(tk.Frame):
             self.controller.reset_frames()
             self.controller.show_frame("ProjectsWindow")
         else:
+            print(f"Error creating project: {message}")
             messagebox.showerror("Error", message)
 
     def cancel(self):
