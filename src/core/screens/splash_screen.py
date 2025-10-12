@@ -24,16 +24,13 @@ def is_running(lock_path=lock_file()):
             msvcrt.locking(lock_file.fileno(), msvcrt.LK_NBLCK, 1)
         else:
             fcntl.flock(lock_file, fcntl.LOCK_EX | fcntl.LOCK_NB)
-        return False  # Lock acquired → no other instance
+        return False  # Lock acquired, no other instance
     except (OSError, IOError):
-        return True  # Lock failed → already running
+        return True  # Lock failed, already running
 
 
 def splash_screen(root):
     """Display a splash screen while the application loads."""
-    # Save the original stdout and stderr
-    _stdout = sys.stdout
-    _stderr = sys.stderr
     splash_window = tk.Toplevel(root)
     splash_window.geometry("300x340")
     splash_window.title("AppUsageGUI - Loading...")
@@ -119,9 +116,6 @@ def splash_screen(root):
             root.after(300, lambda: win.pack(side="top", fill="both", expand=True))
 
         except Exception:
-            # Restore stdout/stderr
-            sys.stdout = _stdout
-            sys.stderr = _stderr
             from traceback import format_exc
             splash_window.destroy()
             error = str(format_exc())
