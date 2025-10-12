@@ -7,28 +7,29 @@ def new_updates(manual_check=False):
     import time
     from _version import __version__
     global RELEASE_DATA
-    if os.path.exists(config_file()):
-        try:
-            last_update_check = read_file(config_file())["last_update_check"]
-            settings = read_file(config_file())
-        except (KeyError):
-         # If the config file doesn't have the key
-            last_update_check = time.time()
-            settings = read_file(config_file())
+    if not manual_check:
+        if os.path.exists(config_file()):
+            try:
+                last_update_check = read_file(config_file())["last_update_check"]
+                settings = read_file(config_file())
+            except (KeyError):
+             # If the config file doesn't have the key
+                last_update_check = time.time()
+                settings = read_file(config_file())
+                settings.update({"last_update_check": last_update_check})
+                write_file(config_file(), settings)
+        else:
+            os.makedirs(os.path.dirname(config_file()), exist_ok=True)
+            last_update_check = time.time()  # if the file doesn't exist
+            settings = {}
             settings.update({"last_update_check": last_update_check})
             write_file(config_file(), settings)
-    else:
-        os.makedirs(os.path.dirname(config_file()), exist_ok=True)
-        last_update_check = time.time()  # if the file doesn't exist
-        settings = {}
-        settings.update({"last_update_check": last_update_check})
+
+        if time.time() - last_update_check < 43200:
+            return False  # Check for updates only once every 12 hours
+    
+        settings.update({"last_update_check": time.time()})
         write_file(config_file(), settings)
-    
-    if time.time() - last_update_check < 43200 and not manual_check:
-        return False  # Check for updates only once every 12 hours
-    
-    settings.update({"last_update_check": time.time()})
-    write_file(config_file(), settings)
     import requests
     try:
         print("Checking for updates...")
