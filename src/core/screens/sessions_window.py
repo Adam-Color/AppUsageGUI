@@ -138,7 +138,7 @@ class SessionsWindow(tk.Frame):
             # Load data for the current session
             self.logic.file_handler.load_session_data(session_name, project_name)
             session_data = self.logic.file_handler.get_data()
-            if session_data is not None:
+            if session_data is not None and session_data != {}:
                 app_name = session_data['app_name']
                 time_spent = session_data['time_spent']
                 # Format the time spent
