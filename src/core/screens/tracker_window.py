@@ -4,7 +4,7 @@ import threading
 import queue
 from PIL import Image, ImageTk
 
-from core.utils.tk_utils import messagebox
+from core.utils.tk_utils import messagebox, is_dark_mode
 from core.utils.time_utils import format_time
 
 from _path import resource_path
@@ -14,7 +14,7 @@ def load_white_icon(path, size=(50,50)):
     img = Image.open(path).convert("RGBA")
 
     # don't modify the original image if macOS
-    if os.name == 'posix' and 'Darwin' in os.uname().sysname:
+    if (os.name == 'posix' and 'Darwin' in os.uname().sysname) or not is_dark_mode():
         if size:
             img = img.resize(size, Image.LANCZOS)
         return ImageTk.PhotoImage(img)
