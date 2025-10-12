@@ -15,6 +15,9 @@ from core.utils.file_utils import (
     get_projects_directory,
 )
 
+import logging
+logger = logging.getLogger(__name__)
+
 
 class FileHandler:
     def __init__(self, parent, logic_controller):
@@ -38,7 +41,7 @@ class FileHandler:
         data['created_date'] = datetime.now().isoformat()
         data['last_modified'] = datetime.now().isoformat()
 
-        print(f"Saving session data: {data}")
+        logger.info(f"Saving session data: {data}")
         
         self.data = pickle.dumps(data)
         
@@ -241,5 +244,5 @@ class FileHandler:
             return True
             
         except Exception as e:
-            print(f"Error moving session {session_name}: {e}")
+            logger.error(f"Error moving session {session_name}: {e}")
             return False

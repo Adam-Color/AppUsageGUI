@@ -9,6 +9,9 @@ from core.utils.time_utils import format_time
 
 from _path import resource_path
 
+import logging
+logger = logging.getLogger(__name__)
+
 def load_white_icon(path, size=(50,50)):
     # Load image
     img = Image.open(path).convert("RGBA")
@@ -142,7 +145,7 @@ class TrackerWindow(tk.Frame):
             self.controller.show_frame("SaveWindow")
         else:
             error_msg = "The tracked application is not running and cannot be found.\nThis session cannot be continued because the target application is not available."
-            print(error_msg)
+            logger.error(error_msg)
             messagebox.showerror(
                 "App Not Found",
                 error_msg

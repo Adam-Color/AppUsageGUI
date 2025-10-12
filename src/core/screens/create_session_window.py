@@ -2,6 +2,9 @@ import tkinter as tk
 from core.utils.tk_utils import messagebox
 from re import search as re
 
+import logging
+logger = logging.getLogger(__name__)
+
 def validate_name(value):
     """Check if name is valid for saving as a file"""
     if value == "":  # Allow empty string (for backspace)
@@ -166,7 +169,7 @@ class CreateSessionWindow(tk.Frame):
                 self.project_var.set(project_name)
                 dialog.destroy()
             else:
-                print(message)
+                logger.error(message)
                 messagebox.showerror("Error", message, parent=dialog)
         
         # Create button

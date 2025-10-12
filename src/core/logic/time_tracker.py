@@ -2,6 +2,9 @@ import time
 
 from core.utils.logic_utils import threaded
 
+import logging
+logger = logging.getLogger(__name__)
+
 class TimeTracker:
     """A clock that runs in a separate thread to track elapsed time, 
     with pause and resume functionality."""
@@ -39,17 +42,19 @@ class TimeTracker:
     def start(self):
         self.track = True
         self.captures['starts'].append(time.time())
+        logger.info("Starting time tracker")
 
     def stop(self):
         if self.track:
             self.captures['stops'].append(time.time())
-            print("Stopping time tracker")
+            logger.info("Stopping time tracker")
             self.track = False
 
     def pause(self):
         if self.track and not self.is_paused:
             self.is_paused = True
             self.paused_time = time.time()
+            logger.info("Pausing time tracker")
 
     def resume(self):
         """Resumes the tracker, subtracts the time paused."""
@@ -59,6 +64,7 @@ class TimeTracker:
             self.offset_time += self.resumed_time - self.paused_time
             self.captures['pauses'].append({'start': self.paused_time,
                                             'how_long': self.resumed_time - self.paused_time})
+            logger.info("Resuming time tracker")
     
     def reset(self, add_time=0.0):
         self.elapsed_time = 0.0
@@ -79,7 +85,7 @@ class TimeTracker:
             from traceback import print_exc
             # handle v1 session files
             if str(e) != '\'time_captures\'':
-                print("Error loading time captures from session file:\n")
+                logger.error("Error loading time captures from session file:\n")
                 print_exc()
 
     def get_is_paused(self):

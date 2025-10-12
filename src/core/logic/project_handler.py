@@ -7,6 +7,9 @@ from datetime import datetime
 
 from core.utils.file_utils import get_projects_directory
 
+import logging
+logger = logging.getLogger(__name__)
+
 
 class ProjectHandler:
     def __init__(self, parent, logic_controller):
@@ -184,7 +187,7 @@ class ProjectHandler:
                         total_time += session_data['time_spent']
                 except Exception as e:
                     # Skip corrupted or invalid session files
-                    print(f"Warning: Could not load session {session_file}: {e}")
+                    logger.warning(f"Warning: Could not load session {session_file}: {e}")
                     continue
         
         return total_time

@@ -1,4 +1,6 @@
 from core.utils.tk_utils import messagebox
+import logging
+logger = logging.getLogger(__name__)
 
 def new_updates(manual_check=False):
     """Check for new updates on GitHub. Returns a boolean"""
@@ -32,7 +34,7 @@ def new_updates(manual_check=False):
         write_file(config_file(), settings)
     import requests
     try:
-        print("Checking for updates...")
+        logger.info("Checking for updates...")
         response = requests.get("https://api.github.com/repos/adam-color/AppUsageGUI/releases/latest", timeout=10)
         response.raise_for_status()  # Raises an HTTPError for bad responses
 
@@ -44,27 +46,27 @@ def new_updates(manual_check=False):
         # Compare version numbers
         for latest, current in zip(latest_version, current_version):
             if int(latest) > int(current):
-                print("New updates available!")
+                logger.info("New updates available!")
                 return True
             elif int(latest) < int(current):
-                print("No new updates available.")
+                logger.info("No new updates available.")
                 return False
 
         # If we've gotten here, the versions are equal
-        print("No new updates available.")
+        logger.info("No new updates available.")
         return False
 
     except requests.RequestException as e:
         from traceback import format_exc
-        print(f"Error checking for updates: Network error - {str(e) + ' - ' + str(format_exc())}")
+        logger.error(f"Error checking for updates: Network error - {str(e) + ' - ' + str(format_exc())}")
     except (KeyError, ValueError, IndexError) as e:
         from traceback import format_exc
-        print(f"Error checking for updates: Parsing error - {str(e) + ' - ' + str(format_exc())}")
+        logger.error(f"Error checking for updates: Parsing error - {str(e) + ' - ' + str(format_exc())}")
     except Exception:
         from traceback import format_exc
         error = f"An unexpected error occurred while checking for updates:\n{str(format_exc())}"
         messagebox.showerror("Error", error)
-        print(error)
+        logger.error(error)
     return False
 
 def update():

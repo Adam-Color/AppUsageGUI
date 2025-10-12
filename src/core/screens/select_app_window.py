@@ -2,6 +2,9 @@ import tkinter as tk
 from core.utils.tk_utils import messagebox
 from core.utils.logic_utils import threaded
 
+import logging
+logger = logging.getLogger(__name__)
+
 
 class SelectAppWindow(tk.Frame):
     def __init__(self, parent, controller, logic_controller):
@@ -109,7 +112,7 @@ class SelectAppWindow(tk.Frame):
             self.all_apps = self.app_tracker.get_app_names()
 
             if not self.all_apps:
-                print("No applications found in refresh_apps()")
+                logger.warning("No applications found in refresh_apps()")
             else:
                 for app in self.all_apps:
                     self.app_listbox.insert(tk.END, app)
@@ -120,7 +123,7 @@ class SelectAppWindow(tk.Frame):
                 from traceback import format_exc
                 error = f"refresh_apps() runtime error:\n\n{str(e)} - {str(format_exc())}"
                 messagebox.showerror("Error", error)
-                print(error)
+                logger.error(error)
 
     @threaded
     def update_search(self, *args):

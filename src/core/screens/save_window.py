@@ -5,6 +5,9 @@ from core.utils.tk_utils import messagebox
 from core.utils.file_utils import read_file, config_file
 from _version import __version__
 
+import logging
+logger = logging.getLogger(__name__)
+
 class SaveWindow(tk.Frame):
     def __init__(self, parent, controller, logic_controller):
         tk.Frame.__init__(self, parent)
@@ -76,7 +79,7 @@ class SaveWindow(tk.Frame):
                     'config': self.config,
                     'time_captures': captures # {'starts': [], 'stops': [], 'pauses': [{start: 0, how_long: 0}]}
                     }
-            print(f"Session data: {data}")
+            logger.info(f"Session data: {data}")
 
             self.logic.file_handler.save_session_data(data)
             

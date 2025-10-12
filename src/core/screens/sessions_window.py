@@ -3,6 +3,9 @@ from core.utils.tk_utils import messagebox
 from core.utils.file_utils import get_sessions, get_sessions_directory, get_session_project, get_projects
 from core.utils.time_utils import format_time
 
+import logging
+logger = logging.getLogger(__name__)
+
 
 class SessionsWindow(tk.Frame):
     def __init__(self, parent, controller, logic_controller):
@@ -169,7 +172,7 @@ class SessionsWindow(tk.Frame):
                 name, error = session
                 error_string += "\n" + name + ": " + error
             messagebox.showerror("Session Error", error_string + f"\n\nTo fix or delete session files, go to the {get_sessions_directory()} directory\n")
-            print(error_string)
+            logger.error(error_string)
 
     def get_session_text(self):
         selected_index = self.session_listbox.curselection()
@@ -408,7 +411,7 @@ class SessionsWindow(tk.Frame):
                 # Refresh the sessions list
                 self.load_sessions()
             else:
-                print("Error moving session")
+                logger.error("Error moving session")
                 messagebox.showerror("Error", "Failed to move session. Please try again.")
         
         dialog.destroy()

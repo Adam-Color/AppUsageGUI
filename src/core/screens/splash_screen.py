@@ -11,6 +11,9 @@ from core.utils.tk_utils import center, messagebox
 from core.utils.file_utils import sessions_exist, user_dir_exists, lock_file
 from _path import resource_path
 
+import logging
+logger = logging.getLogger(__name__)
+
 def is_running(lock_path=lock_file()):
     """Return True if another instance of this app is already running."""
     global lock_file
@@ -122,7 +125,7 @@ def splash_screen(root):
             from traceback import format_exc
             splash_window.destroy()
             error = str(format_exc())
-            print(error)
+            logger.error(error)
             messagebox.showerror("Startup Error", error)
             sys.exit(1)
 

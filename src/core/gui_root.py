@@ -1,7 +1,6 @@
 import os
 import io
 import sys
-import datetime
 import tkinter as tk
 from tkinter import ttk
 from core.utils.tk_utils import messagebox
@@ -9,9 +8,9 @@ import platform
 
 from _version import __version__ as version
 from _path import resource_path
+from _logging import get_current_log_file
 from core.utils.tk_utils import center_relative_to_parent, center
 from core.utils.app_utils import new_updates, update
-from core.utils.file_utils import read_file, config_file
 
 from .screens.main_window import MainWindow
 from .screens.select_app_window import SelectAppWindow
@@ -25,6 +24,9 @@ from .screens.create_session_window import CreateSessionWindow
 from .screens.session_total_window import SessionTotalWindow
 from .screens.tracker_settings_window import TrackerSettingsWindow
 
+import logging
+logger = logging.getLogger(__name__)
+
 
 class GUIRoot(tk.Frame):
     def __init__(self, parent):
@@ -34,6 +36,8 @@ class GUIRoot(tk.Frame):
         # Initialize LogicRoot
         from .logic_root import LogicRoot
         self.logic = LogicRoot(self)
+
+        self.log_file_path = get_current_log_file()
 
         # Navigation history
         self.history = []
@@ -68,13 +72,6 @@ class GUIRoot(tk.Frame):
         self.selected_project = None
         self.init_screens()
         self.show_frame("MainWindow")
-
-        # Capture stdout and stderr in memory so they can be viewed later
-        self.log_stream = io.StringIO()
-        self._stdout = sys.stdout
-        self._stderr = sys.stderr
-        sys.stdout = self.log_stream
-        sys.stderr = self.log_stream
 
         center(self.parent, -13, -15)
 
@@ -156,7 +153,7 @@ class GUIRoot(tk.Frame):
 
         if text is None:
             error_txt = "License file not found.\n\nPaths tried:\n" + "\n".join(license_paths_to_try)
-            print(error_txt)
+            logger.error(error_txt)
             messagebox.showerror("License", error_txt)
             return
 
@@ -222,17 +219,33 @@ class GUIRoot(tk.Frame):
         frame.rowconfigure(0, weight=1)
         frame.columnconfigure(0, weight=1)
 
+        win.columnconfigure(0, weight=1)
+
+        frame = ttk.Frame(win, padding=(8, 8, 8, 8))
+        frame.grid(row=0, column=0, sticky="nsew")
+        frame.rowconfigure(0, weight=1)
+        frame.columnconfigure(0, weight=1)
+
         # Header and text setup
         header = (
             f"=== {self.parent.title()} ===\n"
-            f"Logging Started: {datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}\n"
             f"Python: {sys.version.split()[0]}\n"
             f"Platform: {platform.system()} ({platform.machine()})\n"
-            f"Config: {read_file(config_file())}\n"
-            f"{'=' * 30}\n\n"
+            f"{'=' * 21}\n"
+            f"NOTE: logs window only refreshes when reopened.\n\n"
         )
 
-        initial_text = header + (self.log_stream.getvalue() or "(No logs yet)\n")
+        # Read logs from the log file if available
+        log_contents = ""
+        if hasattr(self, "log_file_path") and os.path.exists(self.log_file_path):
+            try:
+                with open(self.log_file_path, "r") as log_file:
+                    log_contents = log_file.read()
+            except Exception as e:
+                log_contents = f"(Failed to read log file: {e})\n"
+
+        # Combine header and logs
+        initial_text = header + (log_contents or self.log_stream.getvalue() or "(No logs yet)\n")
 
         text_box = tk.Text(frame, wrap="word")
         text_box.insert("1.0", initial_text)
@@ -250,27 +263,30 @@ class GUIRoot(tk.Frame):
         btn_frame.columnconfigure(1, weight=1)
 
         def copy_logs():
-            full_text = header + self.log_stream.getvalue()
-            win.clipboard_clear()
-            win.clipboard_append(full_text)
-            messagebox.showinfo("Logs", "Logs copied to clipboard.")
+            """Read the log file and return its contents."""
+            try:
+                if os.path.exists(self.log_file_path):
+                    with open(self.log_file_path, "r") as log_file:
+                        return log_file.read()
+                else:
+                    return "(Log file not found)"
+            except Exception as e:
+                return f"(Failed to read log file: {e})"
 
         ttk.Button(btn_frame, text="Copy Logs", command=copy_logs).grid(row=0, column=0, sticky="w", padx=(8, 0))
         ttk.Button(btn_frame, text="Close", command=win.destroy).grid(row=0, column=1, sticky="e", padx=(0, 8))
 
         # Live Updating
         def refresh_logs():
-            """Refresh text with new log output every second."""
-            current_text = text_box.get("1.0", "end-1c")
-            new_text = header + self.log_stream.getvalue()
-            if new_text != current_text:
+            """Refresh the logs displayed in the logs window."""
+            try:
+                new_text = header + copy_logs()  # Use copy_logs() to get log content
                 text_box.config(state="normal")
-                text_box.delete("1.0", "end")
-                text_box.insert("1.0", new_text)
-                text_box.config(state="disabled")
-                text_box.see("end")
-            if win.winfo_exists():
-                win.after(1000, refresh_logs)
+                text_box.delete(1.0, "end")  # Clear existing content
+                text_box.insert("end", new_text)  # Insert new content
+                text_box.config(state="disabled")  # Make it read-only
+            except Exception as e:
+                print(f"Failed to refresh logs: {e}")
 
         refresh_logs()
 
@@ -379,7 +395,7 @@ class GUIRoot(tk.Frame):
             from traceback import format_exc
             error = "Crash in reset_frames():\n\n" + format_exc()
             messagebox.showerror("Error", error)
-            print(error)
+            logger.error(error)
 
     def on_close(self):
         """Handle cleanup and close the application."""
@@ -399,19 +415,6 @@ class GUIRoot(tk.Frame):
         # stop the MouseTracker thread
         if self.logic.mouse_tracker:
             self.logic.mouse_tracker.stop()
-
-        # Restore stdout/stderr
-        sys.stdout = self._stdout
-        sys.stderr = self._stderr
-
-        # Print final logs to console
-        try:
-            if hasattr(self, "log_stream"):
-                print("\n[AppUsageGUI] --- Final Logs ---\n")
-                print(self.log_stream.getvalue() or "(No logs captured)")
-                print("\n[AppUsageGUI] --- End of Logs ---\n")
-        except Exception as e:
-            print(f"Failed to print logs: {e}")
 
         # Destroy the root window
         self.parent.destroy()
