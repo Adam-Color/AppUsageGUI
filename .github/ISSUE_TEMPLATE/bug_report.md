@@ -23,6 +23,11 @@ A clear and concise description of what you expected to happen.
 **Screenshots**
 If applicable, add screenshots to help explain your problem.
 
+**Logs**
+Open the logs window *after* you have encountered the issue.
+Click 'Copy Logs' then paste the contents here.
+(On macOS the logs window is under the '?' icon in the menu bar)
+
 **Desktop (please complete the following information):**
  - OS: [e.g. iOS]
  - OS Version [e.g. 22]
