@@ -1,5 +1,8 @@
+Note: only arm-based systems are currently supported.
+
 ## macOS Installation Steps:
 * download the macOS setup .dmg [here](https://github.com/Adam-Color/AppUsageGUI/releases/latest) (under the "assets" section)
+* ensure that the old version of AppUsageGUI is closed if you are updating
 * double-click the .dmg to open it
 * agree to the license
 * drag the "AppUsageGUI" folder to the "Applications" folder

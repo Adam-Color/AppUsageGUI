@@ -50,6 +50,7 @@ def build_executable():
         f'--icon={icon_file} '
         f'--add-data "src/_version.py:." '
         f'--add-data "src/_path.py:." '
+        f'--add-data "src/_logging.py:." '
         f'--target-architecture {platform.machine()} '
         f'{ENTRY_POINT}'
     )

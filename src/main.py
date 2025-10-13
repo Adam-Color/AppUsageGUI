@@ -22,10 +22,10 @@ import tkinter.font as tkfont
 import os
 import sys
 import platform
-from traceback import format_exc
 
 from core.screens.splash_screen import splash_screen
 from core.utils.tk_utils import is_dark_mode, set_main_window, messagebox
+from _logging import setup_logging
 from _path import resource_path
 
 from _version import __version__
@@ -53,6 +53,11 @@ def set_default_font(root):
 
 def main():
     try:
+        setup_logging()
+        import logging
+        logger = logging.getLogger(__name__)
+        logger.info("Starting AppUsageGUI...")
+
         root = tk.Tk()
         root.withdraw()
 
@@ -79,8 +84,11 @@ def main():
         splash_screen(root)
         root.mainloop()
     except Exception as e:
+        from traceback import format_exc
         error_message = f"An unexpected error occurred:\n{str(e)}\n\n{format_exc()}"
-        print(error_message)
+        import logging
+        logger = logging.getLogger(__name__)
+        logger.error(error_message)
          
         messagebox.showerror("Error", error_message)
 

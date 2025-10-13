@@ -1,7 +1,9 @@
 import tkinter as tk
 from core.utils.tk_utils import messagebox
-from traceback import format_exc
 from core.utils.logic_utils import threaded
+
+import logging
+logger = logging.getLogger(__name__)
 
 
 class SelectAppWindow(tk.Frame):
@@ -88,7 +90,6 @@ class SelectAppWindow(tk.Frame):
         )
         back_button.pack(side="right", padx=20)
 
-        # ===== Logic =====
         self.app_tracker = self.logic.app_tracker
         self.all_apps = []
         self.refresh_apps()  # Populate list initially
@@ -111,7 +112,7 @@ class SelectAppWindow(tk.Frame):
             self.all_apps = self.app_tracker.get_app_names()
 
             if not self.all_apps:
-                messagebox.showerror("Error", "No applications found.")
+                logger.warning("No applications found in refresh_apps()")
             else:
                 for app in self.all_apps:
                     self.app_listbox.insert(tk.END, app)
@@ -119,7 +120,10 @@ class SelectAppWindow(tk.Frame):
             if str(e) == "main thread is not in main loop":
                 self.refresh_apps(filter_reset)
             else:
-                messagebox.showerror("Error", f"refresh_apps() unexpected error: {str(format_exc())}")
+                from traceback import format_exc
+                error = f"refresh_apps() runtime error:\n\n{str(e)} - {str(format_exc())}"
+                messagebox.showerror("Error", error)
+                logger.error(error)
 
     @threaded
     def update_search(self, *args):

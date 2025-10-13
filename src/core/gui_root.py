@@ -2,14 +2,15 @@ import os
 import sys
 import tkinter as tk
 from tkinter import ttk
-from traceback import format_exc
 from core.utils.tk_utils import messagebox
 import platform
 
 from _version import __version__ as version
 from _path import resource_path
+from _logging import get_current_log_file
+from core.utils.tk_utils import center_relative_to_parent, center
+from core.utils.app_utils import new_updates, update
 
-from .logic_root import LogicRoot
 from .screens.main_window import MainWindow
 from .screens.select_app_window import SelectAppWindow
 from .screens.sessions_window import SessionsWindow
@@ -22,6 +23,9 @@ from .screens.create_session_window import CreateSessionWindow
 from .screens.session_total_window import SessionTotalWindow
 from .screens.tracker_settings_window import TrackerSettingsWindow
 
+import logging
+logger = logging.getLogger(__name__)
+
 
 class GUIRoot(tk.Frame):
     def __init__(self, parent):
@@ -29,7 +33,10 @@ class GUIRoot(tk.Frame):
         self.parent = parent
 
         # Initialize LogicRoot
+        from .logic_root import LogicRoot
         self.logic = LogicRoot(self)
+
+        self.log_file_path = get_current_log_file()
 
         # Navigation history
         self.history = []
@@ -41,6 +48,8 @@ class GUIRoot(tk.Frame):
 
         # Options list
         self.options = [
+            {"label": "Update Check", "callback": self.update_and_check},
+            {"label": "Logs", "callback": self.show_logs},
             {"label": "License", "callback": self.show_license},
             {"label": "About", "callback": self.show_about},
         ]
@@ -62,6 +71,8 @@ class GUIRoot(tk.Frame):
         self.selected_project = None
         self.init_screens()
         self.show_frame("MainWindow")
+
+        center(self.parent, -13, -15)
 
         self.parent.protocol("WM_DELETE_WINDOW", self.on_close)
 
@@ -115,12 +126,18 @@ class GUIRoot(tk.Frame):
         )
 
     def show_license(self, _=None):
-        """Open license file in a scrollable popup window (reusable)."""
+        """Open license file in a scrollable popup window (resizable, with fixed footer)."""
+        # Prevent duplicate windows
+        if hasattr(self, "license_window") and self.license_window and self.license_window.winfo_exists():
+            self.license_window.lift()
+            self.license_window.focus_force()
+            return
+
         license_paths_to_try = [
             "_internal/LICENSE.txt",
             "LICENSE.txt",
             os.path.join(os.path.dirname(__file__), "_internal", "LICENSE.txt"),
-            resource_path("LICENSE.txt")
+            resource_path("LICENSE.txt"),
         ]
 
         text = None
@@ -131,41 +148,146 @@ class GUIRoot(tk.Frame):
                         text = f.read()
                         break
             except Exception:
-                # ignore and try next
                 pass
 
         if text is None:
             error_txt = "License file not found.\n\nPaths tried:\n" + "\n".join(license_paths_to_try)
-            print(error_txt)
+            logger.error(error_txt)
             messagebox.showerror("License", error_txt)
             return
 
-        # Reusable Toplevel license window
         win = tk.Toplevel(self.parent)
+        self.license_window = win  # keep reference
         win.title("License")
-        win.geometry("700x450")
+        win.geometry("600x600")
         win.transient(self.parent)
         win.resizable(True, True)
+        center_relative_to_parent(win, self.parent)
+        win.protocol("WM_DELETE_WINDOW", lambda: (win.destroy(), setattr(self, "license_window", None)))
 
-        # Use a frame for padding and layout
+        win.rowconfigure(0, weight=1)
+        win.columnconfigure(0, weight=1)
+
         frame = ttk.Frame(win, padding=(8, 8, 8, 8))
-        frame.pack(fill="both", expand=True)
+        frame.grid(row=0, column=0, sticky="nsew")
+        frame.rowconfigure(0, weight=1)
+        frame.columnconfigure(0, weight=1)
 
-        # Text widget + scrollbar
         text_box = tk.Text(frame, wrap="word", borderwidth=0)
         text_box.insert("1.0", text)
-        text_box.config(state="disabled")  # read-only
-        text_box.pack(side="left", fill="both", expand=True)
+        text_box.config(state="disabled")
+        text_box.grid(row=0, column=0, sticky="nsew")
 
         scrollbar = ttk.Scrollbar(frame, orient="vertical", command=text_box.yview)
-        scrollbar.pack(side="right", fill="y")
+        scrollbar.grid(row=0, column=1, sticky="ns")
         text_box.config(yscrollcommand=scrollbar.set)
 
-        # Close button
         btn_frame = ttk.Frame(win)
-        btn_frame.pack(fill="x", pady=(6, 8))
-        close_btn = ttk.Button(btn_frame, text="Close", command=win.destroy)
-        close_btn.pack(side="right", padx=(0, 8))
+        btn_frame.grid(row=1, column=0, sticky="ew", pady=(6, 8))
+        btn_frame.columnconfigure(0, weight=1)
+        ttk.Button(btn_frame, text="Close", command=win.destroy).grid(row=0, column=0, sticky="e", padx=(0, 8))
+
+    
+    def update_and_check(self, _=None):
+        if new_updates(manual_check=True):
+            update()
+        else:
+            messagebox.showinfo("Update", "No new updates available.")
+
+    def show_logs(self, _=None):
+        """Display live-updating logs in a scrollable window with fixed footer buttons."""
+        # Prevent duplicate windows
+        if hasattr(self, "log_window") and self.log_window and self.log_window.winfo_exists():
+            self.log_window.lift()
+            self.log_window.focus_force()
+            return
+
+        win = tk.Toplevel(self.parent)
+        self.log_window = win  # keep reference
+        win.title("Application Logs")
+        win.geometry("600x600")
+        win.transient(self.parent)
+        center_relative_to_parent(win, self.parent)
+
+        # Use grid instead of pack for better control
+        win.rowconfigure(0, weight=1)
+        win.columnconfigure(0, weight=1)
+
+        frame = ttk.Frame(win, padding=(8, 8, 8, 8))
+        frame.grid(row=0, column=0, sticky="nsew")
+        frame.rowconfigure(0, weight=1)
+        frame.columnconfigure(0, weight=1)
+
+        win.columnconfigure(0, weight=1)
+
+        frame = ttk.Frame(win, padding=(8, 8, 8, 8))
+        frame.grid(row=0, column=0, sticky="nsew")
+        frame.rowconfigure(0, weight=1)
+        frame.columnconfigure(0, weight=1)
+
+        # Header and text setup
+        header = (
+            f"=== {self.parent.title()} ===\n"
+            f"Python: {sys.version.split()[0]}\n"
+            f"Platform: {platform.system()} ({platform.machine()})\n"
+            f"{'=' * 21}\n"
+            f"NOTE: logs window only refreshes when reopened.\n\n"
+        )
+
+        # Read logs from the log file if available
+        log_contents = ""
+        if hasattr(self, "log_file_path") and os.path.exists(self.log_file_path):
+            try:
+                with open(self.log_file_path, "r") as log_file:
+                    log_contents = log_file.read()
+            except Exception as e:
+                log_contents = f"(Failed to read log file: {e})\n"
+
+        # Combine header and logs
+        initial_text = header + (log_contents or self.log_stream.getvalue() or "(No logs yet)\n")
+
+        text_box = tk.Text(frame, wrap="word")
+        text_box.insert("1.0", initial_text)
+        text_box.config(state="disabled")
+        text_box.grid(row=0, column=0, sticky="nsew")
+
+        scrollbar = ttk.Scrollbar(frame, orient="vertical", command=text_box.yview)
+        scrollbar.grid(row=0, column=1, sticky="ns")
+        text_box.config(yscrollcommand=scrollbar.set)
+
+        # Buttons at bottom (separate frame)
+        btn_frame = ttk.Frame(win)
+        btn_frame.grid(row=1, column=0, sticky="ew", pady=(6, 8))
+        btn_frame.columnconfigure(0, weight=1)
+        btn_frame.columnconfigure(1, weight=1)
+
+        def copy_logs():
+            """Read the log file and return its contents."""
+            try:
+                if os.path.exists(self.log_file_path):
+                    with open(self.log_file_path, "r") as log_file:
+                        return log_file.read()
+                else:
+                    return "(Log file not found)"
+            except Exception as e:
+                return f"(Failed to read log file: {e})"
+
+        ttk.Button(btn_frame, text="Copy Logs", command=copy_logs).grid(row=0, column=0, sticky="w", padx=(8, 0))
+        ttk.Button(btn_frame, text="Close", command=win.destroy).grid(row=0, column=1, sticky="e", padx=(0, 8))
+
+        # Live Updating
+        def refresh_logs():
+            """Refresh the logs displayed in the logs window."""
+            try:
+                new_text = header + copy_logs()  # Use copy_logs() to get log content
+                text_box.config(state="normal")
+                text_box.delete(1.0, "end")  # Clear existing content
+                text_box.insert("end", new_text)  # Insert new content
+                text_box.config(state="disabled")  # Make it read-only
+            except Exception as e:
+                print(f"Failed to refresh logs: {e}")
+
+        refresh_logs()
 
     def init_screens(self):
         """Pass the logic_controller when initializing screens"""
@@ -269,7 +391,10 @@ class GUIRoot(tk.Frame):
             self.selected_project = preserved_project
 
         except Exception:
-            messagebox.showerror("Error", f"Crash in reset_frames(): {str(format_exc())}")
+            from traceback import format_exc
+            error = "Crash in reset_frames():\n\n" + format_exc()
+            messagebox.showerror("Error", error)
+            logger.error(error)
 
     def on_close(self):
         """Handle cleanup and close the application."""

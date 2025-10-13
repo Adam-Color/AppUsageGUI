@@ -1,11 +1,12 @@
 import tkinter as tk
 import queue
 import threading
-import traceback
 
 from core.utils.time_utils import format_time, unix_to_datetime
 from core.utils.file_utils import calc_runtime
 
+import logging
+logger = logging.getLogger(__name__)
 
 class SessionTotalWindow(tk.Frame):
     def __init__(self, parent, controller, logic_controller):
@@ -135,8 +136,9 @@ class SessionTotalWindow(tk.Frame):
         except queue.Empty:
             pass
         except Exception:
-            error = "Error updating session total time display:\n" + traceback.format_exc()
-            print(error)
+            from traceback import format_exc
+            error = "Error updating session total time display:\n" + format_exc()
+            logger.error(error)
             tk.messagebox.showerror("Error", error)
 
     def total_time_thread(self):
@@ -179,9 +181,9 @@ class SessionTotalWindow(tk.Frame):
                         'last_run_length': calc_runtime(self.logic.file_handler.get_data(), -1)
                     })
             except (TypeError, KeyError):
-                print("Error loading session data:\n")
-                print("raw data:", self.logic.file_handler.get_data())
-                print(traceback.format_exc())
+                from traceback import format_exc
+                error = f"Error loading session data:\nraw data: {self.logic.file_handler.get_data()}\n\n{format_exc()}"
+                logger.error(error)
 
             self.update_queue.put(data)
             self.update_total_time_id = self.update_total_time()

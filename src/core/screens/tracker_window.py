@@ -4,14 +4,23 @@ import threading
 import queue
 from PIL import Image, ImageTk
 
-from core.utils.tk_utils import messagebox
+from core.utils.tk_utils import messagebox, is_dark_mode
 from core.utils.time_utils import format_time
 
 from _path import resource_path
 
+import logging
+logger = logging.getLogger(__name__)
+
 def load_white_icon(path, size=(50,50)):
     # Load image
     img = Image.open(path).convert("RGBA")
+
+    # don't modify the original image if macOS
+    if (os.name == 'posix' and 'Darwin' in os.uname().sysname) or not is_dark_mode():
+        if size:
+            img = img.resize(size, Image.LANCZOS)
+        return ImageTk.PhotoImage(img)
 
     # Replace non-transparent pixels with white
     datas = img.getdata()
@@ -135,10 +144,11 @@ class TrackerWindow(tk.Frame):
         if round(self.logic.time_tracker.get_elapsed_time()) > 0:
             self.controller.show_frame("SaveWindow")
         else:
+            error_msg = "The tracked application is not running and cannot be found.\nThis session cannot be continued because the target application is not available."
+            logger.error(error_msg)
             messagebox.showerror(
                 "App Not Found",
-                "The tracked application is not running and cannot be found.\n"
-                "This session cannot be continued because the target application is not available."
+                error_msg
             )
             self.controller.reset_frames()
             self.controller.show_frame("MainWindow")

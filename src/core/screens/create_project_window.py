@@ -2,6 +2,9 @@ import tkinter as tk
 from core.utils.tk_utils import messagebox
 import re
 
+import logging
+logger = logging.getLogger(__name__)
+
 
 def validate_project_name(value):
     """Validate project name - no special characters that could cause file system issues"""
@@ -94,6 +97,7 @@ class CreateProjectWindow(tk.Frame):
             self.controller.reset_frames()
             self.controller.show_frame("ProjectsWindow")
         else:
+            logger.error(f"Error creating project: {message}")
             messagebox.showerror("Error", message)
 
     def cancel(self):

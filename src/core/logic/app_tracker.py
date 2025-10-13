@@ -12,6 +12,9 @@ elif sys.platform == 'darwin':
 
 from core.utils.file_utils import read_file, write_file, apps_file, user_dir_exists, config_file
 
+import logging
+logger = logging.getLogger(__name__)
+
 EXCLUDED_APP_PIDS = []
 INCLUDED_APP_PIDS = []
 
@@ -149,7 +152,7 @@ class AppTracker:
                 pass
 
         #print(f"\nExcluded app PIDs: {EXCLUDED_APP_PIDS}")  # Debugging line
-        print(f"New exlusions: {i}")
+        logger.info(f"New exlusions: {i}")
         data = {'excluded_app_pids': EXCLUDED_APP_PIDS,
                 'included_app_pids': INCLUDED_APP_PIDS}
         write_file(apps_file(), data)
@@ -177,5 +180,5 @@ class AppTracker:
                     return True
                 return False
             except Exception as e:
-                print(f"GUI check error: {e}")
+                logger.error(f"GUI check error: {e}")
                 return True
