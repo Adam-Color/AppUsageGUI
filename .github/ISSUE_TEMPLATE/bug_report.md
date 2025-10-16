@@ -24,9 +24,9 @@ A clear and concise description of what you expected to happen.
 If applicable, add screenshots to help explain your problem.
 
 **Logs**
-Open the logs window *after* you have encountered the issue.
-Click 'Copy Logs' then paste the contents here.
-(On macOS the logs window is under the '?' icon in the menu bar)
+Logs are stored in Users/`YOUR_USERNAME_HERE`/.local/share/AppUsageGUI/User/logs/>/AppData/Roaming/AppUsageGUI/User/logs on windows
+or Users/`YOUR_USERNAME_HERE`/.local/share/AppUsageGUI/User/logs/ on macOS. Please paste the contents
+of the appopriate log file here:
 
 **Desktop (please complete the following information):**
  - OS: [e.g. iOS]
