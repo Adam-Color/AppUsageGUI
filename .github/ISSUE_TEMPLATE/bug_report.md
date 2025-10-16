@@ -24,7 +24,7 @@ A clear and concise description of what you expected to happen.
 If applicable, add screenshots to help explain your problem.
 
 **Logs**
-Logs are stored in Users/`YOUR_USERNAME_HERE`/.local/share/AppUsageGUI/User/logs/>/AppData/Roaming/AppUsageGUI/User/logs on windows
+Logs are stored in Users/`YOUR_USERNAME_HERE`/.local/share/AppUsageGUI/User/logs/ on windows
 or Users/`YOUR_USERNAME_HERE`/.local/share/AppUsageGUI/User/logs/ on macOS. Please paste the contents
 of the appopriate log file here:
 
