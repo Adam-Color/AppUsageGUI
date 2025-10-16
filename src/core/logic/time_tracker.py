@@ -76,6 +76,7 @@ class TimeTracker:
         self.start_time = None
         self.captures = {'starts': [], 'stops': [], 'pauses': []}
         self.update_captures()  # update captures from session file if applicable
+        logging.info("Time tracker reset.")
     
     def update_captures(self):
         """populates the captures dictionary with data from the session file"""

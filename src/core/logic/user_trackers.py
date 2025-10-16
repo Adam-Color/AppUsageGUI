@@ -8,6 +8,9 @@ import pynput
 
 from core.utils.file_utils import read_file, config_file
 
+import logging
+logger = logging.getLogger(__name__)
+
 class MouseTracker:
     """Tracks mouse movement over a user configurable time frame."""
     def __init__(self, parent, logic_controller):
@@ -58,6 +61,7 @@ class MouseTracker:
             self.stop_event = threading.Event()  # Reset the stop event to allow the thread to run again
             self.update_thread = threading.Thread(target=self._update_mouse_position, name="mouse_tracker")
             self.update_thread.start()
+            logging.info("Mouse tracker started.")
 
     def stop(self):
         self.stop_event.set()
@@ -66,6 +70,7 @@ class MouseTracker:
                 self.update_thread.join()
             except RuntimeError:
                 pass
+        logging.info("Mouse tracker stopped.")
     
     def set_enabled(self, enabled=bool):
         self.enabled = enabled
