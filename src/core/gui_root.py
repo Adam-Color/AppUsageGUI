@@ -228,7 +228,7 @@ class GUIRoot(tk.Frame):
         # Header and text setup
         header = (
             f"=== {self.parent.title()} ===\n"
-            f"Python: {sys.version.split()[0]}\n"
+            f"Python: {sys.version.split("(")[0]}\n"
             f"Platform: {platform.system()} ({platform.machine()})\n"
             f"{'=' * 21}\n"
             f"NOTE: logs window only refreshes when reopened.\n\n"
