@@ -26,7 +26,7 @@ If applicable, add screenshots to help explain your problem.
 **Logs**
 Logs are stored in Users/`YOUR_USERNAME_HERE`/.local/share/AppUsageGUI/User/logs/ on windows
 or Users/`YOUR_USERNAME_HERE`/.local/share/AppUsageGUI/User/logs/ on macOS. Please paste the contents
-of the appopriate log file here:
+of the appropriate log file here:
 
 **Desktop (please complete the following information):**
  - OS: [e.g. iOS]
