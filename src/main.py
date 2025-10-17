@@ -40,14 +40,14 @@ def set_default_font(root):
     system = platform.system()
 
     if system == "Windows":
-        family = "Segoe UI Semibold"
+        family = ("Segoe UI Semibold", 12)
     elif system == "Darwin":  # macOS
-        family = "Helvetica"
+        family = ("Helvetica", 14)
     else:  # Linux/Other
-        family = "DejaVu Sans"
+        family = ("DejaVu Sans", 12)
 
     default_font = tkfont.nametofont("TkDefaultFont")
-    default_font.configure(family=family, size=12)
+    default_font.configure(family=family[0], size=family[1])
     root.option_add("*Font", default_font)
 
 
