@@ -1,5 +1,5 @@
 import tkinter as tk
-from core.utils.tk_utils import messagebox
+from core.utils.tk_utils import messagebox, center
 from core.utils.file_utils import get_sessions, get_sessions_directory, get_session_project, get_projects
 from core.utils.time_utils import format_time
 
@@ -311,7 +311,7 @@ class SessionsWindow(tk.Frame):
         dialog.resizable(False, False)
         
         # Center the dialog
-        dialog.transient(self)
+        center(dialog)
         dialog.grab_set()
         
         # Main frame
