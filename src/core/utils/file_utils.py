@@ -2,6 +2,9 @@ import os
 import hashlib
 import pickle
 
+import logging
+logger = logging.getLogger(__name__)
+
 def get_sessions_directory():
     """Define the sessions directory, which stores application usage data"""
     if os.name == 'nt':  # Windows
@@ -52,8 +55,8 @@ def sessions_exist(p=False):
     projects_dir = get_projects_directory()
     
     if p:
-        print("sessions_dir: %s" % sessions_dir)
-        print("projects_dir: %s" % projects_dir)
+        logging.info("sessions_dir: %s" % sessions_dir)
+        logging.info("projects_dir: %s" % projects_dir)
     
     # Check old sessions directory
     if os.path.exists(sessions_dir):
@@ -81,7 +84,7 @@ def user_dir_exists(p=False):
     Set p=True to print directory path"""
     user_dir = get_user_directory()
     if p:
-        print("user_dir: %s" % user_dir)
+        logging.info("user_dir: %s" % user_dir)
     # Ensure the directory exists
     if not os.path.exists(user_dir):
         os.makedirs(user_dir, exist_ok=True)

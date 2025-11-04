@@ -4,6 +4,9 @@ import queue
 from core.utils.tk_utils import messagebox
 from core.utils.file_utils import read_file, write_file, config_file
 
+import logging
+logger = logging.getLogger(__name__)
+
 def validate_numeric(value):
     """Check if value is numeric and greater than or equal to 0"""
     if value == "":  # Allow empty string (for backspace)
@@ -40,6 +43,7 @@ class TrackerSettingsWindow(tk.Frame):
 
         if os.path.exists(config_file()):
             saved_settings = read_file(config_file())
+            logging.info(f"config: {saved_settings}")
             if saved_settings:
                 self.settings.update(saved_settings)
 
