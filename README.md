@@ -24,6 +24,20 @@ To install, follow the instructions for your platform found here:
 
 NOTE: GIL is detached for the macOS build; use Python 3.13.7t
 
+## Building
+
+For building, it is recommended to use Python 3.13.7 for Windows/Linux, and 3.13.7t for macOS in a virtual enviroment.
+
+Install requirents:
+`pip install -r requirements.txt`
+
+Run build script:
+`python build.py`
+
+The resulting AppUsageGUI folder will be created in dist/
+
+Scripts to create macOS/Windows installers are located in dev/
+
 ## How It Works
 
 AppUsageGUI is a cross-platform desktop application built with Python and Tkinter that monitors application usage time with project-based organization. The application works by:
