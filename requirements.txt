@@ -1,6 +1,5 @@
 psutil==7.1.0
 pynput==1.8.1
-PyGetWindow==0.0.9
 PyMsgBox==1.0.9
 pyobjc-core==11.0; sys_platform == "darwin"
 pyobjc-framework-Cocoa==11.0; sys_platform == "darwin"
