@@ -4,7 +4,7 @@ the timer during the session.
 """
 
 import threading
-import pynput
+import pynput # type: ignore
 
 from core.utils.file_utils import read_file, config_file
 
@@ -68,9 +68,9 @@ class MouseTracker:
         if self.update_thread is not None:
             try:
                 self.update_thread.join()
+                logging.info("Mouse tracker stopped.")
             except RuntimeError:
                 pass
-        logging.info("Mouse tracker stopped.")
     
     def set_enabled(self, enabled=bool):
         self.enabled = enabled

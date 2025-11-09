@@ -274,7 +274,7 @@ class GUIRoot(tk.Frame):
             
         def copy_logs():
             """Copy the current logs to the clipboard."""
-            import pyperclip
+            import pyperclip # type: ignore
             try:
                 log_text = header + logs()
                 pyperclip.copy(log_text)

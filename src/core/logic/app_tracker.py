@@ -1,6 +1,6 @@
 import threading
 import os
-import psutil
+import psutil # type: ignore
 import sys
 
 if os.name == 'nt':
@@ -8,7 +8,7 @@ if os.name == 'nt':
     from pywinauto.findwindows import ElementNotFoundError
     windows = Desktop(backend="uia").windows()
 elif sys.platform == 'darwin':
-    from AppKit import NSWorkspace
+    from AppKit import NSWorkspace # type: ignore
 
 from core.utils.file_utils import read_file, write_file, apps_file, user_dir_exists, config_file
 
@@ -98,6 +98,7 @@ class AppTracker:
         if self.update_thread is not None:
             try:
                 self.update_thread.join()
+                logging.info("App tracker stopped.")
             except RuntimeError:
                 pass
 
