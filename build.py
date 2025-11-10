@@ -45,6 +45,7 @@ def build_executable():
         f'--collect-submodules pynput '
         f'--collect-submodules requests '
         f'--collect-submodules PIL '
+        f'--collect-submodules pyperclip '
         f'--exclude-module PIL.tests '
         f'--exclude-module tkinter.test '
         f'--icon={icon_file} '
