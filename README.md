@@ -1,4 +1,4 @@
-![version](https://img.shields.io/badge/Version-1.8.1-white.svg)
+![version](https://img.shields.io/badge/Version-1.8.2-white.svg)
 ![license](https://img.shields.io/badge/License-GPL%20v3-blue.svg)
 ![python](https://img.shields.io/badge/Python-3.13-green.svg)
 
@@ -23,6 +23,20 @@ To install, follow the instructions for your platform found here:
 * Full linux support with packages
 
 NOTE: GIL is detached for the macOS build; use Python 3.13.7t
+
+## Building
+
+For building, it is recommended to use Python 3.13.7 for Windows/Linux, and 3.13.7t for macOS in a virtual enviroment.
+
+Install requirents:
+`pip install -r requirements.txt`
+
+Run build script:
+`python build.py`
+
+The resulting AppUsageGUI folder will be created in dist/
+
+Scripts to create macOS/Windows installers are located in dev/
 
 ## How It Works
 

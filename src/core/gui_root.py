@@ -232,7 +232,7 @@ class GUIRoot(tk.Frame):
             f"Platform: {platform.system()} ({platform.machine()})\n"
             f"{'=' * 21}\n"
             f"NOTE: logs window only refreshes when reopened.\n\n"
-        )
+            )
 
         # Read logs from the log file if available
         log_contents = ""
@@ -261,7 +261,7 @@ class GUIRoot(tk.Frame):
         btn_frame.columnconfigure(0, weight=1)
         btn_frame.columnconfigure(1, weight=1)
 
-        def copy_logs():
+        def logs():
             """Read the log file and return its contents."""
             try:
                 if os.path.exists(self.log_file_path):
@@ -271,6 +271,16 @@ class GUIRoot(tk.Frame):
                     return "(Log file not found)"
             except Exception as e:
                 return f"(Failed to read log file: {e})"
+            
+        def copy_logs():
+            """Copy the current logs to the clipboard."""
+            import pyperclip # type: ignore
+            try:
+                log_text = header + logs()
+                pyperclip.copy(log_text)
+                messagebox.showinfo("Copy Logs", "Logs copied to clipboard.")
+            except Exception as e:
+                messagebox.showerror("Copy Logs", f"Failed to copy logs: {e}")
 
         ttk.Button(btn_frame, text="Copy Logs", command=copy_logs).grid(row=0, column=0, sticky="w", padx=(8, 0))
         ttk.Button(btn_frame, text="Close", command=win.destroy).grid(row=0, column=1, sticky="e", padx=(0, 8))
@@ -279,7 +289,7 @@ class GUIRoot(tk.Frame):
         def refresh_logs():
             """Refresh the logs displayed in the logs window."""
             try:
-                new_text = header + copy_logs()  # Use copy_logs() to get log content
+                new_text = header + logs()  # Use logs() to get log content
                 text_box.config(state="normal")
                 text_box.delete(1.0, "end")  # Clear existing content
                 text_box.insert("end", new_text)  # Insert new content
