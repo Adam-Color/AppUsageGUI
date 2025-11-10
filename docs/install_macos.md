@@ -9,8 +9,6 @@ Note: only arm-based systems are currently supported.
 * if asked to replace another folder, agree to do so
 
 ## Running on macOS:
->[!warning]
->Due to Apple's restrictions when it comes to open source applications such as ours, workarounds are needed to get AppUsageGUI to run on macOS.
 
 If you encounter the error message saying the app was not opened or was damaged, click "done" or "cancel", then enter this in your terminal:
 ```shell
