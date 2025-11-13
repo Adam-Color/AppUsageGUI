@@ -14,6 +14,6 @@ If you encounter the error message saying the app was not opened or was damaged,
 ```shell
 xattr -dr com.apple.quarantine /Applications/AppUsageGUI/AppUsageGUI.app
 ```
-If you mistakingly hit 'move to trash' or 'delete', repeat installation steps.
+If you mistakingly hit "move to trash" or "delete", repeat installation steps.
 
  If you continue to get error messsages, go into your security settings and allow AppUsageGUI to run on your device
