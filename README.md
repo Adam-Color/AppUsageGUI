@@ -185,6 +185,7 @@ The application now uses a streamlined workflow where users select their project
 - **`src/main.py`** - Application entry point that initializes the Tkinter root window, applies dark mode theming, sets up the application icon, and launches the splash screen
 - **`src/_version.py`** - Contains the application version number
 - **`src/_path.py`** - Handles resource path resolution for bundled applications
+- **`src/_logging.py`** - Logging system with a 20 file limit
 
 ### Core Logic (`src/core/`)
 
