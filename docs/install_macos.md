@@ -9,13 +9,11 @@ Note: only arm-based systems are currently supported.
 * if asked to replace another folder, agree to do so
 
 ## Running on macOS:
->[!warning]
->Due to Apple's restrictions when it comes to open source applications such as ours, workarounds are needed to get AppUsageGUI to run on macOS.
 
 If you encounter the error message saying the app was not opened or was damaged, click "done" or "cancel", then enter this in your terminal:
 ```shell
 xattr -dr com.apple.quarantine /Applications/AppUsageGUI/AppUsageGUI.app
 ```
-If you mistakingly hit 'move to trash' or 'delete', repeat installation steps.
+If you mistakingly hit "move to trash" or "delete", repeat installation steps.
 
  If you continue to get error messsages, go into your security settings and allow AppUsageGUI to run on your device
