@@ -113,6 +113,7 @@ def splash_screen(root):
             root.update()
             root.deiconify()
             splash_window.after(300, splash_window.destroy)
+            root.resizable(False, False)
             root.after(300, lambda: win.pack(side="top", fill="both", expand=True))
 
         except Exception:
