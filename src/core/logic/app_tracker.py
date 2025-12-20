@@ -1,3 +1,7 @@
+"""
+App Tracking logic class. Used for app tracking, filtering, and listing.
+"""
+
 import threading
 import os
 import psutil # type: ignore
