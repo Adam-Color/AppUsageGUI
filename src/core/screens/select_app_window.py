@@ -1,3 +1,4 @@
+from time import sleep
 import tkinter as tk
 from core.utils.tk_utils import messagebox
 from core.utils.logic_utils import threaded
@@ -92,6 +93,7 @@ class SelectAppWindow(tk.Frame):
 
         self.app_tracker = self.logic.app_tracker
         self.all_apps = []
+        sleep(0.01)
         self.refresh_apps()  # Populate list initially
 
     def select_app(self):
