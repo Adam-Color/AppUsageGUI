@@ -96,6 +96,7 @@ def splash_screen(root):
             update_progress(30)
             if is_running():
                 messagebox.showerror("Error", "The application is already running.\n\nExiting.")
+                logger.error("The application is already running. Exiting.")
                 splash_window.destroy()
                 sys.exit(0)
 

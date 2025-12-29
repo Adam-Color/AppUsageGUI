@@ -195,7 +195,7 @@ class GUIRoot(tk.Frame):
             messagebox.showinfo("Update", "No new updates available.")
 
     def show_logs(self, _=None):
-        """Display live-updating logs in a scrollable window with fixed footer buttons."""
+        """Display logs in a scrollable window with fixed footer buttons."""
         # Prevent duplicate windows
         if hasattr(self, "log_window") and self.log_window and self.log_window.winfo_exists():
             self.log_window.lift()

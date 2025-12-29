@@ -68,7 +68,7 @@ class AppTracker:
                     apps.append(app_name)
                     seen_names.append(app_name)
                     if app_name == self.selected_app:
-                        #print(f"Selected app found: {app_name}")  # Debugging line
+                        logger.debug(f"Seleced App found: {app_name}")
                         break
                     #print(app_name)  # Debugging line to help optimize
             except (psutil.NoSuchProcess, psutil.AccessDenied, psutil.ZombieProcess):
