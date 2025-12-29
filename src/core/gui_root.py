@@ -107,7 +107,7 @@ class GUIRoot(tk.Frame):
                 # Map standard mac menu actions to our callbacks
                 # "tk::mac::ShowAbout" -> About
                 # "tk::mac::ShowPreferences" -> Preferences (we map to License here)
-                self.parent.createcommand("tk::mac::ShowAbout", self.show_about)
+                self.parent.createcommand("tk::mac::standardAboutPanel", self.show_about)
                 self.parent.createcommand("tk::mac::ShowPreferences", self.show_license)
             except Exception:
                 # If anything goes wrong, fall back to having the menu (it's already set above)
