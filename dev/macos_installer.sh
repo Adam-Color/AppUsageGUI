@@ -1,6 +1,6 @@
 #!/bin/bash
 # This script is used to create the installer for the macOS version of the application
-app_version='1.8.2'
+app_version='1.8.3'
 
 plutil -replace CFBundleShortVersionString -string ${app_version} ../dist/AppUsageGUI.app/Contents/Info.plist
 
