@@ -3,7 +3,7 @@ import tkinter.messagebox as messagebox
 import os
 import sys
 
-def center(win, offset_x=0, offset_y=0):
+def center(win):
     """
     Center a Tkinter window on the screen with optional percentage offsets.
 
@@ -23,12 +23,10 @@ def center(win, offset_x=0, offset_y=0):
     screen_height = win.winfo_screenheight()
 
     # Convert percentage offsets to pixels
-    offset_x = int(screen_width * (offset_x / 100))
-    offset_y = int(screen_height * (offset_y / 100))
 
     # Compute center position
-    x = int((screen_width / 2) - (width / 2) + offset_x)
-    y = int((screen_height / 2) - (height / 2) + offset_y)
+    x = int((screen_width / 2) - (width / 2))
+    y = int((screen_height / 2) - (height / 2))
 
     win.geometry(f"+{x}+{y}")
 

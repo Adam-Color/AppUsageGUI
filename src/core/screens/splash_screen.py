@@ -109,13 +109,13 @@ def splash_screen(root):
             from core.gui_root import GUIRoot
             update_progress(80)
             win = GUIRoot(root)
-
+            
             update_progress(100)
             root.update()
             root.deiconify()
-            splash_window.after(300, splash_window.destroy)
+            splash_window.destroy()
             root.resizable(False, False)
-            root.after(300, lambda: win.pack(side="top", fill="both", expand=True))
+            root.after('idle', lambda: win.pack(side="top", fill="both", expand=True))
 
         except Exception:
             from traceback import format_exc

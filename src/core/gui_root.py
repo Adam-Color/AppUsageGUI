@@ -72,7 +72,7 @@ class GUIRoot(tk.Frame):
         self.init_screens()
         self.show_frame("MainWindow")
 
-        center(self.parent, -13, -15)
+        center(self.parent)
 
         self.parent.protocol("WM_DELETE_WINDOW", self.on_close)
 
