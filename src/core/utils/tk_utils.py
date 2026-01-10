@@ -28,7 +28,7 @@ def center(win):
     x = int((screen_width / 2) - (width / 2))
     y = int((screen_height / 2) - (height / 2))
 
-    win.geometry(f"+{x}+{y}")
+    win.geometry(f"{width}x{height}")
 
 def center_relative_to_parent(win, parent):
     """

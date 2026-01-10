@@ -81,7 +81,7 @@ class GUIRoot(tk.Frame):
            On macOS we also register the platform hooks so items appear in the native App menu."""
         
         if self.parent.tk.call("tk", "windowingsystem") == "aqua":
-            self.parent.createcommand("tk::mac::ShowAbout", self.show_about)
+            self.parent.createcommand("tk::mac::standardAboutPanel", self.show_about)
             self.parent.createcommand("tk::mac::ShowPreferences", self.show_license)
             self.parent.createcommand("tk::mac::Quit", self.on_close)
             menubar = tk.Menu(self.parent)

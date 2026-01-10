@@ -147,7 +147,6 @@ class FileHandler:
         return self.file_name
 
     def get_session_names(self):
-        logger.info(f"session_names: {self.session_names}")
         return self.session_names
 
     def set_continuing_session(self, continuation=bool):
