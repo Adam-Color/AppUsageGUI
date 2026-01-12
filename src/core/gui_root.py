@@ -8,7 +8,7 @@ import platform
 from _version import __version__ as version
 from _path import resource_path
 from _logging import get_current_log_file
-from core.utils.tk_utils import center_relative_to_parent, center
+from core.utils.tk_utils import center_relative_to_parent
 from core.utils.app_utils import new_updates, update
 
 from .screens.main_window import MainWindow
@@ -71,9 +71,7 @@ class GUIRoot(tk.Frame):
         self.selected_project = None
         self.init_screens()
         self.show_frame("MainWindow")
-
-        center(self.parent)
-
+        
         self.parent.protocol("WM_DELETE_WINDOW", self.on_close)
 
     def setup_options(self):

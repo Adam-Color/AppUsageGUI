@@ -24,7 +24,7 @@ import sys
 import platform
 
 from core.screens.splash_screen import splash_screen
-from core.utils.tk_utils import is_dark_mode, set_main_window, messagebox
+from core.utils.tk_utils import is_dark_mode, set_main_window, messagebox, center
 from _logging import setup_logging
 from _path import resource_path
 

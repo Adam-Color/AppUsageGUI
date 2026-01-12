@@ -113,6 +113,7 @@ def splash_screen(root):
             update_progress(100)
             root.update()
             root.deiconify()
+            root.after_idle(lambda: center(root))
             splash_window.destroy()
             root.resizable(False, False)
             root.after('idle', lambda: win.pack(side="top", fill="both", expand=True))
