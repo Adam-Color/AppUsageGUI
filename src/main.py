@@ -58,6 +58,15 @@ def main():
         logger = logging.getLogger(__name__)
         logger.info("Starting AppUsageGUI...")
 
+        # force windows scaling to DPI-aware
+        if sys.platform == "win32":
+            try:
+                import ctypes
+                ctypes.windll.shcore.SetProcessDpiAwareness(2)  # Per-monitor DPI aware
+            except Exception:
+                pass
+
+
         root = tk.Tk()
         root.withdraw()
 
