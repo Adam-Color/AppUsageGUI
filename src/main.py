@@ -24,7 +24,7 @@ import sys
 import platform
 
 from core.screens.splash_screen import splash_screen
-from core.utils.tk_utils import is_dark_mode, set_main_window, messagebox
+from core.utils.tk_utils import is_dark_mode, set_main_window, messagebox, center
 from _logging import setup_logging
 from _path import resource_path
 
@@ -57,6 +57,15 @@ def main():
         import logging
         logger = logging.getLogger(__name__)
         logger.info("Starting AppUsageGUI...")
+
+        # force windows scaling to DPI-aware
+        if sys.platform == "win32":
+            try:
+                import ctypes
+                ctypes.windll.shcore.SetProcessDpiAwareness(2)  # Per-monitor DPI aware
+            except Exception:
+                pass
+
 
         root = tk.Tk()
         root.withdraw()

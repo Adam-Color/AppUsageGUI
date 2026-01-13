@@ -39,7 +39,7 @@ def setup_logging():
     root_logger.addHandler(rotating_handler)
     root_logger.addHandler(console_handler)
 
-    cleanup_old_logs(logs_dir, backup_count=5)
+    cleanup_old_logs(logs_dir, backup_count=20)
 
     # quiet some libraries
     logging.getLogger("urllib3").setLevel(logging.WARNING)

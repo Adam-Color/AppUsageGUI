@@ -8,7 +8,7 @@ import platform
 from _version import __version__ as version
 from _path import resource_path
 from _logging import get_current_log_file
-from core.utils.tk_utils import center_relative_to_parent, center
+from core.utils.tk_utils import center_relative_to_parent
 from core.utils.app_utils import new_updates, update
 
 from .screens.main_window import MainWindow
@@ -71,9 +71,7 @@ class GUIRoot(tk.Frame):
         self.selected_project = None
         self.init_screens()
         self.show_frame("MainWindow")
-
-        center(self.parent, -13, -15)
-
+        
         self.parent.protocol("WM_DELETE_WINDOW", self.on_close)
 
     def setup_options(self):
@@ -81,7 +79,7 @@ class GUIRoot(tk.Frame):
            On macOS we also register the platform hooks so items appear in the native App menu."""
         
         if self.parent.tk.call("tk", "windowingsystem") == "aqua":
-            self.parent.createcommand("tk::mac::ShowAbout", self.show_about)
+            self.parent.createcommand("tk::mac::standardAboutPanel", self.show_about)
             self.parent.createcommand("tk::mac::ShowPreferences", self.show_license)
             self.parent.createcommand("tk::mac::Quit", self.on_close)
             menubar = tk.Menu(self.parent)
@@ -107,7 +105,7 @@ class GUIRoot(tk.Frame):
                 # Map standard mac menu actions to our callbacks
                 # "tk::mac::ShowAbout" -> About
                 # "tk::mac::ShowPreferences" -> Preferences (we map to License here)
-                self.parent.createcommand("tk::mac::ShowAbout", self.show_about)
+                self.parent.createcommand("tk::mac::standardAboutPanel", self.show_about)
                 self.parent.createcommand("tk::mac::ShowPreferences", self.show_license)
             except Exception:
                 # If anything goes wrong, fall back to having the menu (it's already set above)
@@ -195,7 +193,7 @@ class GUIRoot(tk.Frame):
             messagebox.showinfo("Update", "No new updates available.")
 
     def show_logs(self, _=None):
-        """Display live-updating logs in a scrollable window with fixed footer buttons."""
+        """Display logs in a scrollable window with fixed footer buttons."""
         # Prevent duplicate windows
         if hasattr(self, "log_window") and self.log_window and self.log_window.winfo_exists():
             self.log_window.lift()

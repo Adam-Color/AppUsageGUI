@@ -158,6 +158,10 @@ class CreateSessionWindow(tk.Frame):
             if len(project_name) > 50:
                 messagebox.showerror("Error", "Project name must be 50 characters or less.", parent=dialog)
                 return
+
+            if self.logic.project_handler.get_project_sessions(project_name) != []:
+                messagebox.showerror("Error", "A project with this name already exists. Please choose a different name.")
+                return
             
             # Create the project
             success, message = self.logic.project_handler.create_project(project_name)
@@ -192,11 +196,16 @@ class CreateSessionWindow(tk.Frame):
         """Sets up session and proceeds to app selection"""
         session_name = self.session_name.get().strip()
         project_name = self.project_var.get()
-        
+
         if not session_name:
             messagebox.showerror("Error", "Please enter a session name.")
             return
         
+
+        if session_name in self.logic.file_handler.get_session_names():
+            messagebox.showerror("Error", "A session with this name already exists. Please choose a different name.")
+            return
+
         # Handle project choice
         if project_name == "No Project":
             self.logic.file_handler.set_current_project(None)

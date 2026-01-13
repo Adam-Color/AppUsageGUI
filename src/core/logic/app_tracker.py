@@ -1,3 +1,7 @@
+"""
+App Tracking logic class. Used for app tracking, filtering, and listing.
+"""
+
 import threading
 import os
 import psutil # type: ignore
@@ -64,7 +68,7 @@ class AppTracker:
                     apps.append(app_name)
                     seen_names.append(app_name)
                     if app_name == self.selected_app:
-                        #print(f"Selected app found: {app_name}")  # Debugging line
+                        logger.debug(f"Seleced App found: {app_name}")
                         break
                     #print(app_name)  # Debugging line to help optimize
             except (psutil.NoSuchProcess, psutil.AccessDenied, psutil.ZombieProcess):
@@ -176,9 +180,9 @@ class AppTracker:
                 for app in apps:
                     if app.processIdentifier() == process_id:
                         return True
-                if app.processIdentifier() is None:
-                    # Handle the case where the process is not found
-                    return True
+                    elif app.processIdentifier() is None:
+                        # Handle the case where the process is not found
+                        return True
                 return False
             except Exception as e:
                 logger.error(f"GUI check error: {e}")

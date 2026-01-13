@@ -96,6 +96,7 @@ def splash_screen(root):
             update_progress(30)
             if is_running():
                 messagebox.showerror("Error", "The application is already running.\n\nExiting.")
+                logger.error("The application is already running. Exiting.")
                 splash_window.destroy()
                 sys.exit(0)
 
@@ -108,12 +109,14 @@ def splash_screen(root):
             from core.gui_root import GUIRoot
             update_progress(80)
             win = GUIRoot(root)
-
+            
             update_progress(100)
             root.update()
             root.deiconify()
-            splash_window.after(300, splash_window.destroy)
-            root.after(300, lambda: win.pack(side="top", fill="both", expand=True))
+            root.after_idle(lambda: center(root))
+            splash_window.destroy()
+            root.resizable(False, False)
+            root.after('idle', lambda: win.pack(side="top", fill="both", expand=True))
 
         except Exception:
             from traceback import format_exc

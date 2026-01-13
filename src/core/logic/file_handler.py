@@ -32,6 +32,7 @@ class FileHandler:
         self.continuing_session = False
         self.continuing_tracker = False
         self.corrupt_sessions = []
+        self.session_names = []
 
     def save_session_data(self, data):
         """Special function to save and hash session data"""
@@ -100,6 +101,7 @@ class FileHandler:
                             self.current_project = saved_project # Set to saved project
                         else:
                             self.current_project = None # No project
+                    self.session_names.append(self.file_name)
                 else:
                     self.corrupt_sessions.append((filename, "Hash mismatch"))
                     self.data = None
@@ -143,6 +145,9 @@ class FileHandler:
 
     def get_file_name(self):
         return self.file_name
+
+    def get_session_names(self):
+        return self.session_names
 
     def set_continuing_session(self, continuation=bool):
         self.continuing_session = continuation

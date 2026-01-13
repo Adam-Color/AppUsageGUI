@@ -95,7 +95,7 @@ def update():
         import webbrowser
         if suffix is None:
             webbrowser.open_new_tab("https://github.com/adam-color/AppUsageGUI/releases/latest")
-            messagebox.showinfo("Update", "Your platform is currently unsupported.")
+            messagebox.showinfo("Update", "Your platform is not officially supported.")
         elif download_url is not None:
             webbrowser.open_new_tab(download_url)
             webbrowser.open_new_tab("https://github.com/adam-color/AppUsageGUI/releases/latest")
