@@ -230,7 +230,7 @@ class GUIRoot(tk.Frame):
             f"Platform: {platform.system()} ({platform.machine()})\n"
             f"{'=' * 21}\n"
             f"NOTE: logs window only refreshes when reopened.\n\n"
-            )
+        )
 
         # Read logs from the log file if available
         log_contents = ""
