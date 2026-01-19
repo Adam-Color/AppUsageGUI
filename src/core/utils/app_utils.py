@@ -81,10 +81,7 @@ def update():
         if sys.platform == "win32":
             suffix = "WINDOWS_setup.exe"
         elif sys.platform == "darwin":
-            if platform.processor() == "arm":
-                suffix = "macOS_arm64_setup.dmg"
-            else:
-                suffix = None
+            suffix = "macOS_setup.dmg"
         else:
             suffix = None
         

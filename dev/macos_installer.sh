@@ -6,4 +6,4 @@ plutil -replace CFBundleShortVersionString -string ${app_version} ../dist/AppUsa
 
 mv ../dist/AppUsageGUI.app ../dist/AppUsageGUI/
 
-create-dmg --volicon ../src/core/resources/icon.icns --volname AppUsageGUIsetup --window-pos 200 190 --window-size 800 400 --app-drop-link 600 185 --eula ../LICENSE.txt ../dist/AppUsageGUI_v${app_version}_macOS_arm64_setup.dmg ../dist/
+create-dmg --volicon ../src/core/resources/icon.icns --volname AppUsageGUIsetup --window-pos 200 190 --window-size 800 400 --app-drop-link 600 185 --eula ../LICENSE.txt ../dist/AppUsageGUI_v${app_version}_macOS_setup.dmg ../dist/
