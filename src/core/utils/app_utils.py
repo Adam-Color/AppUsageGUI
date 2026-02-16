@@ -72,7 +72,6 @@ def new_updates(manual_check=False):
 def update():
     """Prompt the user to download the latest update from GitHub."""
     import sys
-    import platform
     ask_update = messagebox.askquestion(
             'AppUsageGUI Updates',
             "A new update is available. Would you like to download it from the GitHub page?"
