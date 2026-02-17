@@ -26,7 +26,7 @@ NOTE: GIL is detached for the macOS build; use Python 3.14.3t
 
 ## Building
 
-For building, it is recommended to use Python 3.13.7 for Windows/Linux, and 3.13.7t for macOS in a virtual enviroment.
+For building, it is recommended to use Python 3.14.3 for Windows/Linux, and 3.14.3t for macOS in a virtual enviroment.
 
 Install requirents:
 `pip install -r requirements.txt`
