@@ -22,7 +22,7 @@ To install, follow the instructions for your platform found here:
 * Find a better way to filter out non-GUI apps
 * Full linux support with packages
 
-NOTE: GIL is detached for the macOS build; use Python 3.13.7t
+NOTE: GIL is detached for the macOS build; use Python 3.14.3t
 
 ## Building
 
