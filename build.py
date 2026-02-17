@@ -18,19 +18,19 @@ def run_command(command):
         print(f"Error: Command '{command}' failed.")
         sys.exit(1)
 
-
 def build_executable():
     """Build the application using PyInstaller."""
     python_executable = os.path.join(VENV_DIR, "Scripts" if os.name == "nt" else "bin", "python")
 
     icon_file = "src/core/resources/icon.ico" if os.name == 'nt' else "src/core/resources/icon.icns"
+    
+    # Set environment variable in the current process
+    os.environ['PYTHONOPTIMIZE'] = '1'
+    
     print("Building the application...")
-    if sys.platform == 'darwin':
-        run_command('export PYTHONOPTIMIZE=1')
-        windows_only_1 = ""
-    else:
-        run_command('set PYTHONOPTIMIZE=1')
-        windows_only_1 = '--collect-submodules pywinauto'
+    
+    windows_only_1 = '--collect-submodules pywinauto' if os.name == 'nt' else ""
+    
     run_command(
         f'{python_executable} -m PyInstaller -D --clean --name {PROJECT_NAME} '
         f'--noconfirm '
@@ -39,20 +39,24 @@ def build_executable():
         f'--add-data "{icon_file}:." '
         f'--add-data "LICENSE.txt:." '
         f'{windows_only_1} '
-        f'--collect-submodules core '
         f'--collect-submodules psutil '
         f'--collect-submodules tkinter '
         f'--collect-submodules pynput '
         f'--collect-submodules requests '
-        f'--collect-submodules PIL '
+        f'--collect-submodules urllib3 '
+        f'--hidden-import=PIL.Image '
+        f'--hidden-import=PIL.ImageTk '
         f'--collect-submodules pyperclip '
-        f'--exclude-module PIL.tests '
         f'--exclude-module tkinter.test '
+        f'--exclude-module tkinter.demos '
+        f'--exclude-module PIL.ImageCms '
+        f'--exclude-module PIL.ImageQt '
+        f'--exclude-module PIL.ImageWin '
+        f'--exclude-module PIL._imagingft '
         f'--icon={icon_file} '
         f'--add-data "src/_version.py:." '
         f'--add-data "src/_path.py:." '
         f'--add-data "src/_logging.py:." '
-        f'--target-architecture {platform.machine()} '
         f'{ENTRY_POINT}'
     )
 

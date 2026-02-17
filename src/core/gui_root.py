@@ -120,7 +120,7 @@ class GUIRoot(tk.Frame):
         """Show app info popup"""
         messagebox.showinfo(
             "About",
-            f"AppUsageGUI v{version}\n\nOpen Source Application Tracker\n\n(c) 2025 Adam Blair-Smith\n\nContributors (github):\n\n- Adam-Color\n- Grippando\n\nPython Version:\n\n{sys.version}",
+            f"AppUsageGUI v{version}\n\nOpen Source Application Tracker\n\n(c) 2026 Adam Blair-Smith\n\nContributors (github):\n\n- Adam-Color\n- Grippando\n\nPython Version:\n\n{sys.version}",
         )
 
     def show_license(self, _=None):
@@ -230,7 +230,7 @@ class GUIRoot(tk.Frame):
             f"Platform: {platform.system()} ({platform.machine()})\n"
             f"{'=' * 21}\n"
             f"NOTE: logs window only refreshes when reopened.\n\n"
-            )
+        )
 
         # Read logs from the log file if available
         log_contents = ""

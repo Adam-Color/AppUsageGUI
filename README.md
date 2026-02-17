@@ -1,6 +1,6 @@
-![version](https://img.shields.io/badge/Version-1.8.3-white.svg)
+![version](https://img.shields.io/badge/Version-1.8.4-white.svg)
 ![license](https://img.shields.io/badge/License-GPL%20v3-blue.svg)
-![python](https://img.shields.io/badge/Python-3.13-green.svg)
+![python](https://img.shields.io/badge/Python-3.14-green.svg)
 
 # AppUsageGUI
 ### Application Runtime Tracker
