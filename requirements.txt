@@ -1,9 +1,9 @@
 psutil==7.1.0
 pynput==1.8.1
 PyMsgBox==1.0.9
-pyobjc-core==11.0; sys_platform == "darwin"
-pyobjc-framework-Cocoa==11.0; sys_platform == "darwin"
-pyobjc-framework-Quartz==11.0; sys_platform == "darwin"
+pyobjc-core==12.1; sys_platform == "darwin"
+pyobjc-framework-Cocoa==12.1; sys_platform == "darwin"
+pyobjc-framework-Quartz==12.1; sys_platform == "darwin"
 pyperclip==1.11.0
 PyScreeze==1.0.1
 pytweening==1.2.0
