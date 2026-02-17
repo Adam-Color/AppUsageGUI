@@ -18,24 +18,23 @@ def run_command(command):
         print(f"Error: Command '{command}' failed.")
         sys.exit(1)
 
-
 def build_executable():
     """Build the application using PyInstaller."""
     python_executable = os.path.join(VENV_DIR, "Scripts" if os.name == "nt" else "bin", "python")
 
     icon_file = "src/core/resources/icon.ico" if os.name == 'nt' else "src/core/resources/icon.icns"
+    
+    # Set environment variable in the current process
+    os.environ['PYTHONOPTIMIZE'] = '1'
+    
     print("Building the application...")
-    if sys.platform == 'darwin':
-        run_command('export PYTHONOPTIMIZE=1')
-        windows_only_1 = ""
-    else:
-        run_command('set PYTHONOPTIMIZE=1')
-        windows_only_1 = '--collect-submodules pywinauto'
+    
+    windows_only_1 = '--collect-submodules pywinauto' if os.name == 'nt' else ""
+    
     run_command(
         f'{python_executable} -m PyInstaller -D --clean --name {PROJECT_NAME} '
         f'--noconfirm '
         f'--windowed '
-        f'--strip '
         f'--add-data "src/core:core" '
         f'--add-data "{icon_file}:." '
         f'--add-data "LICENSE.txt:." '
@@ -44,12 +43,12 @@ def build_executable():
         f'--collect-submodules tkinter '
         f'--collect-submodules pynput '
         f'--collect-submodules requests '
+        f'--collect-submodules urllib3 '
         f'--hidden-import=PIL.Image '
         f'--hidden-import=PIL.ImageTk '
         f'--collect-submodules pyperclip '
         f'--exclude-module tkinter.test '
         f'--exclude-module tkinter.demos '
-        f'--exclude-module \"*.psd\" '
         f'--exclude-module PIL.ImageCms '
         f'--exclude-module PIL.ImageQt '
         f'--exclude-module PIL.ImageWin '
