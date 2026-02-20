@@ -82,3 +82,87 @@ def create_version_file(version):
     version_parts = version.split('.')
     while len(version_parts) < 4:
         version_parts.append('0')
+    
+    version_str = '.'.join(version_parts[:4])
+    version_content = f'''# UTF-8
+#
+# For more details about fixed file info 'ffi' see:
+# http://msdn.microsoft.com/en-us/library/ms646997.aspx?id=7
+VSVersionInfo(
+  ffi=FixedFileInfo(
+    # Contains as much info as Windows will allow. All of these
+    # items are strings. Include them all.
+    mask=0x3f,
+    mask2=0x3f,
+    # Contains a bitmask that specifies the valid bits 'flags'r
+    strFileInfo=[
+    (u'040904B0',
+    [
+      (u'CompanyName', u''),
+      (u'FileDescription', u'{PROJECT_NAME}'),
+      (u'FileVersion', u'{version_str}'),
+      (u'InternalName', u'{PROJECT_NAME}'),
+      (u'LegalCopyright', u''),
+      (u'OriginalFilename', u'{PROJECT_NAME}.exe'),
+      (u'ProductName', u'{PROJECT_NAME}'),
+      (u'ProductVersion', u'{version_str}')
+    ])
+    ]),
+  varFileInfo=[
+    (u'Translation', [1033, 1200])
+  ]
+)
+'''
+    with open('version_info.txt', 'w') as f:
+        f.write(version_content)
+    return '--version-file=version_info.txt'
+
+def create_macos_app_bundle_info():
+    """Create Info.plist for macOS .app bundle."""
+    version = get_version()
+    bundle_id = "com.appusagegui.app"
+    
+    info_plist = f'''<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <key>CFBundleDisplayName</key>
+    <string>AppUsageGUI</string>
+    <key>CFBundleExecutable</key>
+    <string>{PROJECT_NAME}</string>
+    <key>CFBundleIdentifier</key>
+    <string>{bundle_id}</string>
+    <key>CFBundleInfoDictionaryVersion</key>
+    <string>6.0</string>
+    <key>CFBundleName</key>
+    <string>AppUsageGUI</string>
+    <key>CFBundlePackageType</key>
+    <string>APPL</string>
+    <key>CFBundleShortVersionString</key>
+    <string>{version}</string>
+    <key>CFBundleVersion</key>
+    <string>1</string>
+    <key>NSHighResolutionCapable</key>
+    <true/>
+    <key>NSHumanReadableCopyright</key>
+    <string>Copyright © 2026. All rights reserved.</string>
+    <key>NSPrincipalClass</key>
+    <string>NSApplication</string>
+</dict>
+</plist>
+'''
+    
+    app_bundle = os.path.join(DIST_DIR, f"{PROJECT_NAME}.app")
+    contents_dir = os.path.join(app_bundle, "Contents")
+    os.makedirs(contents_dir, exist_ok=True)
+    
+    info_plist_path = os.path.join(contents_dir, "Info.plist")
+    with open(info_plist_path, 'w') as f:
+        f.write(info_plist)
+    print(f"Created Info.plist at {info_plist_path}")
+
+if __name__ == "__main__":
+    build_executable()
+    if platform.system() == "Darwin":  # macOS
+        create_macos_app_bundle_info()
+    print(f"Build completed successfully!")
