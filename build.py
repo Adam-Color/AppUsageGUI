@@ -106,14 +106,14 @@ VSVersionInfo(
   ),
   kids=[StringFileInfo(
     [StringTable(u'040904B0',
-    [StringData(u'CompanyName', u''),
-     StringData(u'FileDescription', u'{PROJECT_NAME}'),
-     StringData(u'FileVersion', u'{version_str}'),
-     StringData(u'InternalName', u'{PROJECT_NAME}'),
-     StringData(u'LegalCopyright', u''),
-     StringData(u'OriginalFilename', u'{PROJECT_NAME}.exe'),
-     StringData(u'ProductName', u'{PROJECT_NAME}'),
-     StringData(u'ProductVersion', u'{version_str}')])]),
+    [StringTable(u'CompanyName', u''),
+     StringTable(u'FileDescription', u'{PROJECT_NAME}'),
+     StringTable(u'FileVersion', u'{version_str}'),
+     StringTable(u'InternalName', u'{PROJECT_NAME}'),
+     StringTable(u'LegalCopyright', u''),
+     StringTable(u'OriginalFilename', u'{PROJECT_NAME}.exe'),
+     StringTable(u'ProductName', u'{PROJECT_NAME}'),
+     StringTable(u'ProductVersion', u'{version_str}')])]),
    VarFileInfo([VarFileInfo(u'Translation', [1033, 1200])])],
   strFileInfo=None
 )
