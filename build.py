@@ -1,6 +1,5 @@
 import os
 import sys
-import shutil
 import subprocess
 import platform
 
@@ -21,7 +20,7 @@ def run_command(command):
 def get_version():
     """Read version from src/_version.py"""
     sys.path.insert(0, 'src')
-    from _version import __version__
+    from src._version import __version__
     return __version__
 
 def build_executable():
@@ -69,7 +68,6 @@ def build_executable():
         f'--add-data "src/_version.py:." '
         f'--add-data "src/_path.py:." '
         f'--add-data "src/_logging.py:." '
-        f'{version_file} '
         f'{ENTRY_POINT}'
     )
     
@@ -114,7 +112,7 @@ VSVersionInfo(
      StringTable(u'OriginalFilename', u'{PROJECT_NAME}.exe'),
      StringTable(u'ProductName', u'{PROJECT_NAME}'),
      StringTable(u'ProductVersion', u'{version_str}')])]),
-   VarFileInfo([VarFileInfo(u'Translation', [1033, 1200])])],
+    VarFileInfo([(1033, 1252)])
   strFileInfo=None,
   description="AppUsageGUI"
 

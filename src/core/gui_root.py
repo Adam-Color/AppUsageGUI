@@ -120,7 +120,7 @@ class GUIRoot(tk.Frame):
         """Show app info popup"""
         messagebox.showinfo(
             "About",
-            f"AppUsageGUI v{version}\n\nOpen Source Application Tracker\n\n(c) 2026 Adam Blair-Smith\n\nContributors (github):\n\n- Adam-Color\n- Grippando\n\nPython Version:\n\n{sys.version}",
+            f"AppUsageGUI v{version}\n\nOpen Source Application Tracker\n\n(c) 2026 Adam Blair-Smith\n\nPython Version:\n\n{sys.version}",
         )
 
     def show_license(self, _=None):
