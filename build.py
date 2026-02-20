@@ -121,7 +121,6 @@ VSVersionInfo(
     with open('version_info.txt', 'w') as f:
         f.write(version_content)
     return '--version-file=version_info.txt'
-    return '--version-file=version_info.txt'
 
 def create_macos_app_bundle_info():
     """Create Info.plist for macOS .app bundle."""
