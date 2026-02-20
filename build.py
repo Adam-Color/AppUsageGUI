@@ -93,7 +93,6 @@ VSVersionInfo(
     # Contains as much info as Windows will allow. All of these
     # items are strings. Include them all.
     mask=0x3f,
-    mask2=0x3f,
     # Contains a bitmask that specifies the valid bits 'flags'r
     strFileInfo=[
     (u'040904B0',
