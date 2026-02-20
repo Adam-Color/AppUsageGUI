@@ -48,6 +48,7 @@ def build_executable():
         f'--windowed '
         f'--add-data "src/core:core" '
         f'--add-data "{icon_file}:." '
+        f'--add-data "src/core/resources/icon.icns:Resources" '
         f'--add-data "LICENSE.txt:." '
         f'{windows_only_1} '
         f'--collect-submodules psutil '
@@ -135,6 +136,8 @@ def create_macos_app_bundle_info():
     <string>AppUsageGUI</string>
     <key>CFBundleExecutable</key>
     <string>{PROJECT_NAME}</string>
+    <key>CFBundleIconFile</key>
+    <string>icon</string>
     <key>CFBundleIdentifier</key>
     <string>{bundle_id}</string>
     <key>CFBundleInfoDictionaryVersion</key>
