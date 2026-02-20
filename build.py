@@ -84,6 +84,9 @@ def create_version_file(version):
         version_parts.append('0')
     
     version_str = '.'.join(version_parts[:4])
+    # Convert to tuple format (e.g., "1.8.5.0" -> (1, 8, 5, 0))
+    version_tuple = tuple(int(x) for x in version_parts[:4])
+    
     version_content = f'''# UTF-8
 #
 # For more details about fixed file info 'ffi' see:
@@ -92,28 +95,32 @@ VSVersionInfo(
   ffi=FixedFileInfo(
     # Contains as much info as Windows will allow. All of these
     # items are strings. Include them all.
+    filevers={version_tuple},
+    prodvers={version_tuple},
     mask=0x3f,
-    # Contains a bitmask that specifies the valid bits 'flags'r
-    strFileInfo=[
-    (u'040904B0',
-    [
-      (u'CompanyName', u''),
-      (u'FileDescription', u'{PROJECT_NAME}'),
-      (u'FileVersion', u'{version_str}'),
-      (u'InternalName', u'{PROJECT_NAME}'),
-      (u'LegalCopyright', u''),
-      (u'OriginalFilename', u'{PROJECT_NAME}.exe'),
-      (u'ProductName', u'{PROJECT_NAME}'),
-      (u'ProductVersion', u'{version_str}')
-    ])
-    ]),
-  varFileInfo=[
-    (u'Translation', [1033, 1200])
-  ]
+    flags=0x0,
+    OS=0x4,
+    fileType=0x1,
+    subtype=0x0,
+    date=(0, 0)
+  ),
+  kids=[StringFileInfo(
+    [StringTable(u'040904B0',
+    [StringData(u'CompanyName', u''),
+     StringData(u'FileDescription', u'{PROJECT_NAME}'),
+     StringData(u'FileVersion', u'{version_str}'),
+     StringData(u'InternalName', u'{PROJECT_NAME}'),
+     StringData(u'LegalCopyright', u''),
+     StringData(u'OriginalFilename', u'{PROJECT_NAME}.exe'),
+     StringData(u'ProductName', u'{PROJECT_NAME}'),
+     StringData(u'ProductVersion', u'{version_str}')])]),
+   VarFileInfo([VarFileInfo(u'Translation', [1033, 1200])])],
+  strFileInfo=None
 )
 '''
     with open('version_info.txt', 'w') as f:
         f.write(version_content)
+    return '--version-file=version_info.txt'
     return '--version-file=version_info.txt'
 
 def create_macos_app_bundle_info():
