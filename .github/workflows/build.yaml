@@ -1,0 +1,89 @@
+name: Build & Package
+
+on:
+  push:
+    tags:
+      - 'v*'         # Trigger on version tags like v1.0.0
+  workflow_dispatch: # Allow manual triggering
+
+jobs:
+  build-macos:
+    runs-on: macos-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Build binary
+        run: python build.py
+
+      - name: Install create-dmg
+        run: brew install create-dmg
+
+      - name: Build macOS installer
+        working-directory: dev
+        run: |
+          # Read version from _version.py
+          app_version=$(python -c "import sys; sys.path.insert(0, '../src'); from _version import __version__; print(__version__)")
+          # Update Info.plist
+          plutil -replace CFBundleShortVersionString -string $app_version ../dist/AppUsageGUI.app/Contents/Info.plist
+          # Move .app into folder for DMG
+          mv ../dist/AppUsageGUI.app ../dist/AppUsageGUI/
+          # Create DMG
+          create-dmg \
+            --volicon ../src/core/resources/icon.icns \
+            --volname AppUsageGUIsetup \
+            --window-pos 200 190 \
+            --window-size 800 400 \
+            --app-drop-link 600 185 \
+            --eula ../LICENSE.txt \
+            ../dist/AppUsageGUI_v${app_version}_macOS_setup.dmg \
+            ../dist/
+
+      - name: Upload macOS installer
+        uses: actions/upload-artifact@v4
+        with:
+          name: macos-installer
+          path: dist/AppUsageGUI_v*_macOS_setup.dmg
+
+  build-windows:
+    runs-on: windows-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Build binary
+        run: python build.py
+
+      - name: Install Inno Setup
+        run: choco install innosetup -y
+
+      - name: Build Windows installer
+        run: |
+          # Read version from _version.py
+          $version = python -c "import sys; sys.path.insert(0, 'src'); from _version import __version__; print(__version__)"
+          # Replace version in .iss file
+          (Get-Content dev\windows_installer.iss) -replace '#define MyAppVersion ".*"', "#define MyAppVersion `"$version`"" | Set-Content dev\windows_installer.iss
+          # Build installer
+          iscc dev\windows_installer.iss
+
+      - name: Upload Windows installer
+        uses: actions/upload-artifact@v4
+        with:
+          name: windows-installer
+          path: dist\AppUsageGUI_v*_WINDOWS_setup.exe

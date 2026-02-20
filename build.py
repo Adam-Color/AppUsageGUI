@@ -18,18 +18,30 @@ def run_command(command):
         print(f"Error: Command '{command}' failed.")
         sys.exit(1)
 
+def get_version():
+    """Read version from src/_version.py"""
+    sys.path.insert(0, 'src')
+    from _version import __version__
+    return __version__
+
 def build_executable():
     """Build the application using PyInstaller."""
     python_executable = os.path.join(VENV_DIR, "Scripts" if os.name == "nt" else "bin", "python")
 
     icon_file = "src/core/resources/icon.ico" if os.name == 'nt' else "src/core/resources/icon.icns"
+    version = get_version()
     
     # Set environment variable in the current process
     os.environ['PYTHONOPTIMIZE'] = '1'
     
-    print("Building the application...")
+    print(f"Building {PROJECT_NAME} v{version}...")
     
     windows_only_1 = '--collect-submodules pywinauto' if os.name == 'nt' else ""
+    version_file = ""
+    
+    # On Windows, create a version file for the .exe
+    if os.name == 'nt':
+        version_file = create_version_file(version)
     
     run_command(
         f'{python_executable} -m PyInstaller -D --clean --name {PROJECT_NAME} '
@@ -57,23 +69,16 @@ def build_executable():
         f'--add-data "src/_version.py:." '
         f'--add-data "src/_path.py:." '
         f'--add-data "src/_logging.py:." '
+        f'{version_file} '
         f'{ENTRY_POINT}'
     )
+    
+    # Clean up version file if created
+    if version_file and os.path.exists('version_info.txt'):
+        os.remove('version_info.txt')
 
-def clean_up():
-    """Remove build artifacts."""
-    print("Cleaning up...")
-    for folder in [BUILD_DIR]:
-        if os.path.exists(folder):
-            shutil.rmtree(folder)
-
-def main():
-    print(f"Starting build process for {PROJECT_NAME} under {platform.machine()}...")
-
-    build_executable()
-    clean_up()
-
-    print(f"Build completed! Executable is in the '{DIST_DIR}' directory.")
-
-if __name__ == "__main__":
-    main()
+def create_version_file(version):
+    """Create a version file for PyInstaller on Windows."""
+    version_parts = version.split('.')
+    while len(version_parts) < 4:
+        version_parts.append('0')
