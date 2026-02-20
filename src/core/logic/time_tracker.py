@@ -75,7 +75,7 @@ class TimeTracker:
         self.track = False
         self.start_time = None
         self.captures = {'starts': [], 'stops': [], 'pauses': []}
-        logger.info(self.controller.file_handler.get_continuing_session())
+        logger.info("Continuing Session: " + f"{self.controller.file_handler.get_continuing_session()}")
         if self.controller.file_handler.get_continuing_session() == True:
             self.update_captures()  # update captures from session file if applicable
         logging.info("Time tracker reset.")

@@ -390,6 +390,8 @@ class GUIRoot(tk.Frame):
             for frame_name, frame in self.frames.items():
                 frame.destroy()
 
+            self.logic.file_handler.set_continuing_session(False)
+
             self.frames = {}
 
             # Reinitialize screens
@@ -397,6 +399,7 @@ class GUIRoot(tk.Frame):
             
             # Restore selected project after reset
             self.selected_project = preserved_project
+            logger.info("Frames reset...")
 
         except Exception:
             from traceback import format_exc
