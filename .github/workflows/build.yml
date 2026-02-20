@@ -18,13 +18,12 @@ jobs:
         with:
           python-version: '3.13'
 
-      - name: Set up virtual environment
+      - name: Create virtual environment
         run: |
-        python -m venv .venv
-        source .venv/bin/activate
-
-      - name: Install dependencies
-        run: .venv/bin/pip install -r requirements.txt
+          python -m venv .venv
+          # Use the correct Python interpreter
+          .venv/bin/python -m pip install --upgrade pip
+          .venv/bin/python -m pip install -r requirements.txt
 
       - name: Build binary
         run: .venv/bin/python build.py
@@ -69,16 +68,14 @@ jobs:
         with:
           python-version: '3.13'
 
-      - name: Set up virtual environment
+      - name: Create virtual environment
         run: |
-        python -m venv .venv
-        source .venv/bin/activate
-
-      - name: Install dependencies
-        run: .venv/bin/pip install -r requirements.txt
+          python -m venv .venv
+          .venv\Scripts\python.exe -m pip install --upgrade pip
+          .venv\Scripts\python.exe -m pip install -r requirements.txt
 
       - name: Build binary
-        run: .venv/bin/python build.py
+        run: .venv\Scripts\python.exe build.py
 
       - name: Install Inno Setup
         run: choco install innosetup -y
