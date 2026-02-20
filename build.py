@@ -116,6 +116,8 @@ VSVersionInfo(
      StringTable(u'ProductVersion', u'{version_str}')])]),
    VarFileInfo([VarFileInfo(u'Translation', [1033, 1200])])],
   strFileInfo=None
+  description="AppUsageGUI"
+
 )
 '''
     with open('version_info.txt', 'w') as f:
