@@ -1,6 +1,8 @@
 #!/bin/bash
 # This script is used to create the installer for the macOS version of the application
-app_version='1.8.4'
+
+# Read version from src/_version.py
+app_version=$(python -c "import sys; sys.path.insert(0, '../src'); from _version import __version__; print(__version__)")
 
 plutil -replace CFBundleShortVersionString -string ${app_version} ../dist/AppUsageGUI.app/Contents/Info.plist
 

@@ -120,7 +120,7 @@ class GUIRoot(tk.Frame):
         """Show app info popup"""
         messagebox.showinfo(
             "About",
-            f"AppUsageGUI v{version}\n\nOpen Source Application Tracker\n\n(c) 2026 Adam Blair-Smith\n\nContributors (github):\n\n- Adam-Color\n- Grippando\n\nPython Version:\n\n{sys.version}",
+            f"AppUsageGUI v{version}\n\nOpen Source Application Tracker\n\n(c) 2026 Adam Blair-Smith\n\nPython Version:\n\n{sys.version}",
         )
 
     def show_license(self, _=None):
@@ -226,7 +226,7 @@ class GUIRoot(tk.Frame):
         # Header and text setup
         header = (
             f"=== {self.parent.title()} ===\n"
-            f"Python: {sys.version.split("(")[0]}\n"
+            f"Python: {sys.version.split('(')[0]}\n"
             f"Platform: {platform.system()} ({platform.machine()})\n"
             f"{'=' * 21}\n"
             f"NOTE: logs window only refreshes when reopened.\n\n"
@@ -390,6 +390,8 @@ class GUIRoot(tk.Frame):
             for frame_name, frame in self.frames.items():
                 frame.destroy()
 
+            self.logic.file_handler.set_continuing_session(False)
+
             self.frames = {}
 
             # Reinitialize screens
@@ -397,6 +399,7 @@ class GUIRoot(tk.Frame):
             
             # Restore selected project after reset
             self.selected_project = preserved_project
+            logger.info("Frames reset...")
 
         except Exception:
             from traceback import format_exc

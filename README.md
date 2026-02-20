@@ -1,6 +1,6 @@
-![version](https://img.shields.io/badge/Version-1.8.4-white.svg)
+![version](https://img.shields.io/badge/Version-1.8.5-white.svg)
 ![license](https://img.shields.io/badge/License-GPL%20v3-blue.svg)
-![python](https://img.shields.io/badge/Python-3.14-green.svg)
+![python](https://img.shields.io/badge/Python-3.13-green.svg)
 
 # AppUsageGUI
 ### Application Runtime Tracker
@@ -18,15 +18,13 @@ To install, follow the instructions for your platform found here:
 ### Contributions are welcome and needed! Here is a TODO list:
 
 * Add integrations with professional applications
-* Detach the GIL for windows version
+* free-threading support
 * Find a better way to filter out non-GUI apps
 * Full linux support with packages
 
-NOTE: GIL is detached for the macOS build; use Python 3.13.7t
-
 ## Building
 
-For building, it is recommended to use Python 3.13.7 for Windows/Linux, and 3.13.7t for macOS in a virtual enviroment.
+For building, it is recommended to use Python 3.13
 
 Install requirents:
 `pip install -r requirements.txt`

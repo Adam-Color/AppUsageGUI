@@ -55,6 +55,7 @@ class SaveWindow(tk.Frame):
                     'config': self.config,
                     'time_captures': captures # {'starts': [], 'stops': [], 'pauses': [{start: 0, how_long: 0}]}
                     }
+            logger.info("save_window.py data save: " + f"{data}")
 
             self.logic.file_handler.save_session_data(data)
 
