@@ -18,11 +18,16 @@ jobs:
         with:
           python-version: '3.13'
 
+      - name: Set up virtual environment
+        run: |
+        python -m venv .venv
+        source .venv/bin/activate
+
       - name: Install dependencies
-        run: pip install -r requirements.txt
+        run: .venv/bin/pip install -r requirements.txt
 
       - name: Build binary
-        run: python build.py
+        run: .venv/bin/python build.py
 
       - name: Install create-dmg
         run: brew install create-dmg
@@ -64,11 +69,16 @@ jobs:
         with:
           python-version: '3.13'
 
+      - name: Set up virtual environment
+        run: |
+        python -m venv .venv
+        source .venv/bin/activate
+
       - name: Install dependencies
-        run: pip install -r requirements.txt
+        run: .venv/bin/pip install -r requirements.txt
 
       - name: Build binary
-        run: python build.py
+        run: .venv/bin/python build.py
 
       - name: Install Inno Setup
         run: choco install innosetup -y
