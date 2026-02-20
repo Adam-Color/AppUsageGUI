@@ -115,7 +115,7 @@ VSVersionInfo(
      StringTable(u'ProductName', u'{PROJECT_NAME}'),
      StringTable(u'ProductVersion', u'{version_str}')])]),
    VarFileInfo([VarFileInfo(u'Translation', [1033, 1200])])],
-  strFileInfo=None
+  strFileInfo=None,
   description="AppUsageGUI"
 
 )
