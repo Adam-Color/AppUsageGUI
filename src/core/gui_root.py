@@ -8,7 +8,7 @@ import platform
 from _version import __version__ as version
 from _path import resource_path
 from _logging import get_current_log_file
-from core.utils.tk_utils import center_relative_to_parent
+from core.utils.tk_utils import center_relative_to_parent, _main_window
 from core.utils.app_utils import new_updates, update
 
 from .screens.main_window import MainWindow
@@ -157,10 +157,10 @@ class GUIRoot(tk.Frame):
         win = tk.Toplevel(self.parent)
         self.license_window = win  # keep reference
         win.title("License")
-        win.geometry("600x600")
+        win.geometry("500x400")
         win.transient(self.parent)
         win.resizable(True, True)
-        center_relative_to_parent(win, self.parent)
+        win.after(10, lambda: center_relative_to_parent(win, _main_window))
         win.protocol("WM_DELETE_WINDOW", lambda: (win.destroy(), setattr(self, "license_window", None)))
 
         win.rowconfigure(0, weight=1)
@@ -205,7 +205,7 @@ class GUIRoot(tk.Frame):
         win.title("Application Logs")
         win.geometry("600x600")
         win.transient(self.parent)
-        center_relative_to_parent(win, self.parent)
+        win.after(10, lambda: center_relative_to_parent(win, _main_window))
 
         # Use grid instead of pack for better control
         win.rowconfigure(0, weight=1)
