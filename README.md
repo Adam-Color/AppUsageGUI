@@ -26,7 +26,7 @@ To install, follow the instructions for your platform found here:
 
 For building, it is recommended to use Python 3.13
 
-Install requirents:
+Install requirements:
 `pip install -r requirements.txt`
 
 Run build script:
