@@ -2,9 +2,57 @@ import tkinter as tk
 import tkinter.messagebox as messagebox
 import os
 import sys
+import ctypes
+from ctypes import wintypes
 
 import logging
 logger = logging.getLogger(__name__)
+
+class ctypesRECT(ctypes.Structure):
+    _fields_ = [
+        ("left", ctypes.c_long),
+        ("top", ctypes.c_long),
+        ("right", ctypes.c_long),
+        ("bottom", ctypes.c_long)
+    ]
+
+class MONITORINFO(ctypes.Structure):
+    _fields_ = [
+        ("cbSize", ctypes.c_ulong),
+        ("rcMonitor", ctypesRECT),
+        ("rcWork", ctypesRECT),
+        ("dwFlags", ctypes.c_ulong)
+    ]
+
+def get_monitor_info(win):
+    if sys.platform == "win32":
+        return get_monitor_info_win32(win)
+    elif sys.platform == 'darwin':
+        from AppKit import NSScreen
+        screens = NSScreen.screens()
+        parent_x = int(win.winfo_rootx())
+        parent_y = int(win.winfo_rooty())
+
+        for screen in screens:
+            frame = screen.frame()
+            origin_x = getattr(frame.origin, 'x', 0)
+            origin_y = getattr(frame.origin, 'y', 0)
+            width = getattr(frame.size, 'width', 0)
+            height = getattr(frame.size, 'height', 0)
+
+            origin_x = int(origin_x)
+            origin_y = int(origin_y)
+            width = int(width)
+            height = int(height)
+
+            if origin_x <= parent_x < origin_x + width and \
+               origin_y <= parent_y < origin_y + height:
+                return origin_x, origin_y, width, height
+
+        return 0, 0, win.winfo_screenwidth(), win.winfo_screenheight()
+    else:
+        # Fallback for Linux/Other
+        return 0, 0, win.winfo_screenwidth(), win.winfo_screenheight()
 
 def center(win):
     """
@@ -39,44 +87,31 @@ def center(win):
     win.geometry(f"{width}x{height}+{x}+{y}")
 
 def center_relative_to_parent(win, parent):
-    """
-    centers a tkinter window relative to its parent window
-    :param win: the window to center
-    :param parent: the parent window to center relative to
-    """
+    win.withdraw()
     win.update_idletasks()
     parent.update_idletasks()
-    
-    # Get window dimensions
-    width = win.winfo_width()
-    height = win.winfo_height()
-    
-    # Get parent window position and dimensions
-    parent_x = parent.winfo_x()
-    parent_y = parent.winfo_y()
+
+    width = win.winfo_reqwidth()
+    height = win.winfo_reqheight()
+
+    parent_x = parent.winfo_rootx()
+    parent_y = parent.winfo_rooty()
     parent_width = parent.winfo_width()
     parent_height = parent.winfo_height()
-    
-    # Calculate center position relative to parent
+
     x = parent_x + (parent_width - width) // 2
     y = parent_y + (parent_height - height) // 2
-    
-    # Ensure window stays on screen
-    screen_width = win.winfo_screenwidth()
-    screen_height = win.winfo_screenheight()
-    
-    if x < 0:
-        x = 0
-    elif x + width > screen_width:
-        x = screen_width - width
-    
-    if y < 0:
-        y = 0
-    elif y + height > screen_height:
-        y = screen_height - height
-    
-    win.geometry('{}x{}+{}+{}'.format(width, height, x, y))
+
+    # Get monitor info
+    monitor_x, monitor_y, monitor_width, monitor_height = get_monitor_info(parent)
+
+    # Clamp to monitor bounds
+    x = max(monitor_x, min(x, monitor_x + monitor_width - width))
+    y = max(monitor_y, min(y, monitor_y + monitor_height - height))
+
+    win.geometry(f'{width}x{height}+{x}+{y}')
     win.deiconify()
+    win.update_idletasks()
 
 def is_dark_mode():
     """Check if the system is in dark mode"""
@@ -196,6 +231,36 @@ def _create_centered_dialog(title, message, dialog_type, buttons):
     dialog.wait_window()
     
     return result
+
+def get_monitor_info_win32(win):
+    """
+    Get monitor info for Windows.
+    Returns: (monitor_x, monitor_y, monitor_width, monitor_height)
+    """
+    user32 = ctypes.windll.user32
+
+    # Get window rect
+    rect = ctypesRECT()
+    hwnd = win.winfo_id()
+    user32.GetWindowRect(hwnd, ctypes.byref(rect))
+
+    # Get monitor info
+    hmonitor = user32.MonitorFromWindow(hwnd, 2)  # MONITOR_DEFAULTTONEAREST
+    if not hmonitor:
+        return 0, 0, win.winfo_screenwidth(), win.winfo_screenheight()
+
+    # Get monitor info
+    monitor_info = MONITORINFO()
+    monitor_info.cbSize = ctypes.sizeof(MONITORINFO)
+    user32.GetMonitorInfoW(hmonitor, ctypes.byref(monitor_info))
+
+    # Return monitor rect
+    return (
+        monitor_info.rcMonitor.left,
+        monitor_info.rcMonitor.top,
+        monitor_info.rcMonitor.right - monitor_info.rcMonitor.left,
+        monitor_info.rcMonitor.bottom - monitor_info.rcMonitor.top
+    )
 
 def showinfo(title, message, **kwargs):
     """Show info dialog centered relative to main window"""
