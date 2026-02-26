@@ -17,9 +17,9 @@ To install, follow the instructions for your platform found here:
 
 ### Contributions are welcome and needed! Here is a TODO list:
 
-* Add integrations with professional applications
-* free-threading support
 * Find a better way to filter out non-GUI apps
+* free-threading support
+* Add integrations with professional applications
 * Full linux support with packages
 
 ## Building
