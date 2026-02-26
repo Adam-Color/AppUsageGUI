@@ -30,14 +30,28 @@ def get_monitor_info(win):
     elif sys.platform == 'darwin':
         from AppKit import NSScreen
         screens = NSScreen.screens()
+        parent_x = int(win.winfo_rootx())
+        parent_y = int(win.winfo_rooty())
+
         for screen in screens:
             frame = screen.frame()
-            if frame.origin.x <= parent_x < frame.origin.x + frame.size.width and \
-            frame.origin.y <= parent_y < frame.origin.y + frame.size.height:
-                return frame.origin.x, frame.origin.y, frame.size.width, frame.size.height
+            origin_x = getattr(frame.origin, 'x', 0)
+            origin_y = getattr(frame.origin, 'y', 0)
+            width = getattr(frame.size, 'width', 0)
+            height = getattr(frame.size, 'height', 0)
+
+            origin_x = int(origin_x)
+            origin_y = int(origin_y)
+            width = int(width)
+            height = int(height)
+
+            if origin_x <= parent_x < origin_x + width and \
+               origin_y <= parent_y < origin_y + height:
+                return origin_x, origin_y, width, height
+
         return 0, 0, win.winfo_screenwidth(), win.winfo_screenheight()
     else:
-        # Fallback for macOS/Linux
+        # Fallback for Linux/Other
         return 0, 0, win.winfo_screenwidth(), win.winfo_screenheight()
 
 def center(win):
