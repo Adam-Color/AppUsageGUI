@@ -119,7 +119,7 @@ class CreateSessionWindow(tk.Frame):
         
         # Center the dialog
         from core.utils.tk_utils import _main_window
-        dialog.after(100, lambda: center_relative_to_parent(dialog, _main_window))
+        dialog.after(10, lambda: center_relative_to_parent(dialog, _main_window))
 
         # Title
         title_label = tk.Label(dialog, text="Create New Project", font=("Arial", 12, "bold"))
