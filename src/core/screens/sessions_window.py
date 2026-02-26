@@ -1,5 +1,5 @@
 import tkinter as tk
-from core.utils.tk_utils import messagebox, center
+from core.utils.tk_utils import messagebox, center_relative_to_parent
 from core.utils.file_utils import get_sessions, get_sessions_directory, get_session_project, get_projects
 from core.utils.time_utils import format_time
 
@@ -69,7 +69,7 @@ class SessionsWindow(tk.Frame):
         delete_button.pack(side="left", padx=5)
 
         # Move button
-        move_button = tk.Button(button_frame, text="Change Session's Project",
+        move_button = tk.Button(button_frame, text="Change Project",
                                 command=self.move_session_to_project, width=20)
         move_button.pack(side="left", padx=5)
 
@@ -307,11 +307,13 @@ class SessionsWindow(tk.Frame):
         # Create a new window for project selection
         dialog = tk.Toplevel(self)
         dialog.title("Move Session to Project")
-        dialog.geometry("400x300")
+        dialog.geometry("410x300")
         dialog.resizable(False, False)
         
         # Center the dialog
-        center(dialog)
+        from core.utils.tk_utils import _main_window
+        dialog.after(100, lambda: center_relative_to_parent(dialog, _main_window))
+
         dialog.grab_set()
         
         # Main frame

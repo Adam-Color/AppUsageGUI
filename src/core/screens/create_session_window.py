@@ -1,5 +1,5 @@
 import tkinter as tk
-from core.utils.tk_utils import messagebox
+from core.utils.tk_utils import center_relative_to_parent, messagebox
 from re import search as re
 
 import logging
@@ -42,7 +42,7 @@ class CreateSessionWindow(tk.Frame):
         
         # Create new project button
         self.create_project_button = tk.Button(project_frame, text="Create New Project", 
-                                             command=self.create_new_project, width=15, height=1)
+                                             command=self.create_new_project, width=16, height=1)
         self.create_project_button.pack(side="right", padx=(5, 0))
         
         # Load projects into dropdown
@@ -118,11 +118,9 @@ class CreateSessionWindow(tk.Frame):
         dialog.grab_set()
         
         # Center the dialog
-        dialog.update_idletasks()
-        x = (dialog.winfo_screenwidth() // 2) - (dialog.winfo_width() // 2)
-        y = (dialog.winfo_screenheight() // 2) - (dialog.winfo_height() // 2)
-        dialog.geometry(f"+{x}+{y}")
-        
+        from core.utils.tk_utils import _main_window
+        dialog.after(100, lambda: center_relative_to_parent(dialog, _main_window))
+
         # Title
         title_label = tk.Label(dialog, text="Create New Project", font=("Arial", 12, "bold"))
         title_label.pack(pady=10)
