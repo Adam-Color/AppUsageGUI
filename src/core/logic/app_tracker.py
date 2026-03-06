@@ -6,6 +6,7 @@ import os
 import sys
 import threading
 
+import pefile
 import psutil  # type: ignore
 
 if sys.platform == "darwin":
@@ -172,7 +173,7 @@ class AppTracker:
                 # Skip processes that terminate mid-iteration or are inaccessible
                 pass
 
-        # print(f"\nExcluded app PIDs: {EXCLUDED_APP_PIDS}")  # Debugging line
+        logger.info(f"\nExcluded app PIDs: {EXCLUDED_APP_PIDS}")  # Debugging line
         logger.info(f"New exlusions: {i}")
         data = {
             "excluded_app_pids": EXCLUDED_APP_PIDS,
@@ -181,7 +182,18 @@ class AppTracker:
         write_file(apps_file(), data)
 
     def _has_gui(self, process_id):
-        if sys.platform == "darwin":
+        if os.name == "nt":
+            try:
+                p = psutil.Process(process_id)
+                exe_path = p.exe()
+
+                pe = pefile.PE(exe_path)
+                return pe.OPTIONAL_HEADER.Subsystem == 2
+
+            except RuntimeError:
+                logger.warning(f"Process {process_id} not found or inaccessible")
+                return True  # Handle the case where the process is not found
+        elif sys.platform == "darwin":
             # TODO: Implement a better GUI check for macOS
             try:
                 apps = NSWorkspace.sharedWorkspace().runningApplications()
