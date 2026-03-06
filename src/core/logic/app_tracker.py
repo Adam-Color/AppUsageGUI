@@ -8,12 +8,7 @@ import threading
 
 import psutil  # type: ignore
 
-if os.name == "nt":
-    from pywinauto import Desktop
-    from pywinauto.findwindows import ElementNotFoundError
-
-    windows = Desktop(backend="uia").windows()
-elif sys.platform == "darwin":
+if sys.platform == "darwin":
     from AppKit import NSWorkspace  # type: ignore
 
 import logging
@@ -186,17 +181,7 @@ class AppTracker:
         write_file(apps_file(), data)
 
     def _has_gui(self, process_id):
-        if os.name == "nt":
-            try:
-                # Enumerate all top-level windows
-                for win in windows:
-                    if win.process_id() == process_id:
-                        # Found a visible window for this process
-                        return True
-            except (ElementNotFoundError, RuntimeError):
-                return True  # Handle the case where the process is not found
-            return False
-        elif sys.platform == "darwin":
+        if sys.platform == "darwin":
             # TODO: Implement a better GUI check for macOS
             try:
                 apps = NSWorkspace.sharedWorkspace().runningApplications()
