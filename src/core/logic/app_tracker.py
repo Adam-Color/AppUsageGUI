@@ -176,7 +176,7 @@ class AppTracker:
                 # Skip processes that terminate mid-iteration or are inaccessible
                 pass
 
-        logger.info(f"\nExcluded app PIDs: {EXCLUDED_APP_PIDS}")  # Debugging line
+        # logger.info(f"Excluded app PIDs: {EXCLUDED_APP_PIDS}")  # Debugging line
         logger.info(f"New exlusions: {i}")
         data = {
             "excluded_app_pids": EXCLUDED_APP_PIDS,
