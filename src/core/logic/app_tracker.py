@@ -6,11 +6,11 @@ import os
 import sys
 import threading
 
-import pefile
 import psutil  # type: ignore
 
 if sys.platform == "darwin":
     from AppKit import NSWorkspace  # type: ignore
+
 
 import logging
 
@@ -139,8 +139,8 @@ class AppTracker:
         INCLUDED_APP_PIDS = []
         if refresh:
             self.app_names = self._fetch_app_names()
-        if update_pids:
-            self._update_excluded_apps()
+            if update_pids:
+                self._update_excluded_apps()
 
     def _update_excluded_apps(self):
         if not self.is_filter_enabled:
@@ -185,14 +185,31 @@ class AppTracker:
         if os.name == "nt":
             try:
                 p = psutil.Process(process_id)
-                exe_path = p.exe()
+                exe_path = p.exe().lower()
+                name = p.name().lower()
 
-                pe = pefile.PE(exe_path)
-                return pe.OPTIONAL_HEADER.Subsystem == 2
+                # Known GUI apps in System32 to KEEP
+                GUI_WHITELIST = {
+                    "notepad.exe",
+                    "mspaint.exe",
+                    "calc.exe",
+                    "explorer.exe",
+                    "taskmgr.exe",
+                    "winver.exe",
+                }
 
-            except RuntimeError:
+                if (
+                    exe_path.startswith("C:\\Windows\\System32\\")
+                    and name not in GUI_WHITELIST
+                ):
+                    logger.warning("SYSTEM32")
+                    return False
+
+                return p.exe()
+
+            except (RuntimeError, psutil.NoSuchProcess, psutil.AccessDenied):
                 logger.warning(f"Process {process_id} not found or inaccessible")
-                return True  # Handle the case where the process is not found
+                return True
         elif sys.platform == "darwin":
             # TODO: Implement a better GUI check for macOS
             try:
@@ -203,7 +220,7 @@ class AppTracker:
                     elif app.processIdentifier() is None:
                         # Handle the case where the process is not found
                         return True
-                return False
+                        return False
             except Exception as e:
                 logger.error(f"GUI check error: {e}")
                 return True
