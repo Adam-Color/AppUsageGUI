@@ -14,9 +14,9 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Set up Python
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v6.2.0
         with:
-          python-version: '3.13'
+          python-version: "3.14t"
 
       - name: Create virtual environment
         run: |
@@ -32,24 +32,9 @@ jobs:
         run: brew install create-dmg
 
       - name: Build macOS installer
-        working-directory: dev
         run: |
-          # Read version from _version.py
-          app_version=$(python -c "import sys; sys.path.insert(0, '../src'); from _version import __version__; print(__version__)")
-          # Update Info.plist
-          plutil -replace CFBundleShortVersionString -string $app_version ../dist/AppUsageGUI.app/Contents/Info.plist
-          # Move .app into folder for DMG
-          mv ../dist/AppUsageGUI.app ../dist/AppUsageGUI/
-          # Create DMG
-          create-dmg \
-            --volicon ../src/core/resources/icon.icns \
-            --volname AppUsageGUIsetup \
-            --window-pos 200 190 \
-            --window-size 800 400 \
-            --app-drop-link 600 185 \
-            --eula ../LICENSE.txt \
-            ../dist/AppUsageGUI_v${app_version}_macOS_setup.dmg \
-            ../dist/
+          chmod +x dev/macos_installer.sh
+          bash dev/macos_installer.sh
 
       - name: Upload macOS installer
         uses: actions/upload-artifact@v4
@@ -64,9 +49,9 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Set up Python
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v6.2.0
         with:
-          python-version: '3.13'
+          python-version: "3.14t"
 
       - name: Create virtual environment
         run: |

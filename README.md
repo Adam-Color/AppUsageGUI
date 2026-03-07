@@ -1,6 +1,6 @@
-![version](https://img.shields.io/badge/Version-1.8.6-white.svg)
+![version](https://img.shields.io/badge/Version-1.8.7-white.svg)
 ![license](https://img.shields.io/badge/License-GPL%20v3-blue.svg)
-![python](https://img.shields.io/badge/Python-3.13-green.svg)
+![python](https://img.shields.io/badge/Python-3.14t-green.svg)
 
 # AppUsageGUI
 ### Application Runtime Tracker
@@ -17,16 +17,15 @@ To install, follow the instructions for your platform found here:
 
 ### Contributions are welcome and needed! Here is a TODO list:
 
-* Add integrations with professional applications
-* free-threading support
 * Find a better way to filter out non-GUI apps
+* Add integrations with professional applications
 * Full linux support with packages
 
 ## Building
 
-For building, it is recommended to use Python 3.13
+For building, it is recommended to use Python 3.14t
 
-Install requirents:
+Install requirements:
 `pip install -r requirements.txt`
 
 Run build script:
