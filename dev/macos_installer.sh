@@ -31,6 +31,6 @@ create-dmg \
   --app-drop-link 600 185 \
   --eula "LICENSE.txt" \
   "dist/AppUsageGUI_v${app_version}_macOS_setup.dmg" \
-  "dist/AppUsageGUI/"
+  "dist/"
 
 echo "macOS installer created: dist/AppUsageGUI_v${app_version}_macOS_setup.dmg"
