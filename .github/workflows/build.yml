@@ -32,7 +32,9 @@ jobs:
         run: brew install create-dmg
 
       - name: Build macOS installer
-        run: bash dev/macos_installer.sh
+        run: |
+          chmod +x dev/macos_installer.sh
+          bash dev/macos_installer.sh
 
       - name: Upload macOS installer
         uses: actions/upload-artifact@v4
