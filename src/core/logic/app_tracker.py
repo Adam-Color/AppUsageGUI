@@ -8,13 +8,9 @@ import threading
 
 import psutil  # type: ignore
 
-if os.name == "nt":
-    from pywinauto import Desktop
-    from pywinauto.findwindows import ElementNotFoundError
-
-    windows = Desktop(backend="uia").windows()
-elif sys.platform == "darwin":
+if sys.platform == "darwin":
     from AppKit import NSWorkspace  # type: ignore
+
 
 import logging
 
@@ -65,7 +61,7 @@ class AppTracker:
 
     def _fetch_app_names(self):
         apps = []
-        seen_names = ["AppUsageGUI", "Python"]
+        seen_names = ["AppUsageGUI", "Python", "Python3"]
 
         for process in psutil.process_iter(["pid", "name"]):
             try:
@@ -137,6 +133,9 @@ class AppTracker:
             self.temp_reset_thread.start()
 
     def _reset_excluded_pids(self, refresh, update_pids):
+        logger.info(
+            f"Resetting excluded PIDs (refresh={refresh}, update_pids={update_pids})"
+        )
         global EXCLUDED_APP_PIDS
         global INCLUDED_APP_PIDS
         EXCLUDED_APP_PIDS = []
@@ -177,7 +176,7 @@ class AppTracker:
                 # Skip processes that terminate mid-iteration or are inaccessible
                 pass
 
-        # print(f"\nExcluded app PIDs: {EXCLUDED_APP_PIDS}")  # Debugging line
+        # logger.info(f"Excluded app PIDs: {EXCLUDED_APP_PIDS}")  # Debugging line
         logger.info(f"New exlusions: {i}")
         data = {
             "excluded_app_pids": EXCLUDED_APP_PIDS,
@@ -188,14 +187,39 @@ class AppTracker:
     def _has_gui(self, process_id):
         if os.name == "nt":
             try:
-                # Enumerate all top-level windows
-                for win in windows:
-                    if win.process_id() == process_id:
-                        # Found a visible window for this process
-                        return True
-            except (ElementNotFoundError, RuntimeError):
-                return True  # Handle the case where the process is not found
-            return False
+                # Not the ideal method, but until pywinauto supports free-threaded builds, this is the best we can do
+                import ctypes
+                from ctypes import wintypes
+
+                found_window = [False]
+
+                # Define the callback function type
+                WNDENUMPROC = ctypes.WINFUNCTYPE(
+                    wintypes.BOOL, wintypes.HWND, wintypes.LPARAM
+                )
+
+                def enum_callback(hwnd, lparam):
+                    # Get window PID
+                    window_pid = wintypes.DWORD()
+                    ctypes.windll.user32.GetWindowThreadProcessId(
+                        hwnd, ctypes.byref(window_pid)
+                    )
+
+                    # Check if this window belongs to our PID and is visible
+                    if window_pid.value == process_id:
+                        if ctypes.windll.user32.IsWindowVisible(hwnd):
+                            found_window[0] = True
+                            return False  # Stop enumerating
+
+                    return True  # Continue enumerating
+
+                callback = WNDENUMPROC(enum_callback)
+                ctypes.windll.user32.EnumWindows(callback, 0)
+                return found_window[0]
+
+            except RuntimeError:
+                logger.warning(f"Process {process_id} not found or inaccessible")
+                return True
         elif sys.platform == "darwin":
             # TODO: Implement a better GUI check for macOS
             try:
