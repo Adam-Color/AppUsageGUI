@@ -230,7 +230,7 @@ class AppTracker:
                     elif app.processIdentifier() is None:
                         # Handle the case where the process is not found
                         return True
-                        return False
+                return False
             except Exception as e:
                 logger.error(f"GUI check error: {e}")
                 return True
