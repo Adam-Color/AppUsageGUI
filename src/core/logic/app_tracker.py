@@ -61,7 +61,7 @@ class AppTracker:
 
     def _fetch_app_names(self):
         apps = []
-        seen_names = ["AppUsageGUI", "Python"]
+        seen_names = ["AppUsageGUI", "Python", "Python3"]
 
         for process in psutil.process_iter(["pid", "name"]):
             try:
@@ -133,6 +133,9 @@ class AppTracker:
             self.temp_reset_thread.start()
 
     def _reset_excluded_pids(self, refresh, update_pids):
+        logger.info(
+            f"Resetting excluded PIDs (refresh={refresh}, update_pids={update_pids})"
+        )
         global EXCLUDED_APP_PIDS
         global INCLUDED_APP_PIDS
         EXCLUDED_APP_PIDS = []
@@ -184,30 +187,37 @@ class AppTracker:
     def _has_gui(self, process_id):
         if os.name == "nt":
             try:
-                p = psutil.Process(process_id)
-                exe_path = p.exe().lower()
-                name = p.name().lower()
+                # Not the ideal method, but until pywinauto supports free-threaded builds, this is the best we can do
+                import ctypes
+                from ctypes import wintypes
 
-                # Known GUI apps in System32 to KEEP
-                GUI_WHITELIST = {
-                    "notepad.exe",
-                    "mspaint.exe",
-                    "calc.exe",
-                    "explorer.exe",
-                    "taskmgr.exe",
-                    "winver.exe",
-                }
+                found_window = [False]
 
-                if (
-                    exe_path.startswith("C:\\Windows\\System32\\")
-                    and name not in GUI_WHITELIST
-                ):
-                    logger.warning("SYSTEM32")
-                    return False
+                # Define the callback function type
+                WNDENUMPROC = ctypes.WINFUNCTYPE(
+                    wintypes.BOOL, wintypes.HWND, wintypes.LPARAM
+                )
 
-                return p.exe()
+                def enum_callback(hwnd, lparam):
+                    # Get window PID
+                    window_pid = wintypes.DWORD()
+                    ctypes.windll.user32.GetWindowThreadProcessId(
+                        hwnd, ctypes.byref(window_pid)
+                    )
 
-            except (RuntimeError, psutil.NoSuchProcess, psutil.AccessDenied):
+                    # Check if this window belongs to our PID and is visible
+                    if window_pid.value == process_id:
+                        if ctypes.windll.user32.IsWindowVisible(hwnd):
+                            found_window[0] = True
+                            return False  # Stop enumerating
+
+                    return True  # Continue enumerating
+
+                callback = WNDENUMPROC(enum_callback)
+                ctypes.windll.user32.EnumWindows(callback, 0)
+                return found_window[0]
+
+            except RuntimeError:
                 logger.warning(f"Process {process_id} not found or inaccessible")
                 return True
         elif sys.platform == "darwin":
