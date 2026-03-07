@@ -142,8 +142,8 @@ class AppTracker:
         INCLUDED_APP_PIDS = []
         if refresh:
             self.app_names = self._fetch_app_names()
-            if update_pids:
-                self._update_excluded_apps()
+        if update_pids:
+            self._update_excluded_apps()
 
     def _update_excluded_apps(self):
         if not self.is_filter_enabled:
