@@ -386,9 +386,9 @@ class GUIRoot(tk.Frame):
             self.frames["TrackerWindow"].stop_threads()
             self.frames["SessionTotalWindow"].stop_threads(wait=False)
 
-            # Destroy frames
-            for frame_name, frame in self.frames.items():
-                frame.destroy()
+            # Destroy frames - not needed for now
+            #for frame_name, frame in self.frames.items():
+            #    frame.destroy()
 
             self.logic.file_handler.set_continuing_session(False)
 

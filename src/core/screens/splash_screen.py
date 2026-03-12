@@ -21,9 +21,9 @@ def is_running(lock_path=lock_file()):
 
     try:
         if os.name == "nt":
-            msvcrt.locking(lock_file.fileno(), msvcrt.LK_NBLCK, 1)
+            msvcrt.locking(lock_file.fileno(), msvcrt.LK_NBLCK, 1) # type: ignore
         else:
-            fcntl.flock(lock_file, fcntl.LOCK_EX | fcntl.LOCK_NB)
+            fcntl.flock(lock_file, fcntl.LOCK_EX | fcntl.LOCK_NB) # type: ignore
         return False  # Lock acquired, no other instance
     except (OSError, IOError):
         return True  # Lock failed, already running
@@ -69,7 +69,7 @@ def splash_screen(root):
                 lightcolor="#61AFEF",
                 darkcolor="#61AFEF",
                 thickness=10)
-    
+
     progress = Progressbar(frame, orient="horizontal", length=200, mode="determinate",  # noqa: F405
                            maximum=100, style="custom.Horizontal.TProgressbar")
     progress.grid(row=1, column=0, pady=(10, 0))
@@ -109,7 +109,7 @@ def splash_screen(root):
             from core.gui_root import GUIRoot
             update_progress(80)
             win = GUIRoot(root)
-            
+
             update_progress(100)
             root.update()
             root.deiconify()
