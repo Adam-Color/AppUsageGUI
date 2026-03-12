@@ -29,7 +29,7 @@ def new_updates(manual_check=False):
 
         if time.time() - last_update_check < 43200:
             return False  # Check for updates only once every 12 hours
-    
+
         settings.update({"last_update_check": time.time()})
         write_file(config_file(), settings)
     import requests
@@ -83,7 +83,8 @@ def update():
             suffix = "macOS_setup.dmg"
         else:
             suffix = None
-        
+
+        download_url = None
         for asset in RELEASE_DATA['assets']:
             if asset['name'].endswith(suffix):
                 download_url = asset['browser_download_url']

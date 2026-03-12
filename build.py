@@ -83,7 +83,7 @@ def create_version_file(version):
         version_parts.append('0')
     
     version_str = '.'.join(version_parts[:4])
-    # Convert to tuple format (e.g., "1.8.5.0" -> (1, 8, 5, 0))
+    # Convert to tuple format
     version_tuple = tuple(int(x) for x in version_parts[:4])
     
     version_content = f'''# UTF-8
@@ -149,7 +149,7 @@ def create_macos_app_bundle_info():
     <key>CFBundleShortVersionString</key>
     <string>{version}</string>
     <key>CFBundleVersion</key>
-    <string>1</string>
+    <string></string>
     <key>NSHighResolutionCapable</key>
     <true/>
     <key>NSHumanReadableCopyright</key>
@@ -173,4 +173,4 @@ if __name__ == "__main__":
     build_executable()
     if platform.system() == "Darwin":  # macOS
         create_macos_app_bundle_info()
-    print(f"Build completed successfully!")
+    print("Build completed successfully!")

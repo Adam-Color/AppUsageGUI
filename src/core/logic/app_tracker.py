@@ -223,7 +223,7 @@ class AppTracker:
         elif sys.platform == "darwin":
             # TODO: Implement a better GUI check for macOS
             try:
-                apps = NSWorkspace.sharedWorkspace().runningApplications()
+                apps = NSWorkspace.sharedWorkspace().runningApplications() # type: ignore
                 for app in apps:
                     if app.processIdentifier() == process_id:
                         return True
