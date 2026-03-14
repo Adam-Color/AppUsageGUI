@@ -177,7 +177,7 @@ class AppTracker:
                 pass
 
         # logger.info(f"Excluded app PIDs: {EXCLUDED_APP_PIDS}")  # Debugging line
-        logger.info(f"New exlusions: {i}")
+        logger.info(f"New exclusions: {i}")
         data = {
             "excluded_app_pids": EXCLUDED_APP_PIDS,
             "included_app_pids": INCLUDED_APP_PIDS,
