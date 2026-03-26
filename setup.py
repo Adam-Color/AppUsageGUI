@@ -11,7 +11,7 @@ setup(
     install_requires=[
         'psutil==5.9.8',
         'pynput==1.8.1',
-        'requests==2.32.4',
+        'requests==2.33.0',
         'pillow==12.1.1',
         'pywinauto==0.6.8',
         'MouseInfo==0.1.3',
