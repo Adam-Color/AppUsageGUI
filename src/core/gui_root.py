@@ -71,13 +71,13 @@ class GUIRoot(tk.Frame):
         self.selected_project = None
         self.init_screens()
         self.show_frame("MainWindow")
-        
+
         self.parent.protocol("WM_DELETE_WINDOW", self.on_close)
 
     def setup_options(self):
         """Configure Options (About, License, etc.). Uses a Tk Menu for cross-platform behaviour.
            On macOS we also register the platform hooks so items appear in the native App menu."""
-        
+
         if self.parent.tk.call("tk", "windowingsystem") == "aqua":
             self.parent.createcommand("tk::mac::standardAboutPanel", self.show_about)
             self.parent.createcommand("tk::mac::ShowPreferences", self.show_license)
@@ -185,7 +185,7 @@ class GUIRoot(tk.Frame):
         btn_frame.columnconfigure(0, weight=1)
         ttk.Button(btn_frame, text="Close", command=win.destroy).grid(row=0, column=0, sticky="e", padx=(0, 8))
 
-    
+
     def update_and_check(self, _=None):
         if new_updates(manual_check=True):
             update()
@@ -242,7 +242,7 @@ class GUIRoot(tk.Frame):
                 log_contents = f"(Failed to read log file: {e})\n"
 
         # Combine header and logs
-        initial_text = header + (log_contents or self.log_stream.getvalue() or "(No logs yet)\n")
+        initial_text = header + (log_contents or "(No logs yet)\n")
 
         text_box = tk.Text(frame, wrap="word")
         text_box.insert("1.0", initial_text)
@@ -269,7 +269,7 @@ class GUIRoot(tk.Frame):
                     return "(Log file not found)"
             except Exception as e:
                 return f"(Failed to read log file: {e})"
-            
+
         def copy_logs():
             """Copy the current logs to the clipboard."""
             import pyperclip # type: ignore
@@ -299,7 +299,7 @@ class GUIRoot(tk.Frame):
 
     def init_screens(self):
         """Pass the logic_controller when initializing screens"""
-        for F in (MainWindow, SessionsWindow, ProjectSessionsWindow, ProjectsWindow, CreateProjectWindow, 
+        for F in (MainWindow, SessionsWindow, ProjectSessionsWindow, ProjectsWindow, CreateProjectWindow,
                   SelectAppWindow, TrackerWindow, SaveWindow, CreateSessionWindow, SessionTotalWindow, TrackerSettingsWindow):
             page_name = F.__name__
             frame = F(parent=self.container, controller=self, logic_controller=self.logic)
@@ -338,7 +338,7 @@ class GUIRoot(tk.Frame):
 
         if page_name in ["TrackerWindow", "SessionTotalWindow", "SaveWindow"]:
             self.disable_nav_buttons()
-    
+
     def go_back(self):
         """Navigate to the previous screen."""
         if (self.history_index > 0
@@ -371,7 +371,7 @@ class GUIRoot(tk.Frame):
         try:
             # Preserve selected project before reset
             preserved_project = self.selected_project
-            
+
             # Stop trackers
             if self.logic.app_tracker:
                 self.logic.app_tracker.reset()
@@ -386,9 +386,9 @@ class GUIRoot(tk.Frame):
             self.frames["TrackerWindow"].stop_threads()
             self.frames["SessionTotalWindow"].stop_threads(wait=False)
 
-            # Destroy frames
-            for frame_name, frame in self.frames.items():
-                frame.destroy()
+            # Destroy frames - not needed for now
+            #for frame_name, frame in self.frames.items():
+            #    frame.destroy()
 
             self.logic.file_handler.set_continuing_session(False)
 
@@ -396,7 +396,7 @@ class GUIRoot(tk.Frame):
 
             # Reinitialize screens
             self.init_screens()
-            
+
             # Restore selected project after reset
             self.selected_project = preserved_project
             logger.info("Frames reset...")
@@ -413,7 +413,7 @@ class GUIRoot(tk.Frame):
         # Stop GUI threads
         self.frames["TrackerWindow"].stop_threads()
         self.frames["SessionTotalWindow"].stop_threads(wait=False)
-        
+
         # Stop the AppTracker thread
         if self.logic.app_tracker:
             self.logic.app_tracker.stop()
@@ -421,7 +421,7 @@ class GUIRoot(tk.Frame):
         # stop the TimeTracker thread
         if self.logic.time_tracker:
             self.logic.time_tracker.stop()
-        
+
         # stop the MouseTracker thread
         if self.logic.mouse_tracker:
             self.logic.mouse_tracker.stop()

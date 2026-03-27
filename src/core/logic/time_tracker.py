@@ -85,7 +85,7 @@ class TimeTracker:
             "Continuing Session: "
             + f"{self.controller.file_handler.get_continuing_session()}"
         )
-        if self.controller.file_handler.get_continuing_session() == True:
+        if self.controller.file_handler.get_continuing_session():
             self.update_captures()  # update captures from session file if applicable
         logging.info("Time tracker reset.")
 

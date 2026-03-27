@@ -177,7 +177,7 @@ class AppTracker:
                 pass
 
         # logger.info(f"Excluded app PIDs: {EXCLUDED_APP_PIDS}")  # Debugging line
-        logger.info(f"New exlusions: {i}")
+        logger.info(f"New exclusions: {i}")
         data = {
             "excluded_app_pids": EXCLUDED_APP_PIDS,
             "included_app_pids": INCLUDED_APP_PIDS,
@@ -223,7 +223,7 @@ class AppTracker:
         elif sys.platform == "darwin":
             # TODO: Implement a better GUI check for macOS
             try:
-                apps = NSWorkspace.sharedWorkspace().runningApplications()
+                apps = NSWorkspace.sharedWorkspace().runningApplications() # type: ignore
                 for app in apps:
                     if app.processIdentifier() == process_id:
                         return True

@@ -13,14 +13,11 @@ app_version=$(python -c "import sys; sys.path.insert(0, 'src'); from _version im
 
 echo "Building macOS installer for version $app_version..."
 
-# Ensure dist directory exists
-mkdir -p dist/AppUsageGUI
+# remove dist directory
+rm -rf dist/AppUsageGUI
 
 # Update Info.plist
 plutil -replace CFBundleShortVersionString -string "$app_version" "dist/AppUsageGUI.app/Contents/Info.plist"
-
-# Move .app into folder for DMG
-mv "dist/AppUsageGUI.app" "dist/AppUsageGUI/"
 
 # Create DMG with correct paths
 create-dmg \
@@ -31,6 +28,6 @@ create-dmg \
   --app-drop-link 600 185 \
   --eula "LICENSE.txt" \
   "dist/AppUsageGUI_v${app_version}_macOS_setup.dmg" \
-  "dist/"
+  "dist/AppUsageGUI.app"
 
 echo "macOS installer created: dist/AppUsageGUI_v${app_version}_macOS_setup.dmg"

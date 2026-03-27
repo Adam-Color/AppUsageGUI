@@ -50,15 +50,15 @@ def setup_logging():
 def get_current_log_file():
     # Get the root logger
     root_logger = logging.getLogger()
-    
+
     # Iterate through the handlers
     for handler in root_logger.handlers:
-        if isinstance(handler, logging.handlers.RotatingFileHandler):
+        if isinstance(handler, RotatingFileHandler):
             # Return the log file path
             return handler.baseFilename
-    
+
     # If no RotatingFileHandler is found
-    return None
+    return ""
 
 def cleanup_old_logs(logs_dir, backup_count):
     """Delete old log files if they exceed the backup count."""

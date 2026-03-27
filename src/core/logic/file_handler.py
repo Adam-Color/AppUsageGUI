@@ -165,7 +165,7 @@ class FileHandler:
     def get_session_names(self):
         return self.session_names
 
-    def set_continuing_session(self, continuation=bool):
+    def set_continuing_session(self, continuation: bool):
         self.continuing_session = continuation
         if continuation:
             self.set_continuing_tracker(True)

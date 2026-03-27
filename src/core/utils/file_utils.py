@@ -8,7 +8,7 @@ logger = logging.getLogger(__name__)
 def get_sessions_directory():
     """Define the sessions directory, which stores application usage data"""
     if os.name == 'nt':  # Windows
-        appdata_dir = os.getenv('APPDATA')
+        appdata_dir = str(os.getenv('APPDATA'))
         sessions_dir = os.path.join(appdata_dir, 'AppUsageGUI', 'Sessions')
     else:  # macOS and Linux
         home_dir = os.path.expanduser('~')
@@ -18,7 +18,7 @@ def get_sessions_directory():
 def get_projects_directory():
     """Define the projects directory, which stores project-organized session data"""
     if os.name == 'nt':  # Windows
-        appdata_dir = os.getenv('APPDATA')
+        appdata_dir = str(os.getenv('APPDATA'))
         projects_dir = os.path.join(appdata_dir, 'AppUsageGUI', 'Projects')
     else:  # macOS and Linux
         home_dir = os.path.expanduser('~')
@@ -28,7 +28,7 @@ def get_projects_directory():
 def get_user_directory():
     """Define the user directory, which stores presets and settings"""
     if os.name == 'nt':  # Windows
-        appdata_dir = os.getenv('APPDATA')
+        appdata_dir = str(os.getenv('APPDATA'))
         user_dir = os.path.join(appdata_dir, 'AppUsageGUI', 'User')
     else:  # macOS and Linux
         home_dir = os.path.expanduser('~')
@@ -53,17 +53,17 @@ def sessions_exist(p=False):
     file_extension = ".dat"
     sessions_dir = get_sessions_directory()
     projects_dir = get_projects_directory()
-    
+
     if p:
         logging.info("sessions_dir: %s" % sessions_dir)
         logging.info("projects_dir: %s" % projects_dir)
-    
+
     # Check old sessions directory
     if os.path.exists(sessions_dir):
         for file in os.listdir(sessions_dir):
             if file.endswith(file_extension):
                 return True
-    
+
     # Check all project directories
     if os.path.exists(projects_dir):
         for project_name in os.listdir(projects_dir):
@@ -72,11 +72,11 @@ def sessions_exist(p=False):
                 for file in os.listdir(project_path):
                     if file.endswith(file_extension):
                         return True
-    
+
     # Ensure the old sessions directory exists for new standalone sessions
     if not os.path.exists(sessions_dir):
         os.makedirs(sessions_dir, exist_ok=True)
-    
+
     return False
 
 def user_dir_exists(p=False):
@@ -95,14 +95,14 @@ def get_sessions():
     """Returns session objects as a list from both old sessions directory and all project directories"""
     sessions_list = []
     file_extension = ".dat"
-    
+
     # Get sessions from old sessions directory
     sessions_dir = get_sessions_directory()
     if os.path.exists(sessions_dir):
         for file in os.listdir(sessions_dir):
             if file.endswith(file_extension):
                 sessions_list.append(file)
-    
+
     # Get sessions from all project directories
     projects_dir = get_projects_directory()
     if os.path.exists(projects_dir):
@@ -112,7 +112,7 @@ def get_sessions():
                 for file in os.listdir(project_path):
                     if file.endswith(file_extension):
                         sessions_list.append(file)
-    
+
     return sessions_list
 
 def get_project_sessions(project_name):
@@ -121,7 +121,7 @@ def get_project_sessions(project_name):
     file_extension = ".dat"
     projects_dir = get_projects_directory()
     project_dir = os.path.join(projects_dir, project_name)
-    
+
     if os.path.exists(project_dir):
         for file in os.listdir(project_dir):
             if file.endswith(file_extension):
@@ -138,7 +138,7 @@ def get_projects():
     """Returns list of all available projects"""
     projects_list = []
     projects_dir = get_projects_directory()
-    
+
     if os.path.exists(projects_dir):
         for item in os.listdir(projects_dir):
             item_path = os.path.join(projects_dir, item)
@@ -149,7 +149,7 @@ def get_projects():
 def get_session_project(session_filename):
     """Determine which project a session belongs to, or None if it's a standalone session"""
     projects_dir = get_projects_directory()
-    
+
     if os.path.exists(projects_dir):
         for project_name in os.listdir(projects_dir):
             project_path = os.path.join(projects_dir, project_name)
@@ -157,7 +157,7 @@ def get_session_project(session_filename):
                 session_path = os.path.join(project_path, session_filename)
                 if os.path.exists(session_path):
                     return project_name
-    
+
     # If not found in any project, it's a standalone session
     return None
 
