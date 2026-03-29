@@ -21,7 +21,7 @@ from .screens.tracker_window import TrackerWindow
 from .screens.save_window import SaveWindow
 from .screens.create_session_window import CreateSessionWindow
 from .screens.session_total_window import SessionTotalWindow
-from .screens.tracker_settings_window import TrackerSettingsWindow
+from .screens.settings_window import SettingsWindow
 
 import logging
 logger = logging.getLogger(__name__)
@@ -300,7 +300,7 @@ class GUIRoot(tk.Frame):
     def init_screens(self):
         """Pass the logic_controller when initializing screens"""
         for F in (MainWindow, SessionsWindow, ProjectSessionsWindow, ProjectsWindow, CreateProjectWindow,
-                  SelectAppWindow, TrackerWindow, SaveWindow, CreateSessionWindow, SessionTotalWindow, TrackerSettingsWindow):
+                  SelectAppWindow, TrackerWindow, SaveWindow, CreateSessionWindow, SessionTotalWindow, SettingsWindow):
             page_name = F.__name__
             frame = F(parent=self.container, controller=self, logic_controller=self.logic)
             self.frames[page_name] = frame

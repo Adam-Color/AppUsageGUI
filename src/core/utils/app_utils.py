@@ -14,6 +14,9 @@ def new_updates(manual_check=False):
             try:
                 last_update_check = read_file(config_file())["last_update_check"]
                 settings = read_file(config_file())
+                auto_update = settings["auto_update"]
+                if not auto_update:
+                    return False
             except (KeyError):
              # If the config file doesn't have the key
                 last_update_check = time.time()
