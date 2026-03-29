@@ -71,7 +71,7 @@ SETTINGS_SCHEMA: list[dict] = [
             "for the configured timeout."
         ),
         "type": "checkbox",
-        "default": False,
+        "default": True,
         "requires_restart": False,
     },
     {
