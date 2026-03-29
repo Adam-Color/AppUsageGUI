@@ -134,7 +134,8 @@ class CreateSessionWindow(tk.Frame):
         vcmd = (dialog.register(validate_name), '%P')
         project_name_var = tk.StringVar()
         project_name_entry = tk.Entry(dialog, textvariable=project_name_var,
-                                    validate="key", validatecommand=vcmd, width=30)
+                                    validate="key", validatecommand=vcmd, width=30, 
+                                    borderwidth=3, relief="groove")
         project_name_entry.pack(pady=5)
 
         # Help text
