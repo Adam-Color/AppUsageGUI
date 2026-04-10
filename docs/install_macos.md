@@ -12,7 +12,7 @@ Note: only arm-based systems are currently supported.
 
 If you encounter the error message saying the app was not opened or was damaged, click "done" or "cancel", then enter this in your terminal:
 ```shell
-xattr -dr com.apple.quarantine /Applications/AppUsageGUI/AppUsageGUI.app
+xattr -dr com.apple.quarantine /Applications/AppUsageGUI.app
 ```
 If you mistakingly hit "move to trash" or "delete", repeat installation steps.
 

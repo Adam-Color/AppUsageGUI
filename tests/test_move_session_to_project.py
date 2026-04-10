@@ -29,8 +29,8 @@ class TestMoveSessionToProject(unittest.TestCase):
         os.makedirs(self.projects_dir, exist_ok=True)
         
         # Mock the directory functions
-        self.sessions_patcher = patch('core.utils.file_utils.get_sessions_directory')
-        self.projects_patcher = patch('core.utils.file_utils.get_projects_directory')
+        self.sessions_patcher = patch('core.logic.file_handler.get_sessions_directory')
+        self.projects_patcher = patch('core.logic.file_handler.get_projects_directory')
         
         self.mock_sessions_dir = self.sessions_patcher.start()
         self.mock_projects_dir = self.projects_patcher.start()

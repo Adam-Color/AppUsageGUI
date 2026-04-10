@@ -34,26 +34,30 @@ class MouseTracker:
 
         self.update_thread = threading.Thread(target=self._update_mouse_position, name="mouse_tracker")
 
+    def _check_mouse_position(self):
+        """Perform a single mouse position check and trigger pause/resume as needed."""
+        self.last_mouse_position = self.mouse_position
+
+        x, y = pynput.mouse.Controller().position
+        self.mouse_position = x, y
+
+        # Pause the timer if mouse hasn't moved
+        if self.last_mouse_position == self.mouse_position and not self.logic.time_tracker.get_is_paused():
+            self.logic.time_tracker.pause()
+            self.pausing = True
+        elif self.pausing and self.last_mouse_position != self.mouse_position:
+            self.logic.time_tracker.resume()
+            self.pausing = False
+
     def _update_mouse_position(self):
         while not self.stop_event.is_set():
-            self.last_mouse_position = self.mouse_position
-
             wait_time = self.idle_time_limit if not self.logic.time_tracker.get_is_paused() else 1
 
             # Wait for the idle time or exit early if stop_event is set
             if self.stop_event.wait(timeout=wait_time):
                 break
 
-            x, y = pynput.mouse.Controller().position
-            self.mouse_position = x, y
-
-            # Pause the timer if mouse hasn’t moved
-            if self.last_mouse_position == self.mouse_position and not self.logic.time_tracker.get_is_paused():
-                self.logic.time_tracker.pause()
-                self.pausing = True
-            elif self.pausing and self.last_mouse_position != self.mouse_position:
-                self.logic.time_tracker.resume()
-                self.pausing = False
+            self._check_mouse_position()
 
 
     def start(self):

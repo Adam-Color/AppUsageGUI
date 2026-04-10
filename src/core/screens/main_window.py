@@ -47,8 +47,8 @@ class MainWindow(tk.Frame):
         btn_sessions.grid(row=1, column=0, padx=10, pady=10)
 
         btn_rules = tk.Button(
-            button_frame, text="Custom Rules",
-            command=lambda: self.controller.show_frame("TrackerSettingsWindow"),
+            button_frame, text="Settings",
+            command=lambda: self.controller.show_frame("SettingsWindow"),
             width=20, height=2
         )
         btn_rules.grid(row=1, column=1, padx=10, pady=10)

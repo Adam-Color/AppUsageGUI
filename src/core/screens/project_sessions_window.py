@@ -147,7 +147,7 @@ class ProjectSessionsWindow(tk.Frame):
             return
         
         # Set the project context for the CreateSessionWindow
-        self.logic.project_handler.set_selected_project(selected_project)
+        self.controller.set_selected_project(selected_project)
         
         # Navigate to CreateSessionWindow with project pre-selected
         self.controller.show_frame("CreateSessionWindow")

@@ -40,7 +40,8 @@ class SelectAppWindow(tk.Frame):
 
         self.search_var = tk.StringVar()
         self.search_var.trace_add("write", lambda *args: self.update_search())
-        search_entry = tk.Entry(search_frame, textvariable=self.search_var, width=30)
+        search_entry = tk.Entry(search_frame, textvariable=self.search_var, width=30,
+                                borderwidth=3, relief="groove")
         search_entry.pack(side="left", padx=8)
 
         refresh_button = tk.Button(
@@ -80,7 +81,7 @@ class SelectAppWindow(tk.Frame):
             width=15, height=2,
             font=("Arial", 10, "bold")
         )
-        select_button.pack(side="left", padx=20)
+        select_button.pack(side="right", padx=20)
 
         back_button = tk.Button(
             bottom_frame,
@@ -89,7 +90,7 @@ class SelectAppWindow(tk.Frame):
                              self.controller.show_frame("MainWindow")),
             width=15, height=2
         )
-        back_button.pack(side="right", padx=20)
+        back_button.pack(side="left", padx=20)
 
         self.app_tracker = self.logic.app_tracker
         self.all_apps = []

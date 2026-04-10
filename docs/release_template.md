@@ -1,7 +1,7 @@
 # AppUsageGUI v0.0.0
 
 >[!warning]
->Due to Apple's restrictions when it comes to open source applications such as ours, workarounds are needed to get AppUsageGUI to run on macOS. Please read the installation instructions below.
+>Due to codesigning restrictions, workarounds are needed to get AppUsageGUI to run. Please read the installation instructions below.
 
 To install, follow the instructions for your platform found here:
 
@@ -16,4 +16,4 @@ To install, follow the instructions for your platform found here:
 * 
 
 ### Patches:
-* 
+*

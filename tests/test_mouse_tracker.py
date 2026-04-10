@@ -21,33 +21,31 @@ def tracker(mock_logic_controller):
 
 
 @patch("core.logic.user_trackers.pynput.mouse.Controller")
-@patch("time.sleep", return_value=None)  # Skip actual sleep
-def test_mouse_idle_triggers_pause(mock_sleep, mock_controller, tracker):
+def test_mouse_idle_triggers_pause(mock_controller, tracker):
     """Simulate mouse inactivity and check pause is triggered."""
-    # Setup fake mouse positions
+    # The controller will report the same position as the tracker's current position,
+    # so _check_mouse_position sees no movement and should trigger a pause.
     mock_controller.return_value.position = (100, 100)
-
-    # Run one iteration of the loop manually
-    tracker.last_mouse_position = (100, 100)
-    tracker.mouse_position = (100, 100)
+    tracker.mouse_position = (100, 100)  # Becomes last_mouse_position inside the method
     tracker.logic.time_tracker.get_is_paused.return_value = False
 
-    tracker._update_mouse_position()  # Normally private; tested for now
+    tracker._check_mouse_position()
 
-    # Check pause was called
     tracker.logic.time_tracker.pause.assert_called_once()
     assert tracker.is_pausing() is True
 
 
 @patch("core.logic.user_trackers.pynput.mouse.Controller")
-@patch("time.sleep", return_value=None)
-def test_mouse_movement_triggers_resume(mock_sleep, mock_controller, tracker):
+def test_mouse_movement_triggers_resume(mock_controller, tracker):
     """Simulate mouse movement and check resume is triggered."""
-    tracker.last_mouse_position = (100, 100)
+    # The controller reports a new position different from the tracker's stored one,
+    # so _check_mouse_position sees movement and should trigger a resume.
     mock_controller.return_value.position = (200, 200)
-
+    tracker.mouse_position = (100, 100)  # Becomes last_mouse_position inside the method
+    tracker.pausing = True  # Simulate the tracker having already triggered a pause
     tracker.logic.time_tracker.get_is_paused.return_value = True
 
-    tracker._update_mouse_position()
+    tracker._check_mouse_position()
 
-    tracker.logic.time_tracker.resume
+    tracker.logic.time_tracker.resume.assert_called_once()
+    assert tracker.is_pausing() is False

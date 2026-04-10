@@ -193,6 +193,10 @@ class FileHandler:
 
     def move_session_to_project(self, session_name, current_project, target_project):
         """Move a session from one project to another (or to/from No Project)"""
+        # If already in the target project, nothing to do
+        if current_project == target_project:
+            return True
+
         try:
             # Load the session data first
             self.load_session_data(session_name, current_project)
