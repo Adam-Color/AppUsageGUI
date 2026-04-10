@@ -140,7 +140,7 @@ class ProjectSessionsWindow(tk.Frame):
 
     def create_new_session(self):
         """Create a new session for the current project"""
-        selected_project = self.controller.get_selected_project()
+        selected_project = self.logic.project_handler.get_selected_project()
         
         if not selected_project:
             messagebox.showerror("Error", "No project selected")
