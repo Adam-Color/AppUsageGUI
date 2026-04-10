@@ -37,6 +37,7 @@ class CreateSessionWindow(tk.Frame):
 
         # Project dropdown
         self.project_var = tk.StringVar()
+        self.no_project_var = tk.BooleanVar(value=True)
         self.project_dropdown = tk.OptionMenu(project_frame, self.project_var, "")
         self.project_dropdown.pack(side="left", fill="x", expand=True, padx=(10, 5))
 
@@ -103,11 +104,13 @@ class CreateSessionWindow(tk.Frame):
 
     def check_pre_selected_project(self):
         """Check if there's a pre-selected project from the controller and set it"""
-        selected_project = self.logic.project_handler.get_selected_project()
+        selected_project = self.controller.get_selected_project()
         if selected_project:
             self.project_var.set(selected_project)
+            self.no_project_var.set(False)
         else:
             self.project_var.set("No Project")
+            self.no_project_var.set(True)
 
     def create_new_project(self):
         """Open a dialog to create a new project and associate it with the session"""
