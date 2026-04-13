@@ -12,7 +12,7 @@ setup(
         'psutil==5.9.8',
         'pynput==1.8.1',
         'requests==2.33.0',
-        'pillow==12.1.1',
+        'pillow==12.2.0',
         'pywinauto==0.6.8',
         'MouseInfo==0.1.3',
         'PyGetWindow==0.0.9',
