@@ -97,6 +97,8 @@ def update():
             webbrowser.open_new_tab("https://github.com/adam-color/AppUsageGUI/releases/latest")
             messagebox.showinfo("Update", "Your platform is not officially supported.")
         elif download_url is not None:
+            import time
             webbrowser.open_new_tab(download_url)
             webbrowser.open_new_tab("https://github.com/adam-color/AppUsageGUI/releases/latest")
+            time.sleep(0.1) # needs to sleep to allow the browser to open before showing the message box
             messagebox.showinfo("Update", "Please install the latest version after it downloads,\nautomatic updates are not yet available.\n\nPlease close AppUsageGUI after you download the new installer.")
