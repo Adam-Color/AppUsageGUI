@@ -19,6 +19,7 @@ To install, follow the instructions for your platform found here:
 
 * Find a better way to filter out non-GUI apps
 * Add integrations with professional applications
+* Working pytest workflow
 * Full linux support with packages
 
 ## Building
