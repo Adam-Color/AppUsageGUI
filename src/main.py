@@ -90,7 +90,7 @@ def main():
         if icon_name != "core/resources/icon.png":
             root.iconbitmap(icon_path)
         else:
-            root.iconphoto(True, icon_path)
+            root.iconphoto(True, tk.PhotoImage(file=icon_path))
 
         root.title(f"AppUsageGUI - v{__version__}")
 
