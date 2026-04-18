@@ -26,6 +26,7 @@ from darkdetect import isDark
 
 from core.screens.splash_screen import splash_screen
 from core.utils.tk_utils import set_main_window, messagebox
+from core.utils.file_utils import config_file, read_file
 from _logging import setup_logging
 from _path import resource_path
 
@@ -73,7 +74,7 @@ def main():
         root = tk.Tk()
         root.withdraw()
 
-        if isDark():
+        if isDark() or read_file(config_file()).get("force_dark"):
             apply_dark_theme(root)
 
         set_default_font(root)
