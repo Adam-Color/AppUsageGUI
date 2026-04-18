@@ -83,6 +83,9 @@ def main():
             icon_name = "core/resources/icon.png"
 
         icon_path = resource_path(icon_name)
+        
+        if icon_name != "core/resources/icon.png":
+            root.iconbitmap(icon_path)
 
         root.iconbitmap(icon_path)
         root.title(f"AppUsageGUI - v{__version__}")
