@@ -64,7 +64,7 @@ SETTINGS_SCHEMA: list[dict] = [
         ),
         "type": "checkbox",
         "default": False,
-        "requires_restart": False,
+        "requires_restart": True,
     },
 
     # ── Tracking ─────────────────────────────────────────────────────────────
