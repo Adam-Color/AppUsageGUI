@@ -89,8 +89,9 @@ def main():
 
         if icon_name != "core/resources/icon.png":
             root.iconbitmap(icon_path)
+        else:
+            root.iconphoto(True, icon_path)
 
-        root.iconbitmap(icon_path)
         root.title(f"AppUsageGUI - v{__version__}")
 
         # Set the main window reference for centering dialogs
