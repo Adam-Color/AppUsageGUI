@@ -22,9 +22,10 @@ import tkinter.font as tkfont
 import os
 import sys
 import platform
+from darkdetect import isDark
 
 from core.screens.splash_screen import splash_screen
-from core.utils.tk_utils import is_dark_mode, set_main_window, messagebox
+from core.utils.tk_utils import set_main_window, messagebox
 from _logging import setup_logging
 from _path import resource_path
 
@@ -34,7 +35,9 @@ def apply_dark_theme(root):
     dark_bg = "#2E2E2E"  # Dark gray background
     dark_fg = "#FFFFFF"  # White text
 
-    root.tk_setPalette(background=dark_bg, foreground=dark_fg)
+    # unsure why this broke when I switched to isDark?
+    # root.tk_setPalette(background=dark_bg, foreground=dark_fg)
+    root.configure(background=dark_bg)
 
 def set_default_font(root):
     system = platform.system()
@@ -70,7 +73,7 @@ def main():
         root = tk.Tk()
         root.withdraw()
 
-        if is_dark_mode():
+        if isDark():
             apply_dark_theme(root)
 
         set_default_font(root)
@@ -83,7 +86,7 @@ def main():
             icon_name = "core/resources/icon.png"
 
         icon_path = resource_path(icon_name)
-        
+
         if icon_name != "core/resources/icon.png":
             root.iconbitmap(icon_path)
 
@@ -101,7 +104,7 @@ def main():
         import logging
         logger = logging.getLogger(__name__)
         logger.error(error_message)
-         
+
         messagebox.showerror("Error", error_message)
 
 if __name__ == "__main__":

@@ -2,9 +2,10 @@ import tkinter as tk
 import os
 import threading
 import queue
+from darkdetect import isDark
 from PIL import Image, ImageTk
 
-from core.utils.tk_utils import messagebox, is_dark_mode
+from core.utils.tk_utils import messagebox
 from core.utils.time_utils import format_time
 
 from _path import resource_path
@@ -17,7 +18,7 @@ def load_white_icon(path, size=(50,50)):
     img = Image.open(path).convert("RGBA")
 
     # don't modify the original image if macOS
-    if (os.name == 'posix' and 'Darwin' in os.uname().sysname) or not is_dark_mode():
+    if (os.name == 'posix' and 'Darwin' in os.uname().sysname) or not isDark():
         if size:
             img = img.resize(size, Image.LANCZOS)
         return ImageTk.PhotoImage(img)
@@ -51,7 +52,7 @@ class TrackerWindow(tk.Frame):
         self.rec_time = 0
         self.stop_event = threading.Event()
         self.update_thread = None
-        
+
         # images
         self.pause_photo = load_white_icon(os.path.join(resource_path("core"), "resources", "button-resources", "pause_button.png"))
 
