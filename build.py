@@ -56,6 +56,7 @@ def build_executable():
         f'--collect-submodules pynput '
         f'--collect-submodules requests '
         f'--collect-submodules urllib3 '
+        f'--collect-submodules darkdetect '
         f'--hidden-import=PIL.Image '
         f'--hidden-import=PIL.ImageTk '
         f'--collect-submodules pyperclip '
