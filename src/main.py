@@ -37,7 +37,8 @@ def apply_dark_theme(root):
     dark_fg = "#FFFFFF"  # White text
 
     # unsure why this broke when I switched to isDark?
-    # root.tk_setPalette(background=dark_bg, foreground=dark_fg)
+    if os.name == "nt":
+        root.tk_setPalette(background=dark_bg, foreground=dark_fg)
     root.configure(background=dark_bg)
 
 def set_default_font(root):
