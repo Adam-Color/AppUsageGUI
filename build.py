@@ -59,6 +59,7 @@ def build_executable():
         f'--collect-submodules darkdetect '
         f'--hidden-import=PIL.Image '
         f'--hidden-import=PIL.ImageTk '
+        f'--hidden-import=PIL._tkinter_finder '
         f'--collect-submodules pyperclip '
         f'--exclude-module tkinter.test '
         f'--exclude-module tkinter.demos '
