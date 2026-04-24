@@ -13,27 +13,44 @@ class SaveWindow(tk.Frame):
         tk.Frame.__init__(self, parent)
         self.controller = controller
         self.logic = logic_controller
-        
+
         # display the page label
-        self.page_label = tk.Label(self, text="Would you like to save the recorded data?")
+        self.page_label = tk.Label(
+            self,
+            text="\n\n\nWould you like to save the recorded data?",
+            font=("Arial", 20, "bold")
+        )
         self.page_label.pack(pady=5)
 
+        button_frame = tk.Frame(self)
+        button_frame.pack(pady=5)
+
         # display the yes/no buttons
-        button_yes = tk.Button(self, text="Yes", command=self.save)
-        button_yes.pack(pady=2)
-        button_no = tk.Button(self, text="No", command=self.dont_save)
-        button_no.pack(pady=5)
+        button_yes = tk.Button(button_frame, text="Yes",
+            command=self.save,
+            font=("Arial", 20),
+            width=4, height=2,
+            highlightbackground="#ADD8E6",
+            highlightcolor="#ADD8E6"
+        )
+        button_yes.pack(side='right', padx=5)
+        button_no = tk.Button(button_frame, text="No",
+            command=self.dont_save,
+            font=("Arial", 20),
+            width=4, height=2
+        )
+        button_no.pack(side='left', padx=5)
 
         back_button = tk.Button(self, text="Main Menu", command=self.dont_save)
         back_button.pack(pady=5, side='bottom')
 
     def save(self):
         time.sleep(0.3)
-        
+
         # Stop the time tracker before saving to ensure we have proper stop times
         if self.logic.time_tracker.is_running():
             self.logic.time_tracker.stop()
-        
+
         if self.logic.file_handler.get_continuing_session():
             # Continuing an existing session - update it
             session_time = self.logic.time_tracker.get_total_time()
@@ -83,7 +100,7 @@ class SaveWindow(tk.Frame):
             logger.info(f"Session data: {data}")
 
             self.logic.file_handler.save_session_data(data)
-            
+
             # Load the saved session data and show session total window
             session_name = self.logic.file_handler.get_file_name()
             project_name = self.logic.file_handler.get_current_project()
@@ -91,7 +108,7 @@ class SaveWindow(tk.Frame):
             self.controller.frames['SessionTotalWindow'].total_session_time_thread.start()
             self.controller.frames['SessionTotalWindow'].update_total_time()
             self.controller.show_frame("SessionTotalWindow")
-    
+
     def dont_save(self):
         """confirm data deletion"""
         ans = messagebox.askyesno("AppUsageGUI", "Are you sure you don't want to save?")
