@@ -48,6 +48,8 @@ class TrackerWindow(tk.Frame):
         self.controller = controller
         self.logic = logic_controller
         self.app = ""
+        self.project_name = ""
+        self.session_name = ""
         self.track_time_disp = "Looking for app..."
         self.rec_time = 0
         self.stop_event = threading.Event()
@@ -77,7 +79,7 @@ class TrackerWindow(tk.Frame):
         # Current app being tracked
         self.page_label = tk.Label(
             self,
-            text="Tracking the selected app:",
+            text="\n\nTracking the selected app:",
             font=("TkDefaultFont", 11, "italic")
         )
         self.page_label.pack(pady=5)
@@ -124,6 +126,8 @@ class TrackerWindow(tk.Frame):
     def _update_time_label(self):
         while not self.stop_event.is_set():
             self.app = self.logic.app_tracker.get_selected_app()
+            self.session_name = self.logic.file_handler.get_file_name()
+            self.project_name = self.logic.file_handler.get_project_name()
             app_names = self.logic.app_tracker.get_app_names()
 
             if self._should_start_tracking():
@@ -176,6 +180,8 @@ class TrackerWindow(tk.Frame):
         self.logic.mouse_tracker.stop()
         self.rec_time = 0
         self.app = ""
+        self.project_name = ""
+        self.session_name = ""
         self.track_time_disp = "Looking for target app..."
 
     def _update_display(self):
@@ -186,13 +192,13 @@ class TrackerWindow(tk.Frame):
             time_text = "No time data available"
 
         if self.logic.mouse_tracker.is_pausing():
-            self.page_label.config(text="Tracking paused, mouse is idle...")
+            self.page_label.config(text=f"Project Name: {self.project_name}, Session Name: {self.session_name}\nTracking paused, mouse is idle...")
             self.pause_toggle_photo = self.play_photo
             self.pause_button["state"] = "disabled"
             self.stop_button["state"] = "disabled"
             self.pause_toggle_text.set("Resume")
         else:
-            new_text = f"Tracking the selected app: {self.app}"
+            new_text = f"Project Name: {self.project_name}, Session Name: {self.session_name}\nTracking the selected app: {self.app}"
             if self.page_label["text"] != new_text:
                 self.pause_toggle_photo = self.pause_photo
                 self.page_label.config(text=new_text)

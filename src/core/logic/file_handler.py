@@ -161,6 +161,9 @@ class FileHandler:
 
     def get_file_name(self):
         return self.file_name
+        
+    def get_project_name(self):
+        return self.current_project
 
     def get_session_names(self):
         return self.session_names
