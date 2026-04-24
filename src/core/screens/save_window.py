@@ -29,15 +29,16 @@ class SaveWindow(tk.Frame):
         button_yes = tk.Button(button_frame, text="Yes",
             command=self.save,
             font=("Arial", 20),
-            width=4, height=2,
-            highlightbackground="#ADD8E6",
-            highlightcolor="#ADD8E6"
+            width=4, height=1,
+            bg="#0985d9",
+            highlightbackground="#0985d9",
+            highlightcolor="#0985d9"
         )
         button_yes.pack(side='right', padx=5)
         button_no = tk.Button(button_frame, text="No",
             command=self.dont_save,
             font=("Arial", 20),
-            width=4, height=2
+            width=4, height=1
         )
         button_no.pack(side='left', padx=5)
 
