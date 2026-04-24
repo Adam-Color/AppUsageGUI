@@ -117,6 +117,9 @@ class SessionsWindow(tk.Frame):
         """Load session data into the listbox and
         handle broken sessions"""
 
+        # List for all unsorted sessions
+        unsorted_sessions = []
+
         # Clear the listbox first
         self.session_listbox.delete(0, tk.END)
 
@@ -148,6 +151,10 @@ class SessionsWindow(tk.Frame):
             if session_data is not None and session_data != {}:
                 app_name = session_data['app_name']
                 time_spent = session_data['time_spent']
+                if ('time_captures' in session_data and 'stops' in session_data['time_captures'] and len(session_data['time_captures']['stops']) > 0):
+                    last_stopped = session_data['time_captures']['stops'][-1]
+                else:
+                    last_stopped = 0
                 # Format the time spent
                 formatted_time = format_time(int(time_spent))
 
@@ -158,7 +165,11 @@ class SessionsWindow(tk.Frame):
                     display_text = f"{session_name} [No Project]: {app_name}, {formatted_time} on record"
 
                 # Insert into the Listbox
-                self.session_listbox.insert(tk.END, display_text)
+                unsorted_sessions.append((last_stopped, display_text))
+
+        # Sort and insert into the Listbox based on last stopped time
+        for _, display_text in sorted(unsorted_sessions, key=lambda x: x[0], reverse=True):
+            self.session_listbox.insert(tk.END, display_text)
 
         # Show message if no sessions match the filter
         if self.session_listbox.size() == 0:
