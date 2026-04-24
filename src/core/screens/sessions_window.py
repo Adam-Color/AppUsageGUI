@@ -55,7 +55,11 @@ class SessionsWindow(tk.Frame):
 
         # Continue button
         select_button = tk.Button(button_frame, text="Continue Session",
-                                  command=self.select_session, width=20)
+                                  command=self.select_session, width=20,
+                                  bg="#0985d9",
+                                  highlightbackground="#0985d9",
+                                  highlightcolor="#0985d9")
+
         select_button.pack(side="left", padx=5)
 
         # Analyze button
@@ -84,21 +88,21 @@ class SessionsWindow(tk.Frame):
         # Clear existing menu
         menu = self.project_filter_dropdown['menu']
         menu.delete(0, 'end')
-        
+
         # Add "All" option first
         menu.add_command(label="All", command=lambda: self.on_filter_change("All"))
-        
+
         # Add "No Project" option
         menu.add_command(label="No Project", command=lambda: self.on_filter_change("No Project"))
-        
+
         # Add all available projects
         projects = get_projects()
         for project in projects:
             menu.add_command(label=project, command=lambda p=project: self.on_filter_change(p))
-        
+
         # Set default selection to "All"
         self.project_filter_var.set("All")
-        
+
         # Bind the dropdown change event
         self.project_filter_var.trace_add(
             'write', lambda *args: self.on_filter_change(self.project_filter_var.get())
@@ -110,21 +114,21 @@ class SessionsWindow(tk.Frame):
         self.load_sessions()
 
     def load_sessions(self):
-        """Load session data into the listbox and 
+        """Load session data into the listbox and
         handle broken sessions"""
 
         # Clear the listbox first
         self.session_listbox.delete(0, tk.END)
-        
+
         # Get the selected filter
         selected_filter = self.project_filter_var.get()
-        
+
         sessions = get_sessions()
         for session in sessions:
             session_name = session.split(".")[0]
             # Determine which project this session belongs to
             project_name = get_session_project(session)
-            
+
             # Apply filter
             if selected_filter == "All":
                 # Show all sessions
@@ -137,7 +141,7 @@ class SessionsWindow(tk.Frame):
                 # Only show sessions from the selected project
                 if project_name != selected_filter:
                     continue
-            
+
             # Load data for the current session
             self.logic.file_handler.load_session_data(session_name, project_name)
             session_data = self.logic.file_handler.get_data()
@@ -146,16 +150,16 @@ class SessionsWindow(tk.Frame):
                 time_spent = session_data['time_spent']
                 # Format the time spent
                 formatted_time = format_time(int(time_spent))
-                
+
                 # Create display text with project info
                 if project_name:
                     display_text = f"{session_name} [{project_name}]: {app_name}, {formatted_time} on record"
                 else:
                     display_text = f"{session_name} [No Project]: {app_name}, {formatted_time} on record"
-                
+
                 # Insert into the Listbox
                 self.session_listbox.insert(tk.END, display_text)
-        
+
         # Show message if no sessions match the filter
         if self.session_listbox.size() == 0:
             if selected_filter == "All":
@@ -164,7 +168,7 @@ class SessionsWindow(tk.Frame):
                 self.session_listbox.insert(tk.END, "No standalone sessions found.")
             else:
                 self.session_listbox.insert(tk.END, f"No sessions found in project '{selected_filter}'.")
-        
+
         corrupt_sessions = self.logic.file_handler.get_corrupt_sessions()
         if len(corrupt_sessions) > 0:
             error_string = "The following session(s) failed to load:\n\n"
@@ -184,20 +188,20 @@ class SessionsWindow(tk.Frame):
             messagebox.showerror("Error", "No session selected")
             return 0
         self.controller.frames["TrackerWindow"].start_update_thread()
-        
+
         # Parse the display text to extract session name and app name
         display_text = self.get_session_text()
         # Format: "session_name [project]: app_name, time on record"
         parts = display_text.split(": ")
         session_part = parts[0]  # "session_name [project]"
         app_part = parts[1].split(", ")[0]  # "app_name"
-        
+
         # Extract session name (remove project part)
         if " [" in session_part:
             selected_session_name = session_part.split(" [")[0]
         else:
             selected_session_name = session_part
-        
+
         # Determine project for this session
         project_name = get_session_project(selected_session_name + ".dat")
 
@@ -227,21 +231,21 @@ class SessionsWindow(tk.Frame):
         if not self.get_session_text():
             messagebox.showerror("Error", "No session selected")
             return 0
-        
+
         # Parse the display text to extract session name
         display_text = self.get_session_text()
         parts = display_text.split(": ")
         session_part = parts[0]  # "session_name [project]"
-        
+
         # Extract session name (remove project part)
         if " [" in session_part:
             selected_session_name = session_part.split(" [")[0]
         else:
             selected_session_name = session_part
-        
+
         # Determine project for this session
         project_name = get_session_project(selected_session_name + ".dat")
-        
+
         # load the session data
         self.logic.file_handler.load_session_data(selected_session_name, project_name)
         self.controller.frames['SessionTotalWindow'].total_session_time_thread.start()
@@ -258,16 +262,16 @@ class SessionsWindow(tk.Frame):
             display_text = self.get_session_text()
             parts = display_text.split(": ")
             session_part = parts[0]  # "session_name [project]"
-            
+
             # Extract session name (remove project part)
             if " [" in session_part:
                 selected_session_name = session_part.split(" [")[0]
             else:
                 selected_session_name = session_part
-            
+
             # Determine project for this session
             project_name = get_session_project(selected_session_name + ".dat")
-            
+
             # ask for confirmation
             confirm = messagebox.askyesno("Confirm Deletion",
                                              f"Are you sure you want to delete the session '{selected_session_name}'? \nThis action cannot be undone.")
@@ -281,24 +285,24 @@ class SessionsWindow(tk.Frame):
         if not self.get_session_text():
             messagebox.showerror("Error", "No session selected")
             return
-        
+
         # Parse the display text to extract session name
         display_text = self.get_session_text()
         parts = display_text.split(": ")
         session_part = parts[0]  # "session_name [project]"
-        
+
         # Extract session name (remove project part)
         if " [" in session_part:
             selected_session_name = session_part.split(" [")[0]
         else:
             selected_session_name = session_part
-        
+
         # Determine current project for this session
         current_project = get_session_project(selected_session_name + ".dat")
-        
+
         # Get all available projects
         available_projects = get_projects()
-        
+
         # Create a dialog to select target project
         self.show_move_session_dialog(selected_session_name, current_project, available_projects)
 
@@ -309,81 +313,81 @@ class SessionsWindow(tk.Frame):
         dialog.title("Move Session to Project")
         dialog.geometry("410x300")
         dialog.resizable(False, False)
-        
+
         # Center the dialog
         from core.utils.tk_utils import _main_window
         center_relative_to_parent(dialog, _main_window)
 
         dialog.grab_set()
-        
+
         # Main frame
         main_frame = tk.Frame(dialog)
         main_frame.pack(fill="both", expand=True, padx=20, pady=20)
-        
+
         # Title
         title_label = tk.Label(main_frame, text=f"Move session '{session_name}' to:")
         title_label.pack(pady=(0, 10))
-        
+
         # Current project info
         if current_project:
             current_info = tk.Label(main_frame, text=f"Current project: {current_project}")
         else:
             current_info = tk.Label(main_frame, text="Current project: No Project")
         current_info.pack(pady=(0, 10))
-        
+
         # Project selection frame
         selection_frame = tk.Frame(main_frame)
         selection_frame.pack(fill="both", expand=True, pady=10)
-        
+
         # Label for dropdown
         select_label = tk.Label(selection_frame, text="Select target project:")
         select_label.pack(anchor="w", pady=(0, 5))
-        
+
         # Project selection dropdown
         self.target_project_var = tk.StringVar()
         project_dropdown = tk.OptionMenu(selection_frame, self.target_project_var, "")
         project_dropdown.pack(fill="x", pady=(0, 10))
-        
+
         # Populate dropdown with available projects
         menu = project_dropdown['menu']
         menu.delete(0, 'end')
-        
+
         # Add "No Project" option
         menu.add_command(label="No Project", command=lambda: self.target_project_var.set("No Project"))
-        
+
         # Add all available projects
         for project in available_projects:
             if project != current_project:  # Don't show current project as option
                 menu.add_command(label=project, command=lambda p=project: self.target_project_var.set(p))
-        
+
         # Set default selection
         if available_projects and available_projects[0] != current_project:
             self.target_project_var.set(available_projects[0])
         else:
             self.target_project_var.set("No Project")
-        
+
         # Button frame
         button_frame = tk.Frame(main_frame)
         button_frame.pack(fill="x", pady=(20, 0))
-        
+
         # Move button
-        move_button = tk.Button(button_frame, text="Move Session", 
+        move_button = tk.Button(button_frame, text="Move Session",
                               command=lambda: self.execute_move_session(session_name, current_project, dialog),
                               bg="lightblue", width=15)
         move_button.pack(side="left", padx=(0, 10))
-        
+
         # Cancel button
-        cancel_button = tk.Button(button_frame, text="Cancel", 
+        cancel_button = tk.Button(button_frame, text="Cancel",
                                 command=dialog.destroy, width=15)
         cancel_button.pack(side="left")
-        
+
         # Store reference to dialog for the execute function
         self.move_dialog = dialog
 
     def execute_move_session(self, session_name, current_project, dialog):
         """Execute the session move operation"""
         target_project = self.target_project_var.get()
-        
+
         # Check if target is different from current
         if target_project == "No Project" and current_project is None:
             messagebox.showwarning("Warning", "Session is already in 'No Project'")
@@ -393,7 +397,7 @@ class SessionsWindow(tk.Frame):
             messagebox.showwarning("Warning", f"Session is already in project '{current_project}'")
             dialog.destroy()
             return
-        
+
         # Confirm the move operation
         if target_project == "No Project":
             confirm_message = f"Move session '{session_name}' from project '{current_project}' to 'No Project'?"
@@ -401,13 +405,13 @@ class SessionsWindow(tk.Frame):
             confirm_message = f"Move session '{session_name}' from 'No Project' to project '{target_project}'?"
         else:
             confirm_message = f"Move session '{session_name}' from project '{current_project}' to project '{target_project}'?"
-        
+
         if messagebox.askyesno("Confirm Move", confirm_message):
             # Execute the move
             success = self.logic.file_handler.move_session_to_project(
                 session_name, current_project, target_project
             )
-            
+
             if success:
                 messagebox.showinfo("Success", f"Session '{session_name}' moved successfully!")
                 # Refresh the sessions list
@@ -415,5 +419,5 @@ class SessionsWindow(tk.Frame):
             else:
                 logger.error("Error moving session")
                 messagebox.showerror("Error", "Failed to move session. Please try again.")
-        
+
         dialog.destroy()

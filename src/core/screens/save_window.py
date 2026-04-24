@@ -35,6 +35,7 @@ class SaveWindow(tk.Frame):
             highlightcolor="#0985d9"
         )
         button_yes.pack(side='right', padx=5)
+        self.bind("<Return>", lambda event: self.save())
         button_no = tk.Button(button_frame, text="No",
             command=self.dont_save,
             font=("Arial", 20),
