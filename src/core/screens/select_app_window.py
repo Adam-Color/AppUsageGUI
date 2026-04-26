@@ -79,7 +79,8 @@ class SelectAppWindow(tk.Frame):
             text="Select",
             command=self.select_app,
             width=15, height=2,
-            font=("Arial", 10, "bold")
+            font=("Arial", 10, "bold"),
+            bg="#0985d9"
         )
         select_button.pack(side="right", padx=20)
 

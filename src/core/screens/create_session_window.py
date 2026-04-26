@@ -71,7 +71,13 @@ class CreateSessionWindow(tk.Frame):
         button_frame.pack(fill="x", padx=20, pady=20)
 
         # Confirm session name entry
-        confirm_button = tk.Button(button_frame, text="Create Session", command=self.on_confirm, width=15, height=1)
+        confirm_button = tk.Button(
+            button_frame,
+            text="Create Session",
+            command=self.on_confirm,
+            width=15, height=1,
+            bg="#0985d9"
+        )
         confirm_button.pack(side="left", padx=5)
 
         # Cancel button
@@ -137,7 +143,7 @@ class CreateSessionWindow(tk.Frame):
         vcmd = (dialog.register(validate_name), '%P')
         project_name_var = tk.StringVar()
         project_name_entry = tk.Entry(dialog, textvariable=project_name_var,
-                                    validate="key", validatecommand=vcmd, width=30, 
+                                    validate="key", validatecommand=vcmd, width=30,
                                     borderwidth=3, relief="groove")
         project_name_entry.pack(pady=5)
 

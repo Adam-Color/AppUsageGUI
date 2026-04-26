@@ -391,6 +391,7 @@ class SettingsWindow(tk.Frame):
             text="Save Changes",
             command=self._save,
             width=16,
+            bg="#0985d9"
         ).pack(side="left")
 
     # ── Actions ────────────────────────────────────────────────────────────
