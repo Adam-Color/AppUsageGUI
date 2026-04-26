@@ -56,9 +56,7 @@ class SessionsWindow(tk.Frame):
         # Continue button
         select_button = tk.Button(button_frame, text="Continue Session",
                                   command=self.select_session, width=20,
-                                  bg="#0985d9",
-                                  highlightbackground="#0985d9",
-                                  highlightcolor="#0985d9")
+                                  bg="#0985d9")
 
         select_button.pack(side="left", padx=5)
 
