@@ -325,7 +325,7 @@ class SessionsWindow(tk.Frame):
 
         # Center the dialog
         from core.utils.tk_utils import _main_window
-        center_relative_to_parent(dialog, _main_window)
+        dialog.after(10, lambda: center_relative_to_parent(dialog, _main_window))
 
         dialog.grab_set()
 
