@@ -39,7 +39,8 @@ class ProjectsWindow(tk.Frame):
 
         # Create new project button
         create_button = tk.Button(button_frame, text="Create New Project", 
-                                command=self.create_project, width=20)
+                                command=self.create_project, width=20,
+                                bg="#0985d9")
         create_button.pack(side="left", padx=5)
 
 

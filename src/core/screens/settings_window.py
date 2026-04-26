@@ -55,6 +55,17 @@ SETTINGS_SCHEMA: list[dict] = [
         "default": True,
         "requires_restart": False,
     },
+    {
+        "tab": "General",
+        "key": "force_dark",
+        "label": "Force dark mode",
+        "description": (
+            "Force the application to use dark mode, regardless of the system settings."
+        ),
+        "type": "checkbox",
+        "default": False,
+        "requires_restart": True,
+    },
 
     # ── Tracking ─────────────────────────────────────────────────────────────
     {
@@ -380,6 +391,7 @@ class SettingsWindow(tk.Frame):
             text="Save Changes",
             command=self._save,
             width=16,
+            bg="#0985d9"
         ).pack(side="left")
 
     # ── Actions ────────────────────────────────────────────────────────────

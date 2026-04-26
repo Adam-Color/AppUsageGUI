@@ -108,33 +108,6 @@ def center_relative_to_parent(win, parent):
     win.deiconify()
     win.update_idletasks()
 
-def is_dark_mode():
-    """Check if the system is in dark mode"""
-    if os.name == 'nt':  # Windows
-        try:
-            import winreg
-            with winreg.OpenKey(winreg.HKEY_CURRENT_USER,
-                                r"Software\\Microsoft\\Windows\\CurrentVersion\\Themes\\Personalize") as key:
-                value, _ = winreg.QueryValueEx(key, "AppsUseLightTheme")
-                return value == 0
-        except Exception:
-            return False
-    elif sys.platform == 'darwin':  # macOS
-        try:
-            from AppKit import NSUserDefaults
-            defaults = NSUserDefaults.standardUserDefaults()
-            return defaults.boolForKey_("AppleInterfaceStyle") == "Dark"
-        except ImportError:
-            return False
-    elif sys.platform.startswith('linux'):  # Linux
-        try:
-            with open(os.path.expanduser("~/.config/gtk-3.0/settings.ini"), 'r') as f:
-                for line in f:
-                    if "gtk-theme-name" in line:
-                        return "dark" in line.lower()
-        except FileNotFoundError:
-            return False
-
 # Global variable to store the main window reference for centering dialogs
 _main_window = None
 
@@ -159,22 +132,22 @@ def _create_centered_dialog(title, message, dialog_type, buttons):
             return messagebox.askyesno(title, message)
         elif dialog_type == "okcancel":
             return messagebox.askokcancel(title, message)
-    
+
     # Create custom dialog
     dialog = tk.Toplevel(_main_window)
     dialog.title(title)
     dialog.resizable(False, False)
     dialog.transient(_main_window)
     dialog.grab_set()
-    
+
     # Create main frame
     frame = tk.Frame(dialog)
     frame.pack(padx=20, pady=20)
-    
+
     # Add icon and message
     icon_frame = tk.Frame(frame)
     icon_frame.pack(side="left", padx=(0, 15))
-    
+
     # Simple text-based icons
     if dialog_type == "error":
         icon_text = "✕"
@@ -188,28 +161,28 @@ def _create_centered_dialog(title, message, dialog_type, buttons):
     else:  # question, yesno, okcancel
         icon_text = "?"
         icon_color = "cyan"
-    
+
     icon_label = tk.Label(icon_frame, text=icon_text, font=("Arial", 24), fg=icon_color)
     icon_label.pack()
-    
+
     # Message
     message_frame = tk.Frame(frame)
     message_frame.pack(side="right", fill="both", expand=True)
-    
+
     message_label = tk.Label(message_frame, text=message, wraplength=300, justify="left")
     message_label.pack(anchor="w")
-    
+
     # Buttons
     button_frame = tk.Frame(dialog)
     button_frame.pack(pady=(10, 0))
-    
+
     result = None
-    
+
     def button_click(value):
         nonlocal result
         result = value
         dialog.destroy()
-    
+
     if buttons == ["OK"]:
         tk.Button(button_frame, text="OK", command=lambda: button_click(True), width=10).pack()
     elif buttons == ["Yes", "No"]:
@@ -218,13 +191,13 @@ def _create_centered_dialog(title, message, dialog_type, buttons):
     elif buttons == ["OK", "Cancel"]:
         tk.Button(button_frame, text="OK", command=lambda: button_click(True), width=10).pack(side="left", padx=5)
         tk.Button(button_frame, text="Cancel", command=lambda: button_click(False), width=10).pack(side="left", padx=5)
-    
+
     # Center the dialog
     center_relative_to_parent(dialog, _main_window)
-    
+
     # Wait for dialog to close
     dialog.wait_window()
-    
+
     return result
 
 def get_monitor_info_win32(win):

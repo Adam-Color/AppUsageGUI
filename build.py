@@ -29,19 +29,19 @@ def build_executable():
 
     icon_file = "src/core/resources/icon.ico" if os.name == 'nt' else "src/core/resources/icon.icns"
     version = get_version()
-    
+
     # Set environment variable in the current process
     os.environ['PYTHONOPTIMIZE'] = '1'
-    
+
     print(f"Building {PROJECT_NAME} v{version}...")
-    
+
     windows_only_1 = '--collect-submodules pywinauto' if os.name == 'nt' else ""
     version_file = ""
-    
+
     # On Windows, create a version file for the .exe
     if os.name == 'nt':
         version_file = create_version_file(version)
-    
+
     run_command(
         f'{python_executable} -m PyInstaller -D --clean --name {PROJECT_NAME} '
         f'--noconfirm '
@@ -56,8 +56,10 @@ def build_executable():
         f'--collect-submodules pynput '
         f'--collect-submodules requests '
         f'--collect-submodules urllib3 '
+        f'--collect-submodules darkdetect '
         f'--hidden-import=PIL.Image '
         f'--hidden-import=PIL.ImageTk '
+        f'--hidden-import=PIL._tkinter_finder '
         f'--collect-submodules pyperclip '
         f'--exclude-module tkinter.test '
         f'--exclude-module tkinter.demos '
@@ -71,7 +73,7 @@ def build_executable():
         f'--add-data "src/_logging.py:." '
         f'{ENTRY_POINT}'
     )
-    
+
     # Clean up version file if created
     if version_file and os.path.exists('version_info.txt'):
         os.remove('version_info.txt')
@@ -81,11 +83,11 @@ def create_version_file(version):
     version_parts = version.split('.')
     while len(version_parts) < 4:
         version_parts.append('0')
-    
+
     version_str = '.'.join(version_parts[:4])
     # Convert to tuple format
     version_tuple = tuple(int(x) for x in version_parts[:4])
-    
+
     version_content = f'''# UTF-8
 #
 # For more details about fixed file info 'ffi' see:
@@ -105,11 +107,11 @@ VSVersionInfo(
   ),
   kids=[StringFileInfo(
     [StringTable(u'040904B0',
-    [StringTable(u'CompanyName', u''),
+    [StringTable(u'CompanyName', u'Adam Color'),
      StringTable(u'FileDescription', u'{PROJECT_NAME}'),
      StringTable(u'FileVersion', u'{version_str}'),
      StringTable(u'InternalName', u'{PROJECT_NAME}'),
-     StringTable(u'LegalCopyright', u''),
+     StringTable(u'LegalCopyright', u'Copyright © 2026 Adam Blair-Smith'),
      StringTable(u'OriginalFilename', u'{PROJECT_NAME}.exe'),
      StringTable(u'ProductName', u'{PROJECT_NAME}'),
      StringTable(u'ProductVersion', u'{version_str}')])]),
@@ -127,7 +129,7 @@ def create_macos_app_bundle_info():
     """Create Info.plist for macOS .app bundle."""
     version = get_version()
     bundle_id = "com.appusagegui.app"
-    
+
     info_plist = f'''<?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
@@ -153,17 +155,17 @@ def create_macos_app_bundle_info():
     <key>NSHighResolutionCapable</key>
     <true/>
     <key>NSHumanReadableCopyright</key>
-    <string>Copyright © 2026. All rights reserved.</string>
+    <string>Copyright © 2026 Adam Blair-Smith. All rights reserved.</string>
     <key>NSPrincipalClass</key>
     <string>NSApplication</string>
 </dict>
 </plist>
 '''
-    
+
     app_bundle = os.path.join(DIST_DIR, f"{PROJECT_NAME}.app")
     contents_dir = os.path.join(app_bundle, "Contents")
     os.makedirs(contents_dir, exist_ok=True)
-    
+
     info_plist_path = os.path.join(contents_dir, "Info.plist")
     with open(info_plist_path, 'w') as f:
         f.write(info_plist)

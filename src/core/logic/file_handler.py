@@ -42,9 +42,10 @@ class FileHandler:
         data["created_date"] = datetime.now().isoformat()
         data["last_modified"] = datetime.now().isoformat()
 
-        logger.info(f"Saving session data: {data}")
+        logger.info("Saving session data...")
 
         self.data = pickle.dumps(data)
+        logger.info(f"Data saved: {len(self.data)} bytes")
 
         # Determine save directory based on project
         if self.current_project:
@@ -161,6 +162,9 @@ class FileHandler:
 
     def get_file_name(self):
         return self.file_name
+        
+    def get_project_name(self):
+        return self.current_project
 
     def get_session_names(self):
         return self.session_names

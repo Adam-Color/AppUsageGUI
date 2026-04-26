@@ -4,6 +4,7 @@ import tkinter as tk
 from tkinter import ttk
 from core.utils.tk_utils import messagebox
 import platform
+import subprocess
 
 from _version import __version__ as version
 from _path import resource_path
@@ -193,109 +194,14 @@ class GUIRoot(tk.Frame):
             messagebox.showinfo("Update", "No new updates available.")
 
     def show_logs(self, _=None):
-        """Display logs in a scrollable window with fixed footer buttons."""
-        # Prevent duplicate windows
-        if hasattr(self, "log_window") and self.log_window and self.log_window.winfo_exists():
-            self.log_window.lift()
-            self.log_window.focus_force()
-            return
-
-        win = tk.Toplevel(self.parent)
-        self.log_window = win  # keep reference
-        win.title("Application Logs")
-        win.geometry("600x600")
-        win.transient(self.parent)
-        win.after(10, lambda: center_relative_to_parent(win, _main_window))
-
-        # Use grid instead of pack for better control
-        win.rowconfigure(0, weight=1)
-        win.columnconfigure(0, weight=1)
-
-        frame = ttk.Frame(win, padding=(8, 8, 8, 8))
-        frame.grid(row=0, column=0, sticky="nsew")
-        frame.rowconfigure(0, weight=1)
-        frame.columnconfigure(0, weight=1)
-
-        win.columnconfigure(0, weight=1)
-
-        frame = ttk.Frame(win, padding=(8, 8, 8, 8))
-        frame.grid(row=0, column=0, sticky="nsew")
-        frame.rowconfigure(0, weight=1)
-        frame.columnconfigure(0, weight=1)
-
-        # Header and text setup
-        header = (
-            f"=== {self.parent.title()} ===\n"
-            f"Python: {sys.version.split('(')[0]}\n"
-            f"Platform: {platform.system()} ({platform.machine()})\n"
-            f"{'=' * 21}\n"
-            f"NOTE: logs window only refreshes when reopened.\n\n"
-        )
-
-        # Read logs from the log file if available
-        log_contents = ""
+        """Display logs in default file manager."""
         if hasattr(self, "log_file_path") and os.path.exists(self.log_file_path):
-            try:
-                with open(self.log_file_path, "r") as log_file:
-                    log_contents = log_file.read()
-            except Exception as e:
-                log_contents = f"(Failed to read log file: {e})\n"
-
-        # Combine header and logs
-        initial_text = header + (log_contents or "(No logs yet)\n")
-
-        text_box = tk.Text(frame, wrap="word")
-        text_box.insert("1.0", initial_text)
-        text_box.config(state="disabled")
-        text_box.grid(row=0, column=0, sticky="nsew")
-
-        scrollbar = ttk.Scrollbar(frame, orient="vertical", command=text_box.yview)
-        scrollbar.grid(row=0, column=1, sticky="ns")
-        text_box.config(yscrollcommand=scrollbar.set)
-
-        # Buttons at bottom (separate frame)
-        btn_frame = ttk.Frame(win)
-        btn_frame.grid(row=1, column=0, sticky="ew", pady=(6, 8))
-        btn_frame.columnconfigure(0, weight=1)
-        btn_frame.columnconfigure(1, weight=1)
-
-        def logs():
-            """Read the log file and return its contents."""
-            try:
-                if os.path.exists(self.log_file_path):
-                    with open(self.log_file_path, "r") as log_file:
-                        return log_file.read()
-                else:
-                    return "(Log file not found)"
-            except Exception as e:
-                return f"(Failed to read log file: {e})"
-
-        def copy_logs():
-            """Copy the current logs to the clipboard."""
-            import pyperclip # type: ignore
-            try:
-                log_text = header + logs()
-                pyperclip.copy(log_text)
-                messagebox.showinfo("Copy Logs", "Logs copied to clipboard.")
-            except Exception as e:
-                messagebox.showerror("Copy Logs", f"Failed to copy logs: {e}")
-
-        ttk.Button(btn_frame, text="Copy Logs", command=copy_logs).grid(row=0, column=0, sticky="w", padx=(8, 0))
-        ttk.Button(btn_frame, text="Close", command=win.destroy).grid(row=0, column=1, sticky="e", padx=(0, 8))
-
-        # Live Updating
-        def refresh_logs():
-            """Refresh the logs displayed in the logs window."""
-            try:
-                new_text = header + logs()  # Use logs() to get log content
-                text_box.config(state="normal")
-                text_box.delete(1.0, "end")  # Clear existing content
-                text_box.insert("end", new_text)  # Insert new content
-                text_box.config(state="disabled")  # Make it read-only
-            except Exception as e:
-                print(f"Failed to refresh logs: {e}")
-
-        refresh_logs()
+            if sys.platform == "win32":
+                os.startfile(self.log_file_path)
+            elif sys.platform == "darwin":  # macOS
+                subprocess.call(('open', self.log_file_path))
+            else:  # Linux/Unix
+                subprocess.call(('xdg-open', self.log_file_path))
 
     def init_screens(self):
         """Pass the logic_controller when initializing screens"""

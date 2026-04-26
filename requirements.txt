@@ -11,3 +11,4 @@ rubicon-objc==0.5.0
 pyinstaller==6.19.0
 requests==2.33.0
 pillow==12.2.0
+darkdetect
