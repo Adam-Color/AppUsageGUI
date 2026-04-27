@@ -382,7 +382,7 @@ class SessionsWindow(tk.Frame):
         # Move button
         move_button = tk.Button(button_frame, text="Move Session",
                               command=lambda: self.execute_move_session(session_name, current_project, dialog),
-                              bg="lightblue", width=15)
+                              bg="#0985d9", width=15)
         move_button.pack(side="left", padx=(0, 10))
 
         # Cancel button
