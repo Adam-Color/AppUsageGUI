@@ -325,7 +325,7 @@ class SessionsWindow(tk.Frame):
 
         # Center the dialog
         from core.utils.tk_utils import _main_window
-        center_relative_to_parent(dialog, _main_window)
+        dialog.after(10, lambda: center_relative_to_parent(dialog, _main_window))
 
         dialog.grab_set()
 
@@ -334,7 +334,7 @@ class SessionsWindow(tk.Frame):
         main_frame.pack(fill="both", expand=True, padx=20, pady=20)
 
         # Title
-        title_label = tk.Label(main_frame, text=f"Move session '{session_name}' to:")
+        title_label = tk.Label(main_frame, text=f"Move session '{session_name}':")
         title_label.pack(pady=(0, 10))
 
         # Current project info
@@ -382,7 +382,7 @@ class SessionsWindow(tk.Frame):
         # Move button
         move_button = tk.Button(button_frame, text="Move Session",
                               command=lambda: self.execute_move_session(session_name, current_project, dialog),
-                              bg="lightblue", width=15)
+                              bg="#0985d9", width=15)
         move_button.pack(side="left", padx=(0, 10))
 
         # Cancel button
