@@ -334,7 +334,7 @@ class SessionsWindow(tk.Frame):
         main_frame.pack(fill="both", expand=True, padx=20, pady=20)
 
         # Title
-        title_label = tk.Label(main_frame, text=f"Move session '{session_name}' to:")
+        title_label = tk.Label(main_frame, text=f"Move session '{session_name}':")
         title_label.pack(pady=(0, 10))
 
         # Current project info
