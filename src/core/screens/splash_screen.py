@@ -1,4 +1,6 @@
+from curses import keyname
 import os
+from posix import read
 import sys
 import tkinter as tk
 from tkinter.ttk import *  # noqa: F403
@@ -8,7 +10,9 @@ else:
     import fcntl
 
 from core.utils.tk_utils import center, messagebox
-from core.utils.file_utils import sessions_exist, user_dir_exists, lock_file
+from core.utils.file_utils import sessions_exist, user_dir_exists, lock_file, read_file, config_file
+from core.utils.resolve_connector import inject_script
+
 from _path import resource_path
 
 import logging
@@ -109,6 +113,13 @@ def splash_screen(root):
             from core.gui_root import GUIRoot
             update_progress(80)
             win = GUIRoot(root)
+
+            update_progress(90)
+            try:
+                if read_file(config_file())["resolve_tracking"]:
+                    inject_script()
+            except KeyError:
+                pass
 
             update_progress(100)
             root.update()
