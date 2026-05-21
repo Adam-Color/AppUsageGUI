@@ -1,4 +1,10 @@
-"""Updates the current project info. Used only in the resolve script directory. An injected script of AppUsageGUI."""
+"""
+Updates the current project info. Used only in the resolve script directory. An injected script of AppUsageGUI.
+
+export RESOLVE_SCRIPT_API="/Library/Application Support/Blackmagic Design/DaVinci Resolve/Developer/Scripting"
+export RESOLVE_SCRIPT_LIB="/Applications/DaVinci Resolve/DaVinci Resolve.app/Contents/Libraries/Fusion/fusionscript.so"
+export PYTHONPATH="$RESOLVE_SCRIPT_API/Modules:$PYTHONPATH"
+"""
 
 import os
 import pickle
