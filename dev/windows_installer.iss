@@ -2,8 +2,8 @@
 ; SEE THE DOCUMENTATION FOR DETAILS ON CREATING INNO SETUP SCRIPT FILES!
 
 #define MyAppName "AppUsageGUI"
-#define MyAppPublisher "Adam Blair-Smith"
-#define MyAppVersion "1.10.1"
+#define MyAppPublisher "AdamColor, LLC"
+#define MyAppVersion "1.10.2"
 #define MyAppURL "https://github.com/Adam-Color/AppUsageGUI"
 #define MyAppExeName "AppUsageGUI.exe"
 #define MyInstallerName "AppUsageGUI_v" + MyAppVersion + "_WINDOWS_setup"
