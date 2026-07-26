@@ -111,7 +111,7 @@ VSVersionInfo(
      StringTable(u'FileDescription', u'{PROJECT_NAME}'),
      StringTable(u'FileVersion', u'{version_str}'),
      StringTable(u'InternalName', u'{PROJECT_NAME}'),
-     StringTable(u'LegalCopyright', u'Copyright © 2026 Adam Blair-Smith'),
+     StringTable(u'LegalCopyright', u'Copyright © 2026 AdamColor, LLC'),
      StringTable(u'OriginalFilename', u'{PROJECT_NAME}.exe'),
      StringTable(u'ProductName', u'{PROJECT_NAME}'),
      StringTable(u'ProductVersion', u'{version_str}')])]),
@@ -155,7 +155,7 @@ def create_macos_app_bundle_info():
     <key>NSHighResolutionCapable</key>
     <true/>
     <key>NSHumanReadableCopyright</key>
-    <string>Copyright © 2026 Adam Blair-Smith. All rights reserved.</string>
+    <string>Copyright © 2026 AdamColor, LLC. All rights reserved.</string>
     <key>NSPrincipalClass</key>
     <string>NSApplication</string>
 </dict>
