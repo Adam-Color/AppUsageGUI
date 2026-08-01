@@ -99,17 +99,6 @@ SETTINGS_SCHEMA: list[dict] = [
         "unit": "seconds",
         "requires_restart": False,
     },
-    {
-        "tab": "Tracking",
-        "key": "resolve_tracking",
-        "label": "DaVinci Resolve Project Tracking",
-        "description": (
-            "Automatically track DaVinci Resolve projects. Switches automatically when a project is opened or closed, as long as a session is associated with the project."
-        ),
-        "type": "checkbox",
-        "default": False,
-        "requires_restart": True,
-    },
 
     # ── Filtering ─────────────────────────────────────────────────────────────
     {
