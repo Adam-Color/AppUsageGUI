@@ -124,11 +124,17 @@ class TrackerWindow(tk.Frame):
         self.stop_button.pack(side="left", padx=1)
 
     def _update_time_label(self):
+        logger.info("_update_time_label called")
         while not self.stop_event.is_set():
             self.app = self.logic.app_tracker.get_selected_app()
             self.session_name = self.logic.file_handler.get_file_name()
             self.project_name = self.logic.file_handler.get_project_name()
             app_names = self.logic.app_tracker.get_app_names()
+
+            if not self.app:
+                self.update_queue.put((self.TIME_UPDATE, "Looking for application..."))
+                self.stop_event.wait(timeout=0.1)
+                continue
 
             if self._should_start_tracking():
                 self._start_tracking()
@@ -142,21 +148,22 @@ class TrackerWindow(tk.Frame):
             if self.logic.time_tracker.is_running():
                 self._update_display()
             else:
-                self.update_queue.put((self.TIME_UPDATE, "Looking for application..."))
+                logger.info(f"Waiting for {self.app} to start...")
+                self.app = self.logic.app_tracker.get_selected_app()
+                self.update_queue.put((self.TIME_UPDATE, f"Waiting for {self.app} to start..."))
+                self.toggle_pause_tracker(button=False)
+                self.pause_button["state"] = "disabled"
+                logger.warning(f"{self.app} not found to be running")
+                while self.app not in app_names and not self.stop_event.is_set():
+                    app_names = self.logic.app_tracker._fetch_app_names()
+                    self.stop_event.wait(timeout=0.1)
+                self.toggle_pause_tracker(button=False)
+                self.pause_button["state"] = "normal"
 
             self.stop_event.wait(timeout=0.1)
 
         if round(self.logic.time_tracker.get_elapsed_time()) > 0:
             self.controller.show_frame("SaveWindow")
-        else:
-            error_msg = "The tracked application is not running and cannot be found.\nThis session cannot be continued because the target application is not available."
-            logger.error(error_msg)
-            messagebox.showerror(
-                "App Not Found",
-                error_msg
-            )
-            self.controller.reset_frames()
-            self.controller.show_frame("MainWindow")
 
     def _should_start_tracking(self):
         return self.app and not self.logic.time_tracker.is_running()
