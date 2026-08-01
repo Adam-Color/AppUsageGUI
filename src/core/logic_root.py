@@ -3,7 +3,6 @@ from .logic.time_tracker import TimeTracker
 from .logic.file_handler import FileHandler
 from .logic.user_trackers import MouseTracker
 from .logic.project_handler import ProjectHandler
-from .logic.resolve_tracker import ResolveTracker
 
 class LogicRoot():
     def __init__(self, parent):
@@ -14,10 +13,8 @@ class LogicRoot():
         self.time_tracker = TimeTracker(self.parent, self)
         self.app_tracker = AppTracker(self.parent, self)
         self.mouse_tracker = MouseTracker(self.parent, self)
-        self.resolve_tracker = ResolveTracker(self.parent, self)
     
     def close(self):
         self.time_tracker.stop()
         self.app_tracker.stop()
         self.mouse_tracker.stop()
-        self.resolve_tracker.stop()        
