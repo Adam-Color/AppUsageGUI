@@ -42,6 +42,7 @@ def load_white_icon(path, size=(50,50)):
 class TrackerWindow(tk.Frame):
     TIME_UPDATE = "time"
     APP_UPDATE = "app"
+    PAUSE_BUTTON_UPDATE = None
 
     def __init__(self, parent, controller, logic_controller):
         tk.Frame.__init__(self, parent)
@@ -136,12 +137,12 @@ class TrackerWindow(tk.Frame):
                 self.stop_event.wait(timeout=0.1)
                 continue
 
-            if self._should_start_tracking():
+            if self._should_start_tracking() and self.rec_time != 0:
                 self._start_tracking()
             elif self.logic.file_handler.get_continuing_tracker():
                 self.logic.mouse_tracker.start()
 
-            if self._should_stop_tracking(app_names):
+            if self._should_stop_tracking(app_names) and self.rec_time != 0:
                 self._stop_tracking()
                 break
 
@@ -152,13 +153,13 @@ class TrackerWindow(tk.Frame):
                 self.app = self.logic.app_tracker.get_selected_app()
                 self.update_queue.put((self.TIME_UPDATE, f"Waiting for {self.app} to start..."))
                 self.toggle_pause_tracker(button=False)
-                self.pause_button["state"] = "disabled"
+                self.update_queue.put((self.PAUSE_BUTTON_UPDATE, "disabled"))
                 logger.warning(f"{self.app} not found to be running")
                 while self.app not in app_names and not self.stop_event.is_set():
                     app_names = self.logic.app_tracker._fetch_app_names()
                     self.stop_event.wait(timeout=0.1)
                 self.toggle_pause_tracker(button=False)
-                self.pause_button["state"] = "normal"
+                self.update_queue.put((self.PAUSE_BUTTON_UPDATE, "normal"))
 
             self.stop_event.wait(timeout=0.1)
 
@@ -246,6 +247,8 @@ class TrackerWindow(tk.Frame):
                     self.time_label.config(text=item[1])
                 elif item[0] == self.APP_UPDATE:
                     self.page_label.config(text=f"Tracking: {item[1]}")
+                elif item[0] == self.PAUSE_BUTTON_UPDATE:
+                    self.pause_button["state"] = item[1]
         except queue.Empty:
             pass
         self.after(250, self._periodic_update)
