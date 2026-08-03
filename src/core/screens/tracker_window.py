@@ -42,12 +42,14 @@ def load_white_icon(path, size=(50,50)):
 class TrackerWindow(tk.Frame):
     TIME_UPDATE = "time"
     APP_UPDATE = "app"
+    PAUSE_BUTTON_UPDATE = None
 
     def __init__(self, parent, controller, logic_controller):
         tk.Frame.__init__(self, parent)
         self.controller = controller
         self.logic = logic_controller
         self.app = ""
+        self.app_names = []
         self.project_name = ""
         self.session_name = ""
         self.track_time_disp = "Looking for app..."
@@ -124,47 +126,65 @@ class TrackerWindow(tk.Frame):
         self.stop_button.pack(side="left", padx=1)
 
     def _update_time_label(self):
+        logger.info("_update_time_label called")
         while not self.stop_event.is_set():
             self.app = self.logic.app_tracker.get_selected_app()
             self.session_name = self.logic.file_handler.get_file_name()
             self.project_name = self.logic.file_handler.get_project_name()
-            app_names = self.logic.app_tracker.get_app_names()
+            self.app_names = self.logic.app_tracker.get_app_names()
+
+            if not self.app:
+                self.update_queue.put((self.TIME_UPDATE, "Looking for application..."))
+                self.stop_event.wait(timeout=0.1)
+                continue
 
             if self._should_start_tracking():
                 self._start_tracking()
             elif self.logic.file_handler.get_continuing_tracker():
                 self.logic.mouse_tracker.start()
 
-            if self._should_stop_tracking(app_names):
+            if self._should_stop_tracking():
+                logger.info(f"rec_time at stop: {self.rec_time}")
                 self._stop_tracking()
                 break
 
             if self.logic.time_tracker.is_running():
                 self._update_display()
             else:
-                self.update_queue.put((self.TIME_UPDATE, "Looking for application..."))
+                # not sure why this else statement was here, leaving this message here for now
+                logger.warning("time tracker not running! Reference this line in code.")
 
             self.stop_event.wait(timeout=0.1)
 
         if round(self.logic.time_tracker.get_elapsed_time()) > 0:
             self.controller.show_frame("SaveWindow")
-        else:
-            error_msg = "The tracked application is not running and cannot be found.\nThis session cannot be continued because the target application is not available."
-            logger.error(error_msg)
-            messagebox.showerror(
-                "App Not Found",
-                error_msg
-            )
-            self.controller.reset_frames()
-            self.controller.show_frame("MainWindow")
 
     def _should_start_tracking(self):
+        self.app = self.logic.app_tracker.get_selected_app()
+        self.app_names = self.logic.app_tracker.get_app_names()
+
+        # lets the user start the app while time is 0
+        if self.app not in self.app_names and self.rec_time == 0:
+            logger.info(f"Waiting for {self.app} to start...")
+            self.update_queue.put((self.TIME_UPDATE, f"Waiting for {self.app} to start..."))
+            self.toggle_pause_tracker(button=False)
+            self.logic.time_tracker.pause()
+            self.update_queue.put((self.PAUSE_BUTTON_UPDATE, "disabled"))
+            while self.app not in self.app_names and not self.stop_event.is_set():
+                self.app_names = self.logic.app_tracker._fetch_app_names()
+                self.stop_event.wait(timeout=0.1)
+            self.toggle_pause_tracker(button=False)
+            self.logic.time_tracker.resume()
+            self.update_queue.put((self.PAUSE_BUTTON_UPDATE, "normal"))
+
         return self.app and not self.logic.time_tracker.is_running()
 
-    def _should_stop_tracking(self, app_names):
+    def _should_stop_tracking(self):
+        self.app_names = self.logic.app_tracker.get_app_names()
         return (
             self.logic.time_tracker.is_running() and
-            self.app not in app_names and
+            self.rec_time > 0.5 and # accounts for code execution time
+            self.app not in self.app_names and
             not self.logic.file_handler.get_continuing_tracker()
         )
 
@@ -180,12 +200,14 @@ class TrackerWindow(tk.Frame):
         self.logic.mouse_tracker.stop()
         self.rec_time = 0
         self.app = ""
+        self.app_names = []
         self.project_name = ""
         self.session_name = ""
         self.track_time_disp = "Looking for target app..."
 
     def _update_display(self):
         secs = self.logic.time_tracker.get_time()
+        self.rec_time = secs
         if secs is not None:
             time_text = format_time(int(secs))
         else:
@@ -239,6 +261,8 @@ class TrackerWindow(tk.Frame):
                     self.time_label.config(text=item[1])
                 elif item[0] == self.APP_UPDATE:
                     self.page_label.config(text=f"Tracking: {item[1]}")
+                elif item[0] == self.PAUSE_BUTTON_UPDATE:
+                    self.pause_button["state"] = item[1]
         except queue.Empty:
             pass
         self.after(250, self._periodic_update)
