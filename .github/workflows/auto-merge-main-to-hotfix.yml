@@ -1,0 +1,36 @@
+name: Auto-merge Main to Hotfix
+
+on:
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: write
+
+jobs:
+  merge-main-to-hotfix:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Configure Git
+        run: |
+          git config user.name "GitHub Actions"
+          git config user.email "actions@github.com"
+
+      - name: Checkout hotfix branch
+        run: |
+          git fetch origin hotfix
+          git checkout hotfix
+
+      - name: Merge main into hotfix
+        run: |
+          git merge main --no-edit --no-ff
+
+      - name: Push updates
+        run: |
+          git push origin hotfix   
