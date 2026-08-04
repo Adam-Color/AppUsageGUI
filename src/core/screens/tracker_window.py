@@ -158,6 +158,9 @@ class TrackerWindow(tk.Frame):
 
         if round(self.logic.time_tracker.get_elapsed_time()) > 0:
             self.controller.show_frame("SaveWindow")
+        else:
+            self._stop_tracking()
+            self.controller.show_frame("SessionsWindow")
 
     def _should_start_tracking(self):
         self.app = self.logic.app_tracker.get_selected_app()
@@ -246,10 +249,14 @@ class TrackerWindow(tk.Frame):
                 self.logic.time_tracker.pause()
 
     def _stop(self):
-        confirm = messagebox.askyesno(
-            "Confirm Stop Tracking",
-            "Are you sure you want to stop tracking?\nProgress will be saved."
-        )
+        confirm = False
+        if self.rec_time > 0.5:
+            confirm = messagebox.askyesno(
+                "Confirm Stop Tracking",
+                "Are you sure you want to stop tracking?\nProgress will be saved."
+            )
+        else:
+            confirm = True 
         if confirm:
             self.stop_event.set()
 
