@@ -15,7 +15,6 @@ from core.utils.app_utils import new_updates, update
 from .screens.main_window import MainWindow
 from .screens.select_app_window import SelectAppWindow
 from .screens.sessions_window import SessionsWindow
-from .screens.project_sessions_window import ProjectSessionsWindow
 from .screens.projects_window import ProjectsWindow
 from .screens.create_project_window import CreateProjectWindow
 from .screens.tracker_window import TrackerWindow
@@ -205,8 +204,9 @@ class GUIRoot(tk.Frame):
 
     def init_screens(self):
         """Pass the logic_controller when initializing screens"""
-        for F in (MainWindow, SessionsWindow, ProjectSessionsWindow, ProjectsWindow, CreateProjectWindow,
-                  SelectAppWindow, TrackerWindow, SaveWindow, CreateSessionWindow, SessionTotalWindow, SettingsWindow):
+        for F in (MainWindow, SessionsWindow, ProjectsWindow, CreateProjectWindow,
+                  SelectAppWindow, TrackerWindow, SaveWindow, CreateSessionWindow,
+                  SessionTotalWindow, SettingsWindow):
             page_name = F.__name__
             frame = F(parent=self.container, controller=self, logic_controller=self.logic)
             self.frames[page_name] = frame
