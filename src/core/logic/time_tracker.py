@@ -87,7 +87,7 @@ class TimeTracker:
         )
         if self.controller.file_handler.get_continuing_session():
             self.update_captures()  # update captures from session file if applicable
-        logging.info("Time tracker reset.")
+        logger.info("Time tracker reset.")
 
     def update_captures(self):
         """populates the captures dictionary with data from the session file"""

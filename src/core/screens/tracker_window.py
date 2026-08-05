@@ -160,6 +160,7 @@ class TrackerWindow(tk.Frame):
             self.controller.show_frame("SaveWindow")
         else:
             self._stop_tracking()
+            self.controller.reset_frames()
             self.controller.show_frame("SessionsWindow")
 
     def _should_start_tracking(self):
