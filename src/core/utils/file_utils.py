@@ -55,8 +55,8 @@ def sessions_exist(p=False):
     projects_dir = get_projects_directory()
 
     if p:
-        logging.info("sessions_dir: %s" % sessions_dir)
-        logging.info("projects_dir: %s" % projects_dir)
+        logger.info("sessions_dir: %s" % sessions_dir)
+        logger.info("projects_dir: %s" % projects_dir)
 
     # Check old sessions directory
     if os.path.exists(sessions_dir):
@@ -84,7 +84,7 @@ def user_dir_exists(p=False):
     Set p=True to print directory path"""
     user_dir = get_user_directory()
     if p:
-        logging.info("user_dir: %s" % user_dir)
+        logger.info("user_dir: %s" % user_dir)
     # Ensure the directory exists
     if not os.path.exists(user_dir):
         os.makedirs(user_dir, exist_ok=True)
