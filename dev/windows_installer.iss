@@ -3,7 +3,7 @@
 
 #define MyAppName "AppUsageGUI"
 #define MyAppPublisher "AdamColor, LLC"
-#define MyAppVersion "1.11.0"
+#define MyAppVersion "1.11.1"
 #define MyAppURL "https://github.com/Adam-Color/AppUsageGUI"
 #define MyAppExeName "AppUsageGUI.exe"
 #define MyInstallerName "AppUsageGUI_v" + MyAppVersion + "_WINDOWS_setup"

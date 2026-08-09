@@ -112,7 +112,7 @@ class AppTracker:
         if self.update_thread is not None:
             try:
                 self.update_thread.join()
-                logging.info("App tracker stopped.")
+                logger.info("App tracker stopped.")
             except RuntimeError:
                 pass
 
