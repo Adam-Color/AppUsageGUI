@@ -20,6 +20,9 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
+      - name: tcl-tk upgrade
+        run: brew install tcl-tk
+
       - name: Set up Python
         uses: actions/setup-python@v6.2.0
         with:
