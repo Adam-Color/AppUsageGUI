@@ -36,11 +36,17 @@ jobs:
           chmod +x dev/macos_installer.sh
           bash dev/macos_installer.sh
 
+      - name: Flatten artifact path
+        run: |
+          # Move the DMG to a known location at the workspace root
+          cp dist/AppUsageGUI_v*_macOS_setup.dmg .
+
       - name: Upload macOS installer
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
-          name: macos-installer
-          path: dist/AppUsageGUI_v*_macOS_setup.dmg
+          path: AppUsageGUI_v*_macOS_setup.dmg
+          archive: false
+          if-no-files-found: error
 
   build-windows:
     runs-on: windows-latest
@@ -74,8 +80,14 @@ jobs:
           # Build installer
           iscc dev\windows_installer.iss
 
+      - name: Flatten artifact path
+        run: |
+          # Move the DMG to a known location at the workspace root
+          cp dist/AppUsageGUI_v*_macOS_setup.exe .
+
       - name: Upload Windows installer
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
-          name: windows-installer
-          path: dist\AppUsageGUI_v*_WINDOWS_setup.exe
+          path: AppUsageGUI_v*_WINDOWS_setup.exe
+          archive: false
+          if-no-files-found: error
