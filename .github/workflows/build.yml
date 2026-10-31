@@ -5,10 +5,14 @@ permissions:
 
 on:
   workflow_dispatch: # Allow manual triggering
+    inputs:
+      tag:
+        description: "Release tag (e.g. v1.11.2)"
+        required: true
   push:
     tags:
       - "v*"
- 
+
 jobs:
   build-macos:
     runs-on: macos-latest
@@ -108,14 +112,15 @@ jobs:
           path: artifacts
       - name: Verify release exists
         run: |
-          gh release view "${GITHUB_REF_NAME}"
+          gh release view "${{ github.event.inputs.tag || github.ref_name }}"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Upload assets
         uses: softprops/action-gh-release@v2
         with:
+          tag_name: ${{ github.event.inputs.tag || github.ref_name }}
           files: |
             artifacts/**/*_macOS_setup.dmg
             artifacts/**/*_WINDOWS_setup.exe
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}   
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
