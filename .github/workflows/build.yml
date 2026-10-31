@@ -83,7 +83,7 @@ jobs:
       - name: Flatten artifact path
         run: |
           # Move the DMG to a known location at the workspace root
-          cp dist/AppUsageGUI_v*_macOS_setup.exe .
+          cp dist/AppUsageGUI_v*_WINDOWS_setup.exe .
 
       - name: Upload Windows installer
         uses: actions/upload-artifact@v7
