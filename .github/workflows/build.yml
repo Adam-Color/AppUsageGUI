@@ -5,7 +5,10 @@ permissions:
 
 on:
   workflow_dispatch: # Allow manual triggering
-
+  push:
+    tags:
+      - "v*"
+ 
 jobs:
   build-macos:
     runs-on: macos-latest
@@ -91,3 +94,28 @@ jobs:
           path: AppUsageGUI_v*_WINDOWS_setup.exe
           archive: false
           if-no-files-found: error
+
+  release:
+    needs: [build-macos, build-windows]
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      - name: Download artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: artifacts
+      - name: Verify release exists
+        run: |
+          gh release view "${GITHUB_REF_NAME}"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Upload assets
+        uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            artifacts/**/*_macOS_setup.dmg
+            artifacts/**/*_WINDOWS_setup.exe
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}   
