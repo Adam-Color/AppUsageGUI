@@ -1,7 +1,7 @@
 """
     Application runtime tracker.
 
-    Copyright (C) 2025 Adam Blair-Smith
+    Copyright (C) 2026 AdamColor, LLC
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -78,10 +78,13 @@ def main():
         set_default_font(root)
 
         if os.name == 'nt':
+            logger.info("Platform: Windows")
             icon_name = "core\\resources\\icon.ico"
         elif sys.platform == 'darwin':  # macOS
+            logger.info("Platform: macOS")
             icon_name = "core/resources/icon.icns"
         else:  # Linux or other Unix-like systems
+            logger.info("Platform: Linux/other")
             icon_name = "core/resources/icon.png"
 
         icon_path = resource_path(icon_name)
