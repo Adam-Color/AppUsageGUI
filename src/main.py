@@ -36,8 +36,7 @@ def apply_dark_theme(root):
     dark_bg = "#2E2E2E"  # Dark gray background
     dark_fg = "#FFFFFF"  # White text
 
-    if sys.platform != "darwin":
-        root.tk_setPalette(background=dark_bg, foreground=dark_fg)
+    root.tk_setPalette(background=dark_bg, foreground=dark_fg)
 
 def set_default_font(root):
     system = platform.system()
@@ -73,7 +72,7 @@ def main():
         root = tk.Tk()
         root.withdraw()
 
-        if isDark() or read_file(config_file()).get("force_dark"):
+        if (isDark() and sys.platform != "darwin") or read_file(config_file()).get("force_dark"):
             apply_dark_theme(root)
 
         set_default_font(root)
