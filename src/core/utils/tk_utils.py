@@ -73,6 +73,8 @@ def center(win):
     screen_width = win.winfo_screenwidth()
     screen_height = win.winfo_screenheight()
 
+    logger.info(f"Centering \"{win.title()}\" according to: GUI=({width}, {height}), SCREEN=({screen_width}, {screen_height})")
+
     # Convert percentage offsets to pixels
 
     # Compute center position

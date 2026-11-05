@@ -1,0 +1,4 @@
+# Shell scripts and Linux packaging files must keep Unix (LF) line endings,
+# even when checked out on Windows, or bash will fail on them.
+*.sh text eol=lf
+dev/linux/* text eol=lf

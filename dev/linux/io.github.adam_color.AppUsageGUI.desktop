@@ -1,0 +1,14 @@
+[Desktop Entry]
+Type=Application
+Version=1.0
+Name=AppUsageGUI
+GenericName=Application Runtime Tracker
+Comment=Track how long you spend in your applications, organized into projects
+Exec=AppUsageGUI
+Icon=io.github.adam_color.AppUsageGUI
+Terminal=false
+Categories=Office;ProjectManagement;Utility;
+Keywords=time;tracker;timer;usage;runtime;projects;productivity;
+StartupNotify=true
+# Tk names its windows after the executable, so this must match the binary name
+StartupWMClass=AppUsageGUI
