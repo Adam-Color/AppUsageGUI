@@ -102,8 +102,80 @@ jobs:
           archive: false
           if-no-files-found: error
 
+  build-linux:
+    # One AppImage per CPU architecture. AppImages run on any distro, but they must
+    # be built on an OLD enough Linux: a binary built on a new glibc will not run on
+    # older distros. ubuntu-22.04 (glibc 2.35) is the oldest runner still offered.
+    strategy:
+      fail-fast: false # if one architecture breaks, still build the other
+      matrix:
+        include:
+          - arch: x86_64
+            runner: ubuntu-22.04
+          - arch: aarch64
+            runner: ubuntu-22.04-arm
+    runs-on: ${{ matrix.runner }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Install system packages
+        run: |
+          sudo apt-get update
+          # python3-tk: pulls in the Tcl/Tk libraries that PyInstaller bundles
+          # xvfb: virtual display, needed by pynput at build time and for the smoke test
+          # desktop-file-utils / appstream: validate the .desktop and metainfo files
+          sudo apt-get install -y python3-tk xvfb desktop-file-utils appstream binutils curl
+
+      - name: Set up Python
+        uses: actions/setup-python@v6.2.0
+        with:
+          python-version: "3.14t"
+
+      - name: Create virtual environment
+        run: |
+          python -m venv .venv
+          .venv/bin/python -m pip install --upgrade pip
+          .venv/bin/python -m pip install -r requirements.txt
+
+      - name: Build binary
+        run: xvfb-run -a .venv/bin/python build.py
+
+      - name: Build Linux AppImage
+        run: |
+          chmod +x dev/linux_installer.sh
+          bash dev/linux_installer.sh
+
+      - name: Smoke test AppImage
+        run: |
+          # The app has no --version flag, so just launch it on a virtual display.
+          # If it is still running after 15s (timeout exits with 124) it started fine;
+          # anything else means it crashed on startup (e.g. missing library).
+          chmod +x dist/AppUsageGUI_v*_LINUX_${{ matrix.arch }}.AppImage
+          set +e
+          APPIMAGE_EXTRACT_AND_RUN=1 timeout 15 xvfb-run -a dist/AppUsageGUI_v*_LINUX_${{ matrix.arch }}.AppImage
+          code=$?
+          if [ "$code" -ne 124 ]; then
+            echo "AppImage exited early with code $code"
+            exit 1
+          fi
+
+      - name: Upload Linux AppImage
+        uses: actions/upload-artifact@v7
+        with:
+          path: dist/AppUsageGUI_v*_LINUX_${{ matrix.arch }}.AppImage
+          archive: false
+          if-no-files-found: error
+
+      - name: Upload Linux checksum
+        uses: actions/upload-artifact@v7
+        with:
+          path: dist/AppUsageGUI_v*_LINUX_${{ matrix.arch }}.AppImage.sha256
+          archive: false
+          if-no-files-found: error
+
   release:
-    needs: [build-macos, build-windows]
+    needs: [build-macos, build-windows, build-linux]
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -125,5 +197,7 @@ jobs:
           files: |
             artifacts/**/*_macOS_setup.dmg
             artifacts/**/*_WINDOWS_setup.exe
+            artifacts/**/*_LINUX_*.AppImage
+            artifacts/**/*_LINUX_*.AppImage.sha256
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

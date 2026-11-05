@@ -1,5 +1,6 @@
 from core.utils.tk_utils import messagebox
 import logging
+import platform
 logger = logging.getLogger(__name__)
 
 def new_updates(manual_check=False):
@@ -84,19 +85,22 @@ def update():
             suffix = "WINDOWS_setup.exe"
         elif sys.platform == "darwin":
             suffix = "macOS_setup.dmg"
+        elif sys.platform.startswith('linux'):
+            suffix =  f"LINUX_{platform.machine()}.AppImage"
         else:
             suffix = None
 
         download_url = None
-        for asset in RELEASE_DATA['assets']:
-            if asset['name'].endswith(suffix):
-                download_url = asset['browser_download_url']
-                break
         import webbrowser
         if suffix is None:
             webbrowser.open_new_tab("https://github.com/adam-color/AppUsageGUI/releases/latest")
             messagebox.showinfo("Update", "Your platform is not officially supported.")
-        elif download_url is not None:
+        else:
+            for asset in RELEASE_DATA['assets']:
+                if asset['name'].endswith(suffix):
+                    download_url = asset['browser_download_url']
+                    break
+        if download_url is not None:
             import time
             webbrowser.open_new_tab(download_url)
             webbrowser.open_new_tab("https://github.com/adam-color/AppUsageGUI/releases/latest")
