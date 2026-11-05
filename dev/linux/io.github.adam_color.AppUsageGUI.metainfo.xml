@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  AppStream metadata. This is what software centers (GNOME Software, KDE
+  Discover) and AppImage catalogs read to show your app's name, description,
+  license and release history.
+
+  @VERSION@ and @DATE@ are filled in by dev/linux_installer.sh.
+  Validate by hand with the command: appstreamcli validate (this file)
+-->
+<component type="desktop-application">
+  <id>io.github.adam_color.AppUsageGUI</id>
+
+  <name>AppUsageGUI</name>
+  <summary>Track how long you spend in your applications</summary>
+  <developer_name>AdamColor, LLC</developer_name>
+
+  <metadata_license>CC0-1.0</metadata_license>
+  <project_license>GPL-3.0-or-later</project_license>
+
+  <description>
+    <p>
+      AppUsageGUI tracks the runtime of the applications you choose and
+      organizes your sessions into projects, giving you simple time tracking
+      and usage statistics.
+    </p>
+    <ul>
+      <li>Organize tracking sessions into projects</li>
+      <li>Track the total runtime of any application</li>
+      <li>Pause and resume sessions, or let the app pause when you go idle</li>
+      <li>Continue previous sessions across restarts</li>
+      <li>View total time spent across all sessions in a project</li>
+    </ul>
+  </description>
+
+  <launchable type="desktop-id">io.github.adam_color.AppUsageGUI.desktop</launchable>
+  <provides>
+    <binary>AppUsageGUI</binary>
+  </provides>
+
+  <url type="homepage">https://github.com/Adam-Color/AppUsageGUI</url>
+  <url type="bugtracker">https://github.com/Adam-Color/AppUsageGUI/issues</url>
+  <url type="vcs-browser">https://github.com/Adam-Color/AppUsageGUI</url>
+
+  <content_rating type="oars-1.1" />
+
+  <releases>
+    <release version="@VERSION@" date="@DATE@">
+      <url type="details">https://github.com/Adam-Color/AppUsageGUI/releases/tag/v@VERSION@</url>
+    </release>
+  </releases>
+</component>

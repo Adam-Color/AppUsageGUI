@@ -3,6 +3,7 @@
 ![python](https://img.shields.io/badge/Python-3.14t-green.svg)
 
 # AppUsageGUI
+
 ### Application Runtime Tracker
 
 This program tracks the runtime of specified applications, organizing sessions into projects. Users can create multiple projects, each containing multiple tracking sessions, providing comprehensive time tracking and data analysis.
@@ -11,16 +12,15 @@ This program tracks the runtime of specified applications, organizing sessions i
 
 To install, follow the instructions for your platform found here:
 
-[Windows](docs/install_windows.md) | [macOS](docs/install_macos.md)
+[Windows](docs/install_windows.md) | [macOS](docs/install_macos.md) | [Linux](docs/install_linux.md)
 
 ## Contributing
 
 ### Contributions are welcome and needed! Here is a TODO list:
 
-* Find a better way to filter out non-GUI apps
-* Add integrations with professional applications
-* Working pytest workflow
-* Full linux support with packages
+- Find a better way to filter out non-GUI apps
+- Add integrations with professional applications
+- Working pytest workflow
 
 ## Building
 
@@ -34,7 +34,9 @@ Run build script:
 
 The resulting AppUsageGUI folder will be created in dist/
 
-Scripts to create macOS/Windows installers are located in dev/
+Scripts to create macOS/Windows/Linux installers are located in dev/
+
+The Linux installer (`dev/linux_installer.sh`) turns the `dist/AppUsageGUI` folder into an AppImage. Its desktop entry and AppStream metadata live in `dev/linux/`.
 
 ## How It Works
 
@@ -75,6 +77,7 @@ The application follows a Model-View-Controller (MVC) architecture with separate
 ## User Workflow
 
 ### New Session Creation
+
 The application now uses a streamlined workflow where users select their project and session name before starting the timer:
 
 1. **Main Menu** → "Start new session"
@@ -85,11 +88,13 @@ The application now uses a streamlined workflow where users select their project
 6. **Session Total Window** → View results and statistics
 
 ### Project Management
+
 - **Main Menu** → "Manage Projects" → View all projects with session counts and total time
 - **Create New Project** → Set up new project containers
 - **View Project Sessions** → Manage sessions within specific projects
 - **Delete Projects** → Remove projects and all associated sessions (with confirmation)
 
 ### Continuing Existing Sessions
+
 - **Main Menu** → "Continue previous session" → Navigate through projects to find and resume sessions
 - Sessions can be continued across application restarts with full state preservation

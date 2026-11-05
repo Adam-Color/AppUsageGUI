@@ -1,45 +1,52 @@
 """
-    Application runtime tracker.
+Application runtime tracker.
 
-    Copyright (C) 2025 Adam Blair-Smith
+Copyright (C) 2026 AdamColor, LLC
 
-    This program is free software: you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
-    (at your option) any later version.
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
 
-    You should have received a copy of the GNU General Public License
-    along with this program.  If not, see <https://www.gnu.org/licenses/>.
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see <https://www.gnu.org/licenses/>.
 """
 
+import os
+import platform
+import sys
 import tkinter as tk
 import tkinter.font as tkfont
-import os
-import sys
-import platform
+
 from darkdetect import isDark
 
-from core.screens.splash_screen import splash_screen
-from core.utils.tk_utils import set_main_window, messagebox
-from core.utils.file_utils import config_file, read_file
 from _logging import setup_logging
 from _path import resource_path
-
 from _version import __version__
+from core.screens.splash_screen import splash_screen
+from core.utils.file_utils import config_file, read_file
+from core.utils.tk_utils import messagebox, set_main_window
+
 
 def apply_dark_theme(root):
     dark_bg = "#2E2E2E"  # Dark gray background
     dark_fg = "#FFFFFF"  # White text
 
-    # unsure why this broke when I switched to isDark?
-    if os.name == "nt":
-        root.tk_setPalette(background=dark_bg, foreground=dark_fg)
-    root.configure(background=dark_bg)
+    root.tk_setPalette(background=dark_bg, foreground=dark_fg)
+
+
+def force_dark_enabled():
+    """Return the saved force_dark setting. False on first run, before any config exists."""
+    try:
+        return read_file(config_file()).get("force_dark")
+    except FileNotFoundError:
+        return False
+
 
 def set_default_font(root):
     system = platform.system()
@@ -60,6 +67,7 @@ def main():
     try:
         setup_logging()
         import logging
+
         logger = logging.getLogger(__name__)
         logger.info("Starting AppUsageGUI...")
 
@@ -67,24 +75,27 @@ def main():
         if sys.platform == "win32":
             try:
                 import ctypes
+
                 ctypes.windll.shcore.SetProcessDpiAwareness(2)  # Per-monitor DPI aware
             except Exception:
                 pass
 
-
         root = tk.Tk()
         root.withdraw()
 
-        if isDark() or read_file(config_file()).get("force_dark"):
+        if (isDark() and sys.platform != "darwin") or force_dark_enabled():
             apply_dark_theme(root)
 
         set_default_font(root)
 
-        if os.name == 'nt':
+        if os.name == "nt":
+            logger.info("Platform: Windows")
             icon_name = "core\\resources\\icon.ico"
-        elif sys.platform == 'darwin':  # macOS
+        elif sys.platform == "darwin":  # macOS
+            logger.info("Platform: macOS")
             icon_name = "core/resources/icon.icns"
         else:  # Linux or other Unix-like systems
+            logger.info("Platform: Linux/other")
             icon_name = "core/resources/icon.png"
 
         icon_path = resource_path(icon_name)
@@ -103,12 +114,15 @@ def main():
         root.mainloop()
     except Exception as e:
         from traceback import format_exc
+
         error_message = f"An unexpected error occurred:\n{str(e)}\n\n{format_exc()}"
         import logging
+
         logger = logging.getLogger(__name__)
         logger.error(error_message)
 
         messagebox.showerror("Error", error_message)
+
 
 if __name__ == "__main__":
     main()

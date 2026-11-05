@@ -117,6 +117,9 @@ def splash_screen(root):
             splash_window.destroy()
             root.resizable(False, False)
             root.after('idle', lambda: win.pack(side="top", fill="both", expand=True))
+            if sys.platform == "darwin": # ensures buttons load
+                root.update_idletasks()
+                root.after(100, root.update)
 
         except Exception:
             from traceback import format_exc
